@@ -1,0 +1,138 @@
+group,group_name,color,parent_group,characteristics,subtype_group,subtype_group_display,parent_group_display
+BRCA,Breast invasive carcinoma,#ED2891,TCGA_Study,Organ System: Breast; Major Histological Types: Adenocarcinoma,,,TCGA Study
+GBM,Glioblastoma multiforme,#B2509E,TCGA_Study,Organ System: Central Nervous System; Major Histological Types: Other,,,TCGA Study
+LGG,Brain Lower Grade Glioma,#D49DC7,TCGA_Study,Organ System: Central Nervous System; Major Histological Types: Other,,,TCGA Study
+ACC,Adrenocortical carcinoma,#C1A72F,TCGA_Study,Organ System: Endocrine; Major Histological Types: Other Carcinoma,,,TCGA Study
+PCPG,Pheochromocytoma and Paraganglioma,#E8C51D,TCGA_Study,Organ System: Endocrine; Major Histological Types: Other,,,TCGA Study
+THCA,Thyroid carcinoma,#F9ED32,TCGA_Study,Organ System: Endocrine; Major Histological Types: Other Carcinoma,,,TCGA Study
+CHOL,Cholangiocarcinoma,#104A7F,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,,,TCGA Study
+COAD,Colon adenocarcinoma,#9EDDF9,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,,,TCGA Study
+ESCA,Esophageal carcinoma,#007EB5,TCGA_Study,"Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,Squamous Cell Carcinoma",,,TCGA Study
+LIHC,Liver hepatocellular carcinoma,#CACCDB,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Other Carcinoma,,,TCGA Study
+PAAD,Pancreatic adenocarcinoma,#6E7BA2,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,,,TCGA Study
+READ,Rectum adenocarcinoma,#DAF1FC,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,,,TCGA Study
+STAD,Stomach adenocarcinoma,#00AEEF,TCGA_Study,Organ System: Gastrointestinal; Major Histological Types: Adenocarcinoma,,,TCGA Study
+CESC,Cervical squamous cell carcinoma and endocervical adenocarcinoma,#F6B667,TCGA_Study,"Organ System: Gynecologic; Major Histological Types: Adenocarcinoma,Squamous Cell Carcinoma",,,TCGA Study
+OV,Ovarian serous cystadenocarcinoma,#D97D25,TCGA_Study,Organ System: Gynecologic; Major Histological Types: Adenocarcinoma,,,TCGA Study
+UCEC,Uterine Corpus Endometrial Carcinoma,#FBE3C7,TCGA_Study,Organ System: Gynecologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+UCS,Uterine Carcinosarcoma,#F89420,TCGA_Study,Organ System: Gynecologic; Major Histological Types: Other,,,TCGA Study
+HNSC,Head and Neck squamous cell carcinoma,#97D1A9,TCGA_Study,Organ System: Head and Neck; Major Histological Types: Squamous Cell Carcinoma,,,TCGA Study
+UVM,Uveal Melanoma,#009444,TCGA_Study,Organ System: Head and Neck; Major Histological Types: Other,,,TCGA Study
+LAML,Acute Myeloid Leukemia,#754C29,TCGA_Study,Organ System: Hematologic; Major Histological Types: Leukemia,,,TCGA Study
+THYM,Thymoma,#CEAC8F,TCGA_Study,Organ System: Hematologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+DLBC,Lymphoid Neoplasm Diffuse Large B-cell Lymphoma,#3953A4,TCGA_Study,Organ System: Lymphatic; Major Histological Types: Lymphoma,,,TCGA Study
+SKCM,Skin Cutaneous Melanoma,#BBD642,TCGA_Study,Organ System: Skin; Major Histological Types: Other,,,TCGA Study
+SARC,Sarcoma,#00A99D,TCGA_Study,Organ System: Soft Tissue; Major Histological Types: Sarcoma,,,TCGA Study
+LUAD,Lung adenocarcinoma,#D3C3E0,TCGA_Study,Organ System: Thoracic; Major Histological Types: Adenocarcinoma,,,TCGA Study
+LUSC,Lung squamous cell carcinoma,#A084BD,TCGA_Study,Organ System: Thoracic; Major Histological Types: Squamous Cell Carcinoma,,,TCGA Study
+MESO,Mesothelioma,#542C88,TCGA_Study,Organ System: Thoracic; Major Histological Types: Other Carcinoma,,,TCGA Study
+BLCA,Bladder Urothelial Carcinoma,#FAD2D9,TCGA_Study,Organ System: Urologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+KICH,Kidney Chromophobe,#ED1C24,TCGA_Study,Organ System: Urologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+KIRC,Kidney renal clear cell carcinoma,#F8AFB3,TCGA_Study,Organ System: Urologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+KIRP,Kidney renal papillary cell carcinoma,#EA7075,TCGA_Study,Organ System: Urologic; Major Histological Types: Other Carcinoma,,,TCGA Study
+PRAD,Prostate adenocarcinoma,#7E1918,TCGA_Study,Organ System: Urologic; Major Histological Types: Adenocarcinoma,,,TCGA Study
+TGCT,Testicular Germ Cell Tumors,#BE1E2D,TCGA_Study,Organ System: Urologic; Major Histological Types: Other,,,TCGA Study
+C1,Wound Healing,#FF0000,Immune_Subtype,"Elevated expression of angiogenic genes, a high proliferation rate and a Th2 cell bias to the adaptive immune infiltrate. Colorectal cancer (COAD, READ) and lung squamous cell carcinoma (LUSC) were rich in C1, as were breast carcinoma (BRCA) luminal A (Figure S1C-D), head and neck squamous cell carcinoma (HNSC) classical, and the chromosomally unstable (CIN) gastrointestinal subtype.",,,Immune Subtype
+C2,IFN-g Dominant,#FFFF00,Immune_Subtype,"Highest M1/M2 macrophage polarization, a strong CD8 signal and, together with C6, the greatest TCR diversity. C2 also showed a high proliferation rate, which may override an evolving Type I immune response, and was comprised of highly mutated BRCA, gastric, ovarian (OV), HNSC, and cervical tumors (CESC).",,,Immune Subtype
+C3,Inflammatory,#00FF00,Immune_Subtype,"Defined by elevated Th17 and Th1 genes, low to moderate tumor cell proliferation, and, along with C5, lower levels of aneuploidy and overall somatic copy number alterations than the other subtypes. C3 was enriched in most kidney, prostate (PRAD), pancreatic cancers (PAAD), and papillary thyroid carcinomas (THCA).",,,Immune Subtype
+C4,Lymphocyte Depleted,#00FFFF,Immune_Subtype,"Enriched in particular subtypes of adrenocortical carcinoma (ACC), pheochromocytoma and paraganglioma (PCPG), hepatocellular carcinoma (LIHC), and gliomas, and displayed a more prominent macrophage signature, with Th1 suppressed and a high M2 response.",,,Immune Subtype
+C5,Immunologically Quiet,#0000FF,Immune_Subtype,"Consisted mostly of lower grade gliomas (LGG), exhibited the lowest lymphocyte, and highest macrophage responses, dominated by M2 macrophages. Glioma subtypes CpG island methylator phenotype-high (CIMP-H), the 1p/19q codeletion subtype and pilocytic astrocytoma-like (PA-like) were prevalent in C5, with remaining subtypes enriched in C4.  IDH mutations were enriched in C5 over C4 suggesting an association of IDH-mutations with favorable immune composition.",,,Immune Subtype
+C6,TGF-b Dominant,#FF00FF,Immune_Subtype,"A small group of mixed tumors not dominant in any one TCGA subtype, displayed the highest TGF-β signature, and a high lymphocytic infiltrate with an even distribution of Type I and Type II T cells.",,,Immune Subtype
+ACC.,ACC.,#E41A1C,TCGA_Subtype,Cancer Cell 2016 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30160-X,ACC,Adrenocortical carcinoma (ACC),TCGA Subtype
+ACC.CIMP-high,ACC.CIMP-high,#377EB8,TCGA_Subtype,Cancer Cell 2016 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30160-X,ACC,Adrenocortical carcinoma (ACC),TCGA Subtype
+ACC.CIMP-intermediate,ACC.CIMP-intermediate,#4DAF4A,TCGA_Subtype,Cancer Cell 2016 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30160-X,ACC,Adrenocortical carcinoma (ACC),TCGA Subtype
+ACC.CIMP-low,ACC.CIMP-low,#984EA3,TCGA_Subtype,Cancer Cell 2016 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30160-X,ACC,Adrenocortical carcinoma (ACC),TCGA Subtype
+AML.,AML.,#E41A1C,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.1,AML.1,#377EB8,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.2,AML.2,#4DAF4A,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.3,AML.3,#984EA3,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.4,AML.4,#FF7F00,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.5,AML.5,#FFFF33,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.6,AML.6,#A65628,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+AML.7,AML.7,#F781BF,TCGA_Subtype,NEJM 2013 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1301689,AML,Acute myeloid leukemia (AML),TCGA Subtype
+BLCA.1,BLCA.1,#E41A1C,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v507/n7492/full/nature12965.html,BLCA,Bladder Urothelial Carcinoma (BLCA),TCGA Subtype
+BLCA.2,BLCA.2,#377EB8,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v507/n7492/full/nature12965.html,BLCA,Bladder Urothelial Carcinoma (BLCA),TCGA Subtype
+BLCA.3,BLCA.3,#4DAF4A,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v507/n7492/full/nature12965.html,BLCA,Bladder Urothelial Carcinoma (BLCA),TCGA Subtype
+BLCA.4,BLCA.4,#984EA3,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v507/n7492/full/nature12965.html,BLCA,Bladder Urothelial Carcinoma (BLCA),TCGA Subtype
+BRCA.Basal,BRCA.Basal,#E41A1C,TCGA_Subtype,Cancer Cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.014,BRCA,Breast invasive carcinoma (BRCA),TCGA Subtype
+BRCA.Her2,BRCA.Her2,#377EB8,TCGA_Subtype,Cancer Cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.014,BRCA,Breast invasive carcinoma (BRCA),TCGA Subtype
+BRCA.LumA,BRCA.LumA,#4DAF4A,TCGA_Subtype,Cancer Cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.014,BRCA,Breast invasive carcinoma (BRCA),TCGA Subtype
+BRCA.LumB,BRCA.LumB,#984EA3,TCGA_Subtype,Cancer Cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.014,BRCA,Breast invasive carcinoma (BRCA),TCGA Subtype
+BRCA.Normal,BRCA.Normal,#FF7F00,TCGA_Subtype,Cancer Cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.014,BRCA,Breast invasive carcinoma (BRCA),TCGA Subtype
+GBM_LGG.,GBM_LGG.,#E41A1C,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.Classic-like,GBM_LGG.Classic-like,#377EB8,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.Codel,GBM_LGG.Codel,#4DAF4A,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.G-CIMP-high,GBM_LGG.G-CIMP-high,#984EA3,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.G-CIMP-low,GBM_LGG.G-CIMP-low,#FF7F00,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.LGm6-GBM,GBM_LGG.LGm6-GBM,#FFFF33,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.Mesenchymal-like,GBM_LGG.Mesenchymal-like,#A65628,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GBM_LGG.PA-like,GBM_LGG.PA-like,#F781BF,TCGA_Subtype,Cell 2016 ; http://www.cell.com/cell/abstract/S0092-8674(15)01692-X,GBM/LGG,Glioma (GBM/LGG),TCGA Subtype
+GI.CIN,GI.CIN,#9280BA,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+GI.EBV,GI.EBV,#EE4723,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+GI.ESCC,GI.ESCC,#801D22,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+GI.GS,GI.GS,#7DC242,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+GI.MSI,GI.MSI,#43AAE0,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+GI.HM-SNV,GI.HM-SNV,#FAB03B,TCGA_Subtype,Cancer cell 2018 ; https://doi.org/10.1016/j.ccell.2018.03.010,ESCA/STAD/COAD/READ,Gastrointestinal carcinoma (ESCA/STAD/COAD/READ),TCGA Subtype
+HNSC.Atypical,HNSC.Atypical,#E41A1C,TCGA_Subtype,Nature 2015 ; http://www.nature.com/nature/journal/v517/n7536/full/nature14129.html,HNSC,Head and Neck squamous cell carcinoma (HNSC),TCGA Subtype
+HNSC.Basal,HNSC.Basal,#377EB8,TCGA_Subtype,Nature 2015 ; http://www.nature.com/nature/journal/v517/n7536/full/nature14129.html,HNSC,Head and Neck squamous cell carcinoma (HNSC),TCGA Subtype
+HNSC.Classical,HNSC.Classical,#4DAF4A,TCGA_Subtype,Nature 2015 ; http://www.nature.com/nature/journal/v517/n7536/full/nature14129.html,HNSC,Head and Neck squamous cell carcinoma (HNSC),TCGA Subtype
+HNSC.Mesenchymal,HNSC.Mesenchymal,#984EA3,TCGA_Subtype,Nature 2015 ; http://www.nature.com/nature/journal/v517/n7536/full/nature14129.html,HNSC,Head and Neck squamous cell carcinoma (HNSC),TCGA Subtype
+KICH.Eosin.0,KICH.Eosin.0,#E41A1C,TCGA_Subtype,Cancer Cell 2014 ; http://www.cell.com/cancer-cell/abstract/S1535-6108(14)00304-3,KICH,Kidney Chromophobe (KICH),TCGA Subtype
+KICH.Eosin.1,KICH.Eosin.1,#377EB8,TCGA_Subtype,Cancer Cell 2014 ; http://www.cell.com/cancer-cell/abstract/S1535-6108(14)00304-3,KICH,Kidney Chromophobe (KICH),TCGA Subtype
+KIRC.,KIRC.,#E41A1C,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v499/n7456/full/nature12222.html,KIRC,Kidney renal clear cell carcinoma (KIRC),TCGA Subtype
+KIRC.1,KIRC.1,#377EB8,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v499/n7456/full/nature12222.html,KIRC,Kidney renal clear cell carcinoma (KIRC),TCGA Subtype
+KIRC.2,KIRC.2,#4DAF4A,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v499/n7456/full/nature12222.html,KIRC,Kidney renal clear cell carcinoma (KIRC),TCGA Subtype
+KIRC.3,KIRC.3,#984EA3,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v499/n7456/full/nature12222.html,KIRC,Kidney renal clear cell carcinoma (KIRC),TCGA Subtype
+KIRC.4,KIRC.4,#FF7F00,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v499/n7456/full/nature12222.html,KIRC,Kidney renal clear cell carcinoma (KIRC),TCGA Subtype
+KIRP.C1,KIRP.C1,#E41A1C,TCGA_Subtype,NEJM 2015 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1505917#t=article,KIRP,Kidney renal papillary cell carcinoma (KIRP),TCGA Subtype
+KIRP.C2a,KIRP.C2a,#377EB8,TCGA_Subtype,NEJM 2015 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1505917#t=article,KIRP,Kidney renal papillary cell carcinoma (KIRP),TCGA Subtype
+KIRP.C2b,KIRP.C2b,#4DAF4A,TCGA_Subtype,NEJM 2015 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1505917#t=article,KIRP,Kidney renal papillary cell carcinoma (KIRP),TCGA Subtype
+KIRP.C2c - CIMP,KIRP.C2c - CIMP,#984EA3,TCGA_Subtype,NEJM 2015 ; http://www.nejm.org/doi/full/10.1056/NEJMoa1505917#t=article,KIRP,Kidney renal papillary cell carcinoma (KIRP),TCGA Subtype
+LIHC.,LIHC.,#E41A1C,TCGA_Subtype,Cell 2017 ; http://linkinghub.elsevier.com/retrieve/pii/S0092-8674(17)30639-6,LIHC,Liver hepatocellular carcinoma (LIHC),TCGA Subtype
+LIHC.iCluster:1,LIHC.iCluster:1,#377EB8,TCGA_Subtype,Cell 2017 ; http://linkinghub.elsevier.com/retrieve/pii/S0092-8674(17)30639-6,LIHC,Liver hepatocellular carcinoma (LIHC),TCGA Subtype
+LIHC.iCluster:2,LIHC.iCluster:2,#4DAF4A,TCGA_Subtype,Cell 2017 ; http://linkinghub.elsevier.com/retrieve/pii/S0092-8674(17)30639-6,LIHC,Liver hepatocellular carcinoma (LIHC),TCGA Subtype
+LIHC.iCluster:3,LIHC.iCluster:3,#984EA3,TCGA_Subtype,Cell 2017 ; http://linkinghub.elsevier.com/retrieve/pii/S0092-8674(17)30639-6,LIHC,Liver hepatocellular carcinoma (LIHC),TCGA Subtype
+LUAD.1,LUAD.1,#E41A1C,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUAD.2,LUAD.2,#377EB8,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUAD.3,LUAD.3,#4DAF4A,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUAD.4,LUAD.4,#984EA3,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUAD.5,LUAD.5,#FF7F00,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUAD.6,LUAD.6,#FFFF33,TCGA_Subtype,Nature 2014 ; http://www.nature.com/nature/journal/v511/n7511/full/nature13385.html,LUAD,Lung adenocarcinoma (LUAD),TCGA Subtype
+LUSC.basal,LUSC.basal,#E41A1C,TCGA_Subtype,Nature 2012 ; http://www.nature.com/nature/journal/v489/n7417/full/nature11404.html,LUSC,Lung squamous cell carcinoma (LUSC),TCGA Subtype
+LUSC.classical,LUSC.classical,#377EB8,TCGA_Subtype,Nature 2012 ; http://www.nature.com/nature/journal/v489/n7417/full/nature11404.html,LUSC,Lung squamous cell carcinoma (LUSC),TCGA Subtype
+LUSC.primitive,LUSC.primitive,#4DAF4A,TCGA_Subtype,Nature 2012 ; http://www.nature.com/nature/journal/v489/n7417/full/nature11404.html,LUSC,Lung squamous cell carcinoma (LUSC),TCGA Subtype
+LUSC.secretory,LUSC.secretory,#984EA3,TCGA_Subtype,Nature 2012 ; http://www.nature.com/nature/journal/v489/n7417/full/nature11404.html,LUSC,Lung squamous cell carcinoma (LUSC),TCGA Subtype
+OVCA.Differentiated,OVCA.Differentiated,#E41A1C,TCGA_Subtype,Nature 2011 ; http://www.nature.com/nature/journal/v474/n7353/full/nature10166.html,OV,Ovarian serous cystadenocarcinoma (OV),TCGA Subtype
+OVCA.Immunoreactive,OVCA.Immunoreactive,#377EB8,TCGA_Subtype,Nature 2011 ; http://www.nature.com/nature/journal/v474/n7353/full/nature10166.html,OV,Ovarian serous cystadenocarcinoma (OV),TCGA Subtype
+OVCA.Mesenchymal,OVCA.Mesenchymal,#4DAF4A,TCGA_Subtype,Nature 2011 ; http://www.nature.com/nature/journal/v474/n7353/full/nature10166.html,OV,Ovarian serous cystadenocarcinoma (OV),TCGA Subtype
+OVCA.Proliferative,OVCA.Proliferative,#984EA3,TCGA_Subtype,Nature 2011 ; http://www.nature.com/nature/journal/v474/n7353/full/nature10166.html,OV,Ovarian serous cystadenocarcinoma (OV),TCGA Subtype
+PCPG.Cortical admixture,PCPG.Cortical admixture,#E41A1C,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6,PCPG,Pheochromocytoma and Paraganglioma (PCPG),TCGA Subtype
+PCPG.Kinase signaling,PCPG.Kinase signaling,#377EB8,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6,PCPG,Pheochromocytoma and Paraganglioma (PCPG),TCGA Subtype
+PCPG.Pseudohypoxia,PCPG.Pseudohypoxia,#4DAF4A,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6,PCPG,Pheochromocytoma and Paraganglioma (PCPG),TCGA Subtype
+PCPG.Wnt-altered,PCPG.Wnt-altered,#984EA3,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6,PCPG,Pheochromocytoma and Paraganglioma (PCPG),TCGA Subtype
+PRAD.1-ERG,PRAD.1-ERG,#E41A1C,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.2-ETV1,PRAD.2-ETV1,#377EB8,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.3-ETV4,PRAD.3-ETV4,#4DAF4A,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.4-FLI1,PRAD.4-FLI1,#984EA3,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.5-SPOP,PRAD.5-SPOP,#FF7F00,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.6-FOXA1,PRAD.6-FOXA1,#FFFF33,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.7-IDH1,PRAD.7-IDH1,#A65628,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+PRAD.8-other,PRAD.8-other,#F781BF,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)01339-2,PRAD,Prostate adenocarcinoma (PRAD),TCGA Subtype
+SKCM.-,SKCM.-,#E41A1C,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)00634-0,SKCM,Skin Cutaneous Melanoma (SKCM),TCGA Subtype
+SKCM.BRAF_Hotspot_Mutants,SKCM.BRAF_Hotspot_Mutants,#377EB8,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)00634-0,SKCM,Skin Cutaneous Melanoma (SKCM),TCGA Subtype
+SKCM.NF1_Any_Mutants,SKCM.NF1_Any_Mutants,#4DAF4A,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)00634-0,SKCM,Skin Cutaneous Melanoma (SKCM),TCGA Subtype
+SKCM.RAS_Hotspot_Mutants,SKCM.RAS_Hotspot_Mutants,#984EA3,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)00634-0,SKCM,Skin Cutaneous Melanoma (SKCM),TCGA Subtype
+SKCM.Triple_WT,SKCM.Triple_WT,#FF7F00,TCGA_Subtype,Cell 2015 ; http://www.cell.com/cell/abstract/S0092-8674(15)00634-0,SKCM,Skin Cutaneous Melanoma (SKCM),TCGA Subtype
+THCA.,THCA.,#E41A1C,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+THCA.1,THCA.1,#377EB8,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+THCA.2,THCA.2,#4DAF4A,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+THCA.3,THCA.3,#984EA3,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+THCA.4,THCA.4,#FF7F00,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+THCA.5,THCA.5,#FFFF33,TCGA_Subtype,Cell 2014 ; http://www.cell.com/cell/fulltext/S0092-8674(14)01238-0#,THCA,Thyroid carcinoma (THCA),TCGA Subtype
+UCEC.,UCEC.,#E41A1C,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v497/n7447/full/nature12113.html,UCEC,Uterine Corpus Endometrial Carcinoma (UCEC),TCGA Subtype
+UCEC.CN_HIGH,UCEC.CN_HIGH,#377EB8,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v497/n7447/full/nature12113.html,UCEC,Uterine Corpus Endometrial Carcinoma (UCEC),TCGA Subtype
+UCEC.CN_LOW,UCEC.CN_LOW,#4DAF4A,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v497/n7447/full/nature12113.html,UCEC,Uterine Corpus Endometrial Carcinoma (UCEC),TCGA Subtype
+UCEC.MSI,UCEC.MSI,#984EA3,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v497/n7447/full/nature12113.html,UCEC,Uterine Corpus Endometrial Carcinoma (UCEC),TCGA Subtype
+UCEC.POLE,UCEC.POLE,#FF7F00,TCGA_Subtype,Nature 2013 ; http://www.nature.com/nature/journal/v497/n7447/full/nature12113.html,UCEC,Uterine Corpus Endometrial Carcinoma (UCEC),TCGA Subtype
+UCS.1,UCS.1,#E41A1C,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30053-3,UCS,Uterine Carcinosarcoma (UCS),TCGA Subtype
+UCS.2,UCS.2,#377EB8,TCGA_Subtype,Cancer Cell 2017 ; http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30053-3,UCS,Uterine Carcinosarcoma (UCS),TCGA Subtype
