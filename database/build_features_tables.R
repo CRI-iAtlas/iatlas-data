@@ -1,5 +1,5 @@
 cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
-features <- feather::read_feather("../feather_files/SQLite_data/features.feather") %>% dplyr::rename_at("feature", ~("name"))
+features <- feather::read_feather("../data2/features.feather") %>% dplyr::rename_at("feature", ~("name"))
 cat(crayon::blue("Imported feather file for features."), fill = TRUE)
 
 cat(crayon::magenta("Building classes data."), fill = TRUE)

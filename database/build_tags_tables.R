@@ -1,5 +1,5 @@
 cat(crayon::magenta("Importing feather file for tags."), fill = TRUE)
-initial_tags <- feather::read_feather("../feather_files/SQLite_data/groups.feather") %>%
+initial_tags <- feather::read_feather("../data2/groups.feather") %>%
   dplyr::as_tibble() %>%
   dplyr::rename_at("group", ~("name")) %>%
   dplyr::rename_at("group_name", ~("display"))
