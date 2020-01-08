@@ -40,3 +40,5 @@ vignettes/*.pdf
 
 # Generated files
 .DS_Store
+
+csv_files/
