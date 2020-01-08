@@ -1,6 +1,6 @@
 cat(crayon::magenta("Importing feather files for results."), fill = TRUE)
-driver_results1 <- feather::read_feather("../data2/driver_results1.feather")
-driver_results2 <- feather::read_feather("../data2/driver_results2.feather")
+driver_results1 <- feather::read_feather("../feather_files/SQLite_data/driver_results1.feather")
+driver_results2 <- feather::read_feather("../feather_files/SQLite_data/driver_results2.feather")
 cat(crayon::blue("Imported feather files for results."), fill = TRUE)
 
 cat(crayon::magenta("Building results data."), fill = TRUE)

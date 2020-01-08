@@ -2,19 +2,19 @@
 # ensure its "value" field (from feature_values_long) remains distinct from
 # the "value" field renamed to "rna_seq_expr".
 cat(crayon::magenta("Importing feather files for samples and combining all the sample data."), fill = TRUE)
-feature_values_long <- feather::read_feather("../data2/feature_values_long.feather")
-til_image_links <- feather::read_feather("../data2/til_image_links.feather")
+feature_values_long <- feather::read_feather("../feather_files/SQLite_data/feature_values_long.feather")
+til_image_links <- feather::read_feather("../feather_files/SQLite_data/til_image_links.feather")
 all_samples <- dplyr::bind_rows(
-    feather::read_feather("../data2/driver_mutations1.feather"),
-    feather::read_feather("../data2/driver_mutations2.feather"),
-    feather::read_feather("../data2/driver_mutations3.feather"),
-    feather::read_feather("../data2/driver_mutations4.feather"),
-    feather::read_feather("../data2/driver_mutations5.feather"),
-    feather::read_feather("../data2/io_target_expr1.feather"),
-    feather::read_feather("../data2/io_target_expr2.feather"),
-    feather::read_feather("../data2/io_target_expr3.feather"),
-    feather::read_feather("../data2/io_target_expr4.feather"),
-    feather::read_feather("../data2/immunomodulator_expr.feather"
+    feather::read_feather("../feather_files/SQLite_data/driver_mutations1.feather"),
+    feather::read_feather("../feather_files/SQLite_data/driver_mutations2.feather"),
+    feather::read_feather("../feather_files/SQLite_data/driver_mutations3.feather"),
+    feather::read_feather("../feather_files/SQLite_data/driver_mutations4.feather"),
+    feather::read_feather("../feather_files/SQLite_data/driver_mutations5.feather"),
+    feather::read_feather("../feather_files/SQLite_data/io_target_expr1.feather"),
+    feather::read_feather("../feather_files/SQLite_data/io_target_expr2.feather"),
+    feather::read_feather("../feather_files/SQLite_data/io_target_expr3.feather"),
+    feather::read_feather("../feather_files/SQLite_data/io_target_expr4.feather"),
+    feather::read_feather("../feather_files/SQLite_data/immunomodulator_expr.feather"
   )) %>%
   dplyr::rename_at("value", ~("rna_seq_expr")) %>%
   dplyr::bind_rows(feature_values_long) %>%

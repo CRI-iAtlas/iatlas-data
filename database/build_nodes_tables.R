@@ -1,5 +1,5 @@
 cat(crayon::magenta("Importing feather files for nodes"), fill = TRUE)
-nodes <- .GlobalEnv$load_feather_data("../data2/nodes") %>%
+nodes <- .GlobalEnv$load_feather_data("../feather_files/SQLite_data/nodes") %>%
   dplyr::distinct(Node, Group, Immune, UpBinRatio) %>%
   dplyr::arrange(Node, Group, Immune, UpBinRatio)
 cat(crayon::blue("Imported feather files for nodes"), fill = TRUE)
@@ -54,7 +54,7 @@ table_written <- nodes_to_tags %>% .GlobalEnv$write_table_ts("nodes_to_tags")
 cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows )"), fill = TRUE, sep = " ")
 
 cat(crayon::magenta("Importing feather files for edges"), fill = TRUE)
-edges <- .GlobalEnv$load_feather_data("../data2/edges") %>%
+edges <- .GlobalEnv$load_feather_data("../feather_files/SQLite_data/edges") %>%
   dplyr::distinct(From, To, Group, Immune, ratioScore) %>%
   dplyr::rename_at("ratioScore", ~("ratio_score")) %>%
   dplyr::arrange(From, To, Group, Immune)

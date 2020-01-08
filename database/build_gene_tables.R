@@ -1,16 +1,16 @@
 cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
 driver_mutations <- dplyr::bind_rows(
-  feather::read_feather("../data2/driver_mutations1.feather"),
-  feather::read_feather("../data2/driver_mutations2.feather"),
-  feather::read_feather("../data2/driver_mutations3.feather"),
-  feather::read_feather("../data2/driver_mutations4.feather"),
-  feather::read_feather("../data2/driver_mutations5.feather")
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations1.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations2.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations3.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations4.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations5.feather")
 )
 cat(crayon::blue("Imported driver mutation feather files for genes"), fill = TRUE)
 
 cat(crayon::magenta("Importing immunomodulators and io_target feather files for genes"), fill = TRUE)
-immunomodulator_expr <- feather::read_feather("../data2/immunomodulator_expr.feather")
-immunomodulators <- feather::read_feather("../data2/immunomodulators.feather") %>%
+immunomodulator_expr <- feather::read_feather("../feather_files/SQLite_data/immunomodulator_expr.feather")
+immunomodulators <- feather::read_feather("../feather_files/SQLite_data/immunomodulators.feather") %>%
   dplyr::filter(!is.na(gene)) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
   dplyr::rename_at("display", ~("canonical")) %>%
@@ -25,13 +25,13 @@ immunomodulators <- feather::read_feather("../data2/immunomodulators.feather") %
   dplyr::rowwise() %>%
   dplyr::mutate(references = paste("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}", sep = ""))
 io_target_expr <- dplyr::bind_rows(
-  feather::read_feather("../data2/io_target_expr1.feather"),
-  feather::read_feather("../data2/io_target_expr2.feather"),
-  feather::read_feather("../data2/io_target_expr3.feather"),
-  feather::read_feather("../data2/io_target_expr4.feather")
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr1.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr2.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr3.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr4.feather")
 )
 io_targets <-
-  feather::read_feather("../data2/io_targets.feather") %>%
+  feather::read_feather("../feather_files/SQLite_data/io_targets.feather") %>%
   dplyr::filter(!is.na(gene)) %>%
   dplyr::distinct(gene, .keep_all = TRUE) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
