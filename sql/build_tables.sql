@@ -29,9 +29,6 @@ CREATE TABLE samples (
     id SERIAL,
     sample_id VARCHAR NOT NULL,
     tissue_id VARCHAR,
-    gender VARCHAR,
-    race VARCHAR,
-    ethnicity VARCHAR,
     PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX sample_sample_id_index ON samples (sample_id);
@@ -102,10 +99,10 @@ CREATE TABLE features (
     display VARCHAR,
     "order" INTEGER,
     unit UNIT_ENUM,
+    class_id INTEGER REFERENCES classes,
+    method_tag_id INTEGER REFERENCES method_tags,
     PRIMARY KEY (id)
 );
-ALTER TABLE features ADD COLUMN class_id INTEGER REFERENCES classes;
-ALTER TABLE features ADD COLUMN method_tag_id INTEGER REFERENCES method_tags;
 CREATE UNIQUE INDEX feature_name_index ON features ("name");
 CREATE INDEX feature_class_id_index ON features (class_id);
 CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);
@@ -119,14 +116,14 @@ CREATE TABLE genes (
     "display" VARCHAR,
     "description" VARCHAR,
     "references" TEXT[],
+    gene_family_id INTEGER REFERENCES gene_families,
+    gene_function_id INTEGER REFERENCES gene_functions,
+    immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
+    pathway_id INTEGER REFERENCES pathways,
+    super_cat_id INTEGER REFERENCES super_categories,
+    therapy_type_id INTEGER REFERENCES therapy_types,
     PRIMARY KEY (id)
 );
-ALTER TABLE genes ADD COLUMN gene_family_id INTEGER REFERENCES gene_families;
-ALTER TABLE genes ADD COLUMN gene_function_id INTEGER REFERENCES gene_functions;
-ALTER TABLE genes ADD COLUMN immune_checkpoint_id INTEGER REFERENCES immune_checkpoints;
-ALTER TABLE genes ADD COLUMN pathway_id INTEGER REFERENCES pathways;
-ALTER TABLE genes ADD COLUMN super_cat_id INTEGER REFERENCES super_categories;
-ALTER TABLE genes ADD COLUMN therapy_type_id INTEGER REFERENCES therapy_types;
 CREATE UNIQUE INDEX gene_entrez_index ON genes (entrez);
 CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);
 CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);
@@ -146,11 +143,12 @@ CREATE TABLE results (
     correlation SMALLINT,
     n_wt INTEGER,
     n_mut INTEGER,
+    feature_id INTEGER REFERENCES features,
+    label_id INTEGER REFERENCES result_labels,
+    tag_id INTEGER REFERENCES tags,
     PRIMARY KEY (id)
 );
-ALTER TABLE results ADD COLUMN feature_id INTEGER REFERENCES features;
-ALTER TABLE results ADD COLUMN label_id INTEGER REFERENCES result_labels;
-ALTER TABLE results ADD COLUMN tag_id INTEGER REFERENCES tags;
+CREATE INDEX result_feature_id_index ON results (feature_id);
 CREATE INDEX result_label_id_index ON results (label_id);
 CREATE INDEX result_tag_id_id_index ON results (tag_id);
 
@@ -166,20 +164,19 @@ CREATE INDEX node_name_id_index ON node_names ("name");
 CREATE TABLE nodes (
     id SERIAL,
     ecn_value NUMERIC,
+    node_name_id INTEGER REFERENCES node_names,
     PRIMARY KEY (id)
 );
-ALTER TABLE nodes ADD COLUMN node_name_id INTEGER REFERENCES node_names;
 CREATE INDEX node_node_name_id_index ON nodes (node_name_id);
 
 -- edges table
 CREATE TABLE edges (
     id SERIAL,
-    node_1_id  INTEGER REFERENCES nodes NOT NULL,
-    node_2_id  INTEGER REFERENCES nodes NOT NULL,
+    node_1_id INTEGER REFERENCES nodes NOT NULL,
+    node_2_id INTEGER REFERENCES nodes NOT NULL,
     ratio_score NUMERIC,
     PRIMARY KEY (id)
 );
-CREATE INDEX edge_node_1_id_index ON edges (node_1_id);
 CREATE INDEX edge_node_2_id_index ON edges (node_2_id);
 CREATE INDEX edge_nodes_id_index ON edges (node_1_id, node_2_id);
 
@@ -218,14 +215,6 @@ CREATE TABLE features_to_samples (
     PRIMARY KEY (feature_id, sample_id)
 );
 CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
-
--- samples_to_patients table
-CREATE TABLE samples_to_patients (
-    sample_id INTEGER REFERENCES samples,
-    patient_id INTEGER REFERENCES patients,
-    PRIMARY KEY (sample_id, patient_id)
-);
-CREATE INDEX samples_to_patients_patient_id_index ON samples_to_patients (patient_id);
 
 -- nodes_to_tags table
 CREATE TABLE nodes_to_tags (
