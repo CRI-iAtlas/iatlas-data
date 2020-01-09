@@ -79,20 +79,29 @@ get_genes_by_type <- function(type) {
 
   pool::poolReturn(current_pool)
 
+  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+    dplyr::as_tibble()
+
+  genes <- genes %>%
+    dplyr::left_join(gene_ids, by = "hgnc") %>%
+    tibble::add_column(entrez = NA %>% as.character, .before = "hgnc") %>%
+    dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x)) %>%
+    dplyr::select(-c(entrez.x, entrez.y))
+
   return(genes)
 }
 
-"driver_mutation" %>%
+driver_mutation_genes <- "driver_mutation" %>%
   get_genes_by_type %>%
-  feather::write_feather("data2/genes/driver_mutation_genes.feather")
+  feather::write_feather("feather_files/genes/driver_mutation_genes.feather")
 
-"immunomodulator" %>%
+immunomodulator_genes <- "immunomodulator" %>%
   get_genes_by_type %>%
-  feather::write_feather("data2/genes/immunomodulator_genes.feather")
+  feather::write_feather("feather_files/genes/immunomodulator_genes.feather")
 
-"io_target" %>%
+io_target_genes <- "io_target" %>%
   get_genes_by_type %>%
-  feather::write_feather("data2/genes/io_target_genes.feather")
+  feather::write_feather("feather_files/genes/io_target_genes.feather")
 
 # Close the database connection.
 pool::poolClose(.GlobalEnv$pool)
