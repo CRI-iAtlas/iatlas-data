@@ -3,3 +3,5 @@ DB_HOST <- Sys.getenv("DB_HOST", unset = "localhost")
 DB_PORT <- Sys.getenv("DB_PORT", unset = "5432")
 DB_USER <- Sys.getenv("DB_USER", unset = "postgres")
 DB_PW <- Sys.getenv("DB_PW", unset = "docker")
+
+source(paste0(getwd(), "/init.R"))

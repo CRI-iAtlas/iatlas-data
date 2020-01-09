@@ -28,15 +28,15 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
 
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  source("database/build_features_tables.R", chdir = TRUE)
-
-  source("database/build_tags_tables.R", chdir = TRUE)
-
-  source("database/build_gene_tables.R", chdir = TRUE)
-
-  source("database/build_samples_tables.R", chdir = TRUE)
-
-  source("database/build_results_tables.R", chdir = TRUE)
+  # source("database/build_features_tables.R", chdir = TRUE)
+  #
+  # source("database/build_tags_tables.R", chdir = TRUE)
+  #
+  # source("database/build_gene_tables.R", chdir = TRUE)
+  #
+  # source("database/build_samples_tables.R", chdir = TRUE)
+  #
+  # source("database/build_results_tables.R", chdir = TRUE)
 
   source("database/build_nodes_tables.R", chdir = TRUE)
 
