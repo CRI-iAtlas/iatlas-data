@@ -1,11 +1,11 @@
-source("database/load_dependencies.R")
+source("../load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("database/connect_to_db.R", chdir = TRUE)
+source("../connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -93,15 +93,15 @@ get_genes_by_type <- function(type) {
 
 driver_mutation_genes <- "driver_mutation" %>%
   get_genes_by_type %>%
-  feather::write_feather("feather_files/genes/driver_mutation_genes.feather")
+  feather::write_feather("../../feather_files/genes/driver_mutation_genes.feather")
 
 immunomodulator_genes <- "immunomodulator" %>%
   get_genes_by_type %>%
-  feather::write_feather("feather_files/genes/immunomodulator_genes.feather")
+  feather::write_feather("../../feather_files/genes/immunomodulator_genes.feather")
 
 io_target_genes <- "io_target" %>%
   get_genes_by_type %>%
-  feather::write_feather("feather_files/genes/io_target_genes.feather")
+  feather::write_feather("../../feather_files/genes/io_target_genes.feather")
 
 # Close the database connection.
 pool::poolClose(.GlobalEnv$pool)

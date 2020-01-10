@@ -1,11 +1,11 @@
-source("database/load_dependencies.R")
+source("../database/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("database/connect_to_db.R", chdir = TRUE)
+source("../database/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -52,15 +52,15 @@ get_samples_by_tag <- function(tag) {
 
 tcga_study_samples <- "TCGA_Study" %>%
   get_samples_by_tag %>%
-  feather::write_feather("feather_files/samples/tcga_study_samples.feather")
+  feather::write_feather("../../feather_files/samples/tcga_study_samples.feather")
 
 tcga_subtype_samples <- "TCGA_Subtype" %>%
   get_samples_by_tag %>%
-  feather::write_feather("feather_files/samples/tcga_subtype_samples.feather")
+  feather::write_feather("../../feather_files/samples/tcga_subtype_samples.feather")
 
 immune_subtype_samples <- "Immune_Subtype" %>%
   get_samples_by_tag %>%
-  feather::write_feather("feather_files/samples/immune_subtype_samples.feather")
+  feather::write_feather("../../feather_files/samples/immune_subtype_samples.feather")
 
 # Close the database connection.
 pool::poolClose(.GlobalEnv$pool)
