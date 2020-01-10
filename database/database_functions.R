@@ -2,7 +2,7 @@
 
 delete_rows <- function(table_name) {
   current_pool <- pool::poolCheckout(.GlobalEnv$pool)
-  result <- pool::dbSendQuery(current_pool, paste("DELETE FROM", table_name, sep = " "))
+  result <- pool::dbSendQuery(current_pool, paste0("DELETE FROM ", table_name))
   pool::poolReturn(current_pool)
   return(result)
 }
@@ -20,7 +20,7 @@ read_table <- function(table_name) {
 #   return(pool::poolWithTransaction(.GlobalEnv$pool, function(conn) {
 #     pool::dbGetQuery(
 #       conn,
-#       paste0("INSERT INTO", table_name, "(id, column_1, column_2) 
+#       paste0("INSERT INTO", table_name, "(id, column_1, column_2)
 #       VALUES (1, 'A', 'X'), (2, 'B', 'Y'), (3, 'C', 'Z')
 #       ON CONFLICT (id) DO UPDATE
 #         SET column_1 = excluded.column_1,
