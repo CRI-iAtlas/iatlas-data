@@ -399,6 +399,10 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `ratio_score` - The relationship value between the two nodes. (an integer)
 
+## Data Structure
+
+Information on the data structure can be found in the `data_model` folder which contains this [DATA_STRUCTURES.md](DATA_STRUCTURES.md#iatlas-data-structures) markdown file.
+
 ## Data Model Diagram
 
 ![iAtlas Database Relationships](iAtlas_Database_Relationships.png)
