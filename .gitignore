@@ -36,4 +36,10 @@ vignettes/*.pdf
 *.knit.md
 
 # R Environment Variables
-.Renviron
+# .Renviron
+
+# Generated files
+.DS_Store
+
+csv_files/
+tsv_files/
