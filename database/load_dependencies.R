@@ -3,7 +3,7 @@ load_dependencies <- function() {
   if (!'crayon' %in% installed.packages()) {
     install.packages("crayon")
   }
-  
+
   # Ensure tictoc is installed. This is used to time functions and performance..
   if (!'tictoc' %in% installed.packages()) {
     install.packages("tictoc")
