@@ -8,5 +8,5 @@ if (Sys.getenv("RSTUDIO") == "1" | Sys.getenv("DOCKERBUILD") == "1") {
 try(startup::startup())
 
 if (Sys.getenv("RSTUDIO") == "1" | Sys.getenv("DOCKERBUILD") == "1") {
-  try(renv::restore())
+  try(renv::restore(confirm = FALSE))
 }
