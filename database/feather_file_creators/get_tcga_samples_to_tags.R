@@ -57,9 +57,9 @@ cat(crayon::green("Closed DB connection."), fill = TRUE)
 ### Clean up ###
 # Data
 rm(pool, pos = ".GlobalEnv")
-# rm(tcga_study_samples_to_tags)
-# rm(tcga_subtype_samples_to_tags)
-# rm(immune_subtype_samples_to_tags)
+rm(tcga_study_samples_to_tags)
+rm(tcga_subtype_samples_to_tags)
+rm(immune_subtype_samples_to_tags)
 
 # Functions
 rm(get_tcga_samples_to_tags, pos = ".GlobalEnv")
