@@ -51,6 +51,13 @@
       "Repository": "CRAN",
       "Hash": "292b54f8f4b94669b08f94e5acce6be2"
     },
+    "RPostgres": {
+      "Package": "RPostgres",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "15d7e33de3686143734a81e3fcce5199"
+    },
     "Rcpp": {
       "Package": "Rcpp",
       "Version": "1.0.3",
@@ -71,6 +78,27 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "e9f705633dc932bfd5b02b17a5053a06"
+    },
+    "bit": {
+      "Package": "bit",
+      "Version": "1.1-15",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "415b03616ead881ee439a7374f35ecc5"
+    },
+    "bit64": {
+      "Package": "bit64",
+      "Version": "0.9-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3338d4a9b1352f5a613e2bdcefe784ea"
+    },
+    "blob": {
+      "Package": "blob",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "8c6547c141bccd7fc5ee850f2bf5ea27"
     },
     "boot": {
       "Package": "boot",
@@ -149,6 +177,13 @@
       "Repository": "CRAN",
       "Hash": "7fce217eaaf8016e72065e85c73027b5"
     },
+    "feather": {
+      "Package": "feather",
+      "Version": "0.3.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "76de23891bdba419517e855ed611ad29"
+    },
     "foreign": {
       "Package": "foreign",
       "Version": "0.8-72",
@@ -162,6 +197,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d4e25697c450c01b202c79ef35694a83"
+    },
+    "hms": {
+      "Package": "hms",
+      "Version": "0.5.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "726671f634529d470545f9fd1a9d1869"
     },
     "later": {
       "Package": "later",
@@ -233,6 +275,13 @@
       "Repository": "CRAN",
       "Hash": "f9c55743c1f7f677c018733459f31b21"
     },
+    "prettyunits": {
+      "Package": "prettyunits",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "51bcc03e24fa50b5da40f285a916a1d6"
+    },
     "purrr": {
       "Package": "purrr",
       "Version": "0.3.3",
@@ -275,6 +324,13 @@
       "Repository": "CRAN",
       "Hash": "17a4b68eeeef4ab9f521caf9f16d1e86"
     },
+    "stringi": {
+      "Package": "stringi",
+      "Version": "1.4.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ced3b63472796155f74abc4eb5266c78"
+    },
     "survival": {
       "Package": "survival",
       "Version": "3.1-8",
@@ -288,6 +344,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "8248ee35d1e15d1e506f05f5a5d46a75"
+    },
+    "tictoc": {
+      "Package": "tictoc",
+      "Version": "1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f8cc5adf4671b013434bbe127f35b28c"
     },
     "tidyselect": {
       "Package": "tidyselect",
@@ -309,6 +372,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "5c2d0fe441406cba811b46708ea28e41"
+    },
+    "withr": {
+      "Package": "withr",
+      "Version": "2.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "aa57ed55ff2df4bea697a07df528993d"
     },
     "zeallot": {
       "Package": "zeallot",
