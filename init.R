@@ -53,6 +53,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
   rm(connect_to_db, pos = ".GlobalEnv")
   rm(create_db, pos = ".GlobalEnv")
   rm(delete_rows, pos = ".GlobalEnv")
+  rm(driver_results_label_to_hgnc, pos = ".GlobalEnv")
   rm(filter_na, pos = ".GlobalEnv")
   rm(is_df_empty, pos = ".GlobalEnv")
   rm(link_to_references, pos = ".GlobalEnv")
