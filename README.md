@@ -14,6 +14,16 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 - Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
 
+  Ensure that the location of the repository is shared via docker:
+
+  - Mac: [https://docs.docker.com/docker-for-mac/#file-sharing](https://docs.docker.com/docker-for-mac/#file-sharing)
+
+  - Windows: [https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes)
+
+- git-lfs: [https://git-lfs.github.com/](https://git-lfs.github.com/)
+
+  Some feather files are _very_ large. `git-lfs` is used to store these files.
+
 ### Initialize R Packages and builds the Database
 
 To build the database locally:
