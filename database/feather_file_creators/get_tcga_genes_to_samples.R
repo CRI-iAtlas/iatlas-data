@@ -40,10 +40,6 @@ get_tcga_genes_to_samples <- function() {
   return(genes_to_samples)
 }
 
-batch_size <- 1000000
-tcga_genes_to_samples <- get_tcga_genes_to_samples()
-data_size <- nrow(tcga_genes_to_samples)
-
 tcga_genes_to_samples <- get_tcga_genes_to_samples() %>%
   feather::write_feather("../../feather_files/relationships/genes_to_samples/tcga_genes_to_samples.feather")
 
