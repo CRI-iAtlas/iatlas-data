@@ -35,21 +35,21 @@ testthat::test_that("filter_na returns the value when the passed value is combin
 
 # get_tag_column_names
 # Contents of the get_tag_column_names.feather:
-#   (
-#     name = c("Good Name"),
-#     tag = c("tag"),
-#     tag_01 = c("tag_01"),
-#     tag_11 = c("tag_11"),
-#     tag_not = c("tag_not"),
-#     description = c("Good description")
-#   )
+  # (
+  #   name = c("Good Name"),
+  #   tag = c("tag"),
+  #   tag.01 = c("tag.01"),
+  #   tag.11 = c("tag.11"),
+  #   tag.x = c("tag.x"),
+  #   description = c("Good description")
+  # )
 testthat::test_that("get_tag_column_names returns a character vector of column names that beging with 'tag'.", {
   data_frame <- feather::read_feather("../test_data/get_tag_column_names.feather")
   result <- get_tag_column_names(data_frame)
   testthat::expect_that(result[1], is_identical_to("tag"))
-  testthat::expect_that(result[2], is_identical_to("tag_01"))
-  testthat::expect_that(result[3], is_identical_to("tag_11"))
-  testthat::expect_that(result[4], is_identical_to("tag_not"))
+  testthat::expect_that(result[2], is_identical_to("tag.01"))
+  testthat::expect_that(result[3], is_identical_to("tag.11"))
+  testthat::expect_that(result[4], is_identical_to("tag.x"))
 })
 testthat::test_that("get_tag_column_names returns NA when an empty data frame, NULL, or NA is passed.", {
   data_frame <- dplyr::tibble()
