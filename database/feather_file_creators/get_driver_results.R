@@ -61,6 +61,7 @@ rm(pool, pos = ".GlobalEnv")
 rm(driver_results)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_driver_results, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
