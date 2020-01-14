@@ -10,6 +10,17 @@ filter_na <- function(value) {
   return(value)
 }
 
+get_tag_column_names <- function(df) {
+  if (!is_df_empty(df)) {
+    column_names <- df %>% names()
+    tag_column_names <- column_names %>%
+      stringi::stri_extract_first(regex = "^tag(_[\\w]{1,})?") %>%
+      na.omit()
+    return(tag_column_names)
+  }
+  return(NA)
+}
+
 is_df_empty <- function(df = data.frame()) {
   if (!identical(class(df), "data.frame") & !tibble::is_tibble(df)) {
     df <- data.frame()
@@ -19,7 +30,7 @@ is_df_empty <- function(df = data.frame()) {
 
 link_to_references <- function(current_link) {
   if (!is.na(current_link)) {
-    url <- stringi::stri_extract_first(current_link, regex = "(?<=href=\").*?(?=\")")
+    url <- current_link  %>% stringi::stri_extract_first(regex = "(?<=href=\").*?(?=\")")
     if (!identical(url, "NA") & !is.na(url)) {
       return(paste("{", url, "}", sep = ""))
     }
