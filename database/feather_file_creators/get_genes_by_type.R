@@ -12,13 +12,13 @@ source("../connect_to_db.R", chdir = TRUE)
 
 cat(crayon::green("Created DB connection."), fill = TRUE)
 
-get_genes_by_type <- function(type) {
+get_genes_by_type <- function(gene_type) {
   current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
   genes <- current_pool %>%
     dplyr::tbl("genes") %>%
     dplyr::as_tibble() %>%
-    dplyr::left_join(
+    dplyr::right_join(
       current_pool %>%
         dplyr::tbl("genes_to_types") %>%
         dplyr::as_tibble(),
@@ -27,59 +27,59 @@ get_genes_by_type <- function(type) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("gene_types") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("type")),
       by = c("type_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("type_name")) %>%
-    dplyr::rename_at("display.x", ~("display")) %>%
-    dplyr::filter(type_name == type) %>%
+    dplyr::filter(type == gene_type) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("gene_families") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("gene_family")),
       by = c("gene_family_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("gene_family")) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("gene_functions") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("gene_function")),
       by = c("gene_function_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("gene_function")) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("immune_checkpoints") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("immune_checkpoint")),
       by = c("immune_checkpoint_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("immune_checkpoint")) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("pathways") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("pathway")),
       by = c("pathway_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("pathway")) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("super_categories") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("super_category")),
       by = c("super_cat_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("super_category")) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("therapy_types") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::rename_at("name", ~("therapy_type")),
       by = c("therapy_type_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("therapy_type")) %>%
-    dplyr::select(-c(id, type_id, gene_family_id, gene_function_id, immune_checkpoint_id, pathway_id, super_cat_id, therapy_type_id, display.y))
+    dplyr::distinct(entrez, hgnc, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type, display, references)
 
   pool::poolReturn(current_pool)
 
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+  gene_ids <- feather::read_feather("../../feather_files/gene_ids.feather") %>%
     dplyr::as_tibble()
 
   genes <- genes %>%
@@ -115,6 +115,7 @@ rm(pool, pos = ".GlobalEnv")
 # rm(io_target_genes)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_genes_by_type, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
