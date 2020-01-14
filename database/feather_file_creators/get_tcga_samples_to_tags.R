@@ -25,13 +25,31 @@ get_tcga_samples_to_tags <- function(study) {
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble(),
+            dplyr::as_tibble() %>%
+            dplyr::select(id, name) %>%
+            dplyr::rename_at("name", ~("study_name")),
           by = c("related_tag_id" = "id")
         ) %>%
-        dplyr::filter(name == study),
+        dplyr::filter(study_name == study),
       by = "tag_id"
     ) %>%
-    dplyr::distinct(sample_id, tag_id)
+    dplyr::left_join(
+      current_pool %>%
+        dplyr::tbl("samples") %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(id, sample_id) %>%
+        dplyr::rename_at("sample_id", ~("sample")),
+      by = c("related_tag_id" = "id")
+    ) %>%
+    dplyr::left_join(
+      current_pool %>%
+        dplyr::tbl("tags") %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("tag")),
+      by = c("tag_id" = "id")
+    ) %>%
+    dplyr::distinct(sample, tag)
 
   pool::poolReturn(current_pool)
 
@@ -62,6 +80,7 @@ rm(tcga_subtype_samples_to_tags)
 rm(immune_subtype_samples_to_tags)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_tcga_samples_to_tags, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
