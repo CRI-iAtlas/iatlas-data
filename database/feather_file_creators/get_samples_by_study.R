@@ -1,11 +1,11 @@
-source("../database/load_dependencies.R")
+source("../load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../database/connect_to_db.R", chdir = TRUE)
+source("../connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -27,10 +27,11 @@ get_samples_by_study <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("tags") %>%
-        dplyr::as_tibble(),
+        dplyr::as_tibble() %>%
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("tag_name")),
       by = c("tag_id" = "id")
     ) %>%
-    dplyr::rename_at("name", ~("tag_name")) %>%
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("tags_to_tags") %>%
@@ -38,12 +39,13 @@ get_samples_by_study <- function(study) {
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble(),
+            dplyr::as_tibble() %>%
+            dplyr::select(id, name),
           by = c("related_tag_id" = "id")) %>%
         dplyr::filter(name == study),
       by = "tag_id"
     ) %>%
-    dplyr::select(-c(id, gender, race, ethnicity, tag_id, tag_name, related_tag_id, name, characteristics.x, display.x, color.x, characteristics.y, display.y, color.y))
+    dplyr::select(sample_id, tissue_id)
 
   pool::poolReturn(current_pool)
 
@@ -69,9 +71,12 @@ cat(crayon::green("Closed DB connection."), fill = TRUE)
 ### Clean up ###
 # Data
 rm(pool, pos = ".GlobalEnv")
-# rm(tcga_samples)
+rm(tcga_study_samples)
+rm(tcga_subtype_samples)
+rm(immune_subtype_samples)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_samples_by_study, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
