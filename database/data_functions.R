@@ -14,7 +14,7 @@ get_tag_column_names <- function(df) {
   if (!is_df_empty(df)) {
     column_names <- df %>% names()
     tag_column_names <- column_names %>%
-      stringi::stri_extract_first(regex = "^tag(_[\\w]{1,})?") %>%
+      stringi::stri_extract_first(regex = "^tag(\\.[\\w]{1,})?") %>%
       na.omit()
     return(tag_column_names)
   }
