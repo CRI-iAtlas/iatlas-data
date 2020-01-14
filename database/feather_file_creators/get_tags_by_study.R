@@ -31,16 +31,14 @@ get_tags_by_study <- function(study) {
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble(),
+            dplyr::as_tibble() %>%
+            dplyr::select(id, name) %>%
+            dplyr::rename_at("name", ~("related_tag_name")),
           by = c("related_tag_id" = "id")) %>%
-        dplyr::filter(name == study),
+        dplyr::filter(related_tag_name == study),
       by = c("id" = "tag_id")
     ) %>%
-    dplyr::rename_at("name.x", ~("name")) %>%
-    dplyr::rename_at("characteristics.x", ~("characteristics")) %>%
-    dplyr::rename_at("display.x", ~("display")) %>%
-    dplyr::rename_at("color.x", ~("color")) %>%
-    dplyr::select(-c(related_tag_id.x, related_tag_id.y, name.y, characteristics.y, display.y, color.y))
+    dplyr::distinct(name, characteristics, display, color)
 
   pool::poolReturn(current_pool)
 
@@ -66,11 +64,12 @@ cat(crayon::green("Closed DB connection."), fill = TRUE)
 ### Clean up ###
 # Data
 rm(pool, pos = ".GlobalEnv")
-# rm(tcga_study_tags)
-# rm(tcga_subtype_tags)
-# rm(immune_subtype_tags)
+rm(tcga_study_tags)
+rm(tcga_subtype_tags)
+rm(immune_subtype_tags)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_tags_by_study, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
