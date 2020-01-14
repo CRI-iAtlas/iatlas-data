@@ -58,7 +58,7 @@ cat(crayon::green("Closed DB connection."), fill = TRUE)
 ### Clean up ###
 # Data
 rm(pool, pos = ".GlobalEnv")
-# rm(driver_results)
+rm(driver_results)
 
 # Functions
 rm(get_driver_results, pos = ".GlobalEnv")
