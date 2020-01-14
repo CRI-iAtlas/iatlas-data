@@ -110,9 +110,9 @@ cat(crayon::green("Closed DB connection."), fill = TRUE)
 ### Clean up ###
 # Data
 rm(pool, pos = ".GlobalEnv")
-# rm(driver_mutation_genes)
-# rm(immunomodulator_genes)
-# rm(io_target_genes)
+rm(driver_mutation_genes)
+rm(immunomodulator_genes)
+rm(io_target_genes)
 
 # Functions
 rm(connect_to_db, pos = ".GlobalEnv")
