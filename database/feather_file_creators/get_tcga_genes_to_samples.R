@@ -53,6 +53,7 @@ rm(pool, pos = ".GlobalEnv")
 rm(tcga_genes_to_samples)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_tcga_genes_to_samples, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
