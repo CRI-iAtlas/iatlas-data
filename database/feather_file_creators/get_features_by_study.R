@@ -18,22 +18,6 @@ get_features_by_study <- function(study) {
   features <- current_pool %>%
     dplyr::tbl("features") %>%
     dplyr::as_tibble() %>%
-    dplyr::left_join(
-      current_pool %>%
-        dplyr::tbl("classes") %>%
-        dplyr::as_tibble() %>%
-        dplyr::select(id, name) %>%
-        dplyr::rename_at("name", ~("class")),
-      by = c("class_id" = "id")
-    ) %>%
-    dplyr::left_join(
-      current_pool %>%
-        dplyr::tbl("method_tags") %>%
-        dplyr::as_tibble() %>%
-        dplyr::select(id, name) %>%
-        dplyr::rename_at("name", ~("method_tag")),
-      by = c("method_tag_id" = "id")
-    ) %>%
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("features_to_samples") %>%
@@ -60,6 +44,22 @@ get_features_by_study <- function(study) {
           by = "tag_id"
         ),
       by = c("id" = "sample_id")
+    ) %>%
+    dplyr::left_join(
+      current_pool %>%
+        dplyr::tbl("classes") %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("class")),
+      by = c("class_id" = "id")
+    ) %>%
+    dplyr::left_join(
+      current_pool %>%
+        dplyr::tbl("method_tags") %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("method_tag")),
+      by = c("method_tag_id" = "id")
     ) %>%
     dplyr::distinct(class, display, method_tag, name, order, unit)
 
@@ -92,6 +92,7 @@ rm(tcga_subtype_features)
 rm(immune_subtype_features)
 
 # Functions
+rm(connect_to_db, pos = ".GlobalEnv")
 rm(get_features_by_study, pos = ".GlobalEnv")
 
 cat("Cleaned up.", fill = TRUE)
