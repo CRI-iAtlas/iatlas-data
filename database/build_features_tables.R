@@ -1,10 +1,13 @@
+default_class <- "Other"
+
 cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
-features <- feather::read_feather("../feather_files/SQLite_data/features.feather") %>% dplyr::rename_at("feature", ~("name"))
+features <- feather::read_feather("../feather_files/SQLite_data/features.feather") %>%
+  dplyr::rename_at("feature", ~("name")) %>%
+  dplyr::mutate(class = ifelse(is.na(class), default_class, class))
 cat(crayon::blue("Imported feather file for features."), fill = TRUE)
 
 cat(crayon::magenta("Building classes data."), fill = TRUE)
 classes <- features %>%
-  dplyr::filter(!is.na(class)) %>%
   dplyr::distinct(class) %>%
   dplyr::rename_at("class", ~("name")) %>%
   dplyr::arrange(name)
@@ -47,6 +50,7 @@ cat(crayon::blue("Built features table. (", nrow(features), "rows )"), fill = TR
 ### Clean up ###
 # Data
 rm(classes)
+rm(default_class)
 rm(features)
 rm(method_tags)
 rm(table_written)
