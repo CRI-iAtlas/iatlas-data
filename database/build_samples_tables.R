@@ -108,7 +108,7 @@ rm(features)
 cat("Cleaned up.", fill = TRUE)
 gc()
 
-cat(crayon::magenta("Building features_to_samples table\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
+cat(crayon::magenta("Building features_to_samples table.\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
 table_written <- features_to_samples %>% .GlobalEnv$write_table_ts("features_to_samples")
 cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
