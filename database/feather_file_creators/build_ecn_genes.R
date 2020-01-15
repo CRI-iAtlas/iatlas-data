@@ -8,9 +8,14 @@ node_names <- node_names %>%
   dplyr::rename_at("Type", ~("super_category")) %>%
   dplyr::rename_at("Obj", ~("hgnc")) %>%
   dplyr::rename_at("FriendlyName", ~("display")) %>%
-  tibble::add_column(type_name = "extra_cellular_network")
+  tibble::add_column(type = "extra_cellular_network")
 
-node_names <- node_names %>% dplyr::inner_join(gene_ids, by = "hgnc")
+node_names <- node_names %>%
+  dplyr::inner_join(
+    gene_ids %>%
+      dplyr::mutate_at(dplyr::vars(entrez), as.numeric),
+    by = "hgnc"
+  )
 
 node_names %>% feather::write_feather("../../feather_files/genes/ecn_genes.feather")
 
