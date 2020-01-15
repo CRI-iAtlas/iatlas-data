@@ -11,12 +11,6 @@
 # Load magrittr so %>% is available.
 library("magrittr")
 
-# Loading RPostgres loads DBI automatically.
-library("RPostgres")
-
-# Loading testthat (used for unit tests).
-library("testthat")
-
 # Make the custom data functions available.
 source("../../database/data_functions.R", chdir = TRUE)
 
