@@ -22,7 +22,7 @@ immunomodulators <- feather::read_feather("../feather_files/SQLite_data/immunomo
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
   dplyr::rename_at("display2", ~("friendly_name")) %>%
   dplyr::rowwise() %>%
-  dplyr::mutate(references = paste("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}", sep = "")) %>%
+  dplyr::mutate(references = paste0("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}")) %>%
   dplyr::select(-c("display", "reference")) %>%
   tibble::add_column(
     io_landscape_name = NA %>% as.character,
