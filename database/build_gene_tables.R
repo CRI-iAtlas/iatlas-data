@@ -20,12 +20,12 @@ immunomodulator_expr <- feather::read_feather(
 immunomodulators <- feather::read_feather("../feather_files/SQLite_data/immunomodulators.feather") %>%
   dplyr::filter(!is.na(gene)) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
-  dplyr::rename_at("display", ~("canonical")) %>%
-  dplyr::rename_at("display2", ~("display")) %>%
+  dplyr::rename_at("display2", ~("friendly_name")) %>%
   dplyr::rowwise() %>%
   dplyr::mutate(references = paste("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}", sep = "")) %>%
-  dplyr::select(-c("reference")) %>%
+  dplyr::select(-c("display", "reference")) %>%
   tibble::add_column(
+    io_landscape_name = NA %>% as.character,
     pathway = NA %>% as.character,
     therapy_type = NA %>% as.character,
     description = NA %>% as.character
@@ -48,9 +48,9 @@ io_targets <-
   dplyr::filter(!is.na(gene)) %>%
   dplyr::distinct(gene, .keep_all = TRUE) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
-  dplyr::rename_at("display", ~("canonical")) %>%
-  dplyr::rename_at("display2", ~("display")) %>%
+  dplyr::rename_at("display2", ~("io_landscape_name")) %>%
   tibble::add_column(
+    friendly_name = NA %>% as.character(),
     gene_family = NA %>% as.character(),
     gene_function = NA %>% as.character(),
     immune_checkpoint = NA %>% as.character(),
@@ -60,13 +60,14 @@ io_targets <-
   dplyr::rowwise() %>%
   dplyr::mutate(references = .GlobalEnv$link_to_references(link)) %>%
   dplyr::mutate(
+    friendly_name = .GlobalEnv$switch_value(.data, "gene", "friendly_name", immunomodulators),
     gene_family = .GlobalEnv$switch_value(.data, "gene", "gene_family", immunomodulators),
     gene_function = .GlobalEnv$switch_value(.data, "gene", "gene_function", immunomodulators),
     immune_checkpoint = .GlobalEnv$switch_value(.data, "gene", "immune_checkpoint", immunomodulators),
     references = .GlobalEnv$switch_value(.data, "gene", "references", immunomodulators),
     super_category = .GlobalEnv$switch_value(.data, "gene", "super_category", immunomodulators)
   ) %>%
-  dplyr::select(-c("link")) %>%
+  dplyr::select(-c("display", "link")) %>%
   dplyr::arrange(gene)
 cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
@@ -76,9 +77,11 @@ ecns <- feather::read_feather("../feather_files/genes/ecn_genes.feather") %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
   tibble::add_column(
     description = NA %>% as.character,
+    friendly_name = NA %>% as.character(),
     gene_family = NA %>% as.character,
     gene_function = NA %>% as.character,
     immune_checkpoint = NA %>% as.character,
+    io_landscape_name = NA %>% as.character,
     pathway = NA %>% as.character,
     references = NA,
     therapy_type = NA %>% as.character
@@ -101,9 +104,11 @@ all_genes <- ecns %>%
   dplyr::rowwise() %>%
   dplyr::mutate(
     description = .GlobalEnv$switch_value(.data, "gene", "description", all_genes),
+    friendly_name = .GlobalEnv$switch_value(.data, "gene", "friendly_name", immunomodulators),
     gene_family = .GlobalEnv$switch_value(.data, "gene", "gene_family", all_genes),
     gene_function = .GlobalEnv$switch_value(.data, "gene", "gene_function", all_genes),
     immune_checkpoint = .GlobalEnv$switch_value(.data, "gene", "immune_checkpoint", all_genes),
+    io_landscape_name = .GlobalEnv$switch_value(.data, "gene", "io_landscape_name", all_genes),
     pathway = .GlobalEnv$switch_value(.data, "gene", "pathway", all_genes),
     references = .GlobalEnv$switch_value(.data, "gene", "references", all_genes),
     super_category = .GlobalEnv$switch_value(.data, "gene", "super_category", all_genes),
@@ -118,11 +123,12 @@ all_genes_expr <- all_genes_expr %>%
   tibble::add_column(
     canonical = NA %>% as.character,
     description = NA %>% as.character,
-    display = NA %>% as.character,
     entrez = NA %>% as.character,
+    friendly_name = NA %>% as.character,
     gene_family = NA %>% as.character,
     gene_function = NA %>% as.character,
     immune_checkpoint = NA %>% as.character,
+    io_landscape_name = NA %>% as.character,
     pathway = NA %>% as.character,
     references = NA,
     super_category = NA %>% as.character,
@@ -130,13 +136,13 @@ all_genes_expr <- all_genes_expr %>%
   ) %>%
   dplyr::rowwise() %>%
   dplyr::mutate(
-    canonical = .GlobalEnv$switch_value(.data, "gene", "canonical", all_genes) %>% as.character(),
     description = .GlobalEnv$switch_value(.data, "gene", "description", all_genes) %>% as.character(),
-    display = .GlobalEnv$switch_value(.data, "gene", "display", all_genes) %>% as.character(),
     entrez = .GlobalEnv$switch_value(.data, "gene", "entrez", all_genes) %>% as.numeric(),
+    friendly_name = .GlobalEnv$switch_value(.data, "gene", "friendly_name", all_genes) %>% as.character(),
     gene_family = .GlobalEnv$switch_value(.data, "gene", "gene_family", all_genes) %>% as.character(),
     gene_function = .GlobalEnv$switch_value(.data, "gene", "gene_function", all_genes) %>% as.character(),
     immune_checkpoint = .GlobalEnv$switch_value(.data, "gene", "immune_checkpoint", all_genes) %>% as.character(),
+    io_landscape_name = .GlobalEnv$switch_value(.data, "gene", "io_landscape_name", all_genes) %>% as.character(),
     pathway = .GlobalEnv$switch_value(.data, "gene", "pathway", all_genes) %>% as.character(),
     references = .GlobalEnv$switch_value(.data, "gene", "references", all_genes) %>% as.character(),
     super_category = .GlobalEnv$switch_value(.data, "gene", "super_category", all_genes) %>% as.character(),
@@ -241,7 +247,7 @@ cat(crayon::cyan("Adding therapy_type ids."), fill = TRUE)
 genes <- genes %>%
   dplyr::full_join(.GlobalEnv$read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
   dplyr::rename_at("id", ~("therapy_type_id")) %>%
-  dplyr::distinct(entrez, hgnc, description, display, gene_family_id, gene_function_id, immune_checkpoint_id, pathway_id, references, super_cat_id, therapy_type_id)
+  dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
 cat(crayon::blue("Built genes data."), fill = TRUE)
 
 cat(crayon::magenta("Building genes table."), fill = TRUE)

@@ -108,14 +108,14 @@ CREATE TABLE genes (
     id SERIAL,
     entrez INTEGER,
     hgnc VARCHAR NOT NULL,
-    "canonical" VARCHAR,
-    "display" VARCHAR,
     "description" VARCHAR,
-    "references" TEXT[],
+    "friendly_name" VARCHAR,
+    "io_landscape_name" VARCHAR,
     gene_family_id INTEGER REFERENCES gene_families,
     gene_function_id INTEGER REFERENCES gene_functions,
     immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
     pathway_id INTEGER REFERENCES pathways,
+    "references" TEXT[],
     super_cat_id INTEGER REFERENCES super_categories,
     therapy_type_id INTEGER REFERENCES therapy_types,
     PRIMARY KEY (id)
@@ -147,22 +147,16 @@ CREATE INDEX driver_results_feature_id_index ON driver_results (feature_id);
 CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);
 CREATE INDEX driver_results_tag_id_id_index ON driver_results (tag_id);
 
--- node_names table
-CREATE TABLE node_names (
-    id SERIAL,
-    "name" VARCHAR,
-    PRIMARY KEY (id)
-);
-CREATE INDEX node_name_id_index ON node_names ("name");
-
 -- nodes table
 CREATE TABLE nodes (
     id SERIAL,
-    ecn_value NUMERIC,
-    node_name_id INTEGER REFERENCES node_names,
+    feature_id INTEGER REFERENCES features,
+    gene_id INTEGER REFERENCES genes,
+    score NUMERIC,
     PRIMARY KEY (id)
 );
-CREATE INDEX node_node_name_id_index ON nodes (node_name_id);
+CREATE INDEX node_feature_id_index ON nodes (feature_id);
+CREATE INDEX node_gene_id_index ON nodes (gene_id);
 
 -- edges table
 CREATE TABLE edges (
