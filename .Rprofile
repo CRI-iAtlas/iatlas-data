@@ -6,7 +6,3 @@ if (Sys.getenv("RSTUDIO") == "1" | Sys.getenv("DOCKERBUILD") == "1") {
 
 # Attempt to run startup
 try(startup::startup())
-
-if (Sys.getenv("RSTUDIO") == "1" | Sys.getenv("DOCKERBUILD") == "1") {
-  try(renv::restore(confirm = FALSE))
-}
