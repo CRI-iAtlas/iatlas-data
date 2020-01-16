@@ -1,0 +1,12 @@
+.Renviron.d/**
+.Rprofile*/**
+csv_file/**
+data_model/**
+docker/**
+feather_files/**
+renv/**
+scripts/**
+sql/**
+tsv_files/**
+.Rprofile*
+*.Rproj
