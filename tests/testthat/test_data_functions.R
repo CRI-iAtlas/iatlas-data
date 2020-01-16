@@ -18,7 +18,7 @@ library("RPostgres")
 library("testthat")
 
 # Make the custom data functions available.
-source("../../database/data_functions.R", chdir = TRUE)
+source("../../R/data_functions.R", chdir = TRUE)
 
 # filter_na
 testthat::test_that("filter_na returns the value when the passed value is NOT NA.", {
