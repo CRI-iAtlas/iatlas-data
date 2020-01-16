@@ -9,10 +9,10 @@
 # }
 
 # Load magrittr so %>% is available.
-library("magrittr")
+# library("magrittr")
 
 # Make the custom data functions available.
-source("../../R/data_functions.R", chdir = TRUE)
+# source("../../R/data_functions.R", chdir = TRUE)
 
 # filter_na
 testthat::test_that("filter_na returns the value when the passed value is NOT NA.", {
