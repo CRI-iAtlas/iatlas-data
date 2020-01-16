@@ -1,4 +1,4 @@
-filter_na <- function(value) {
+filter_na <- function(value = NA %>% as.character) {
   value <- unique(value)
   if (length(value) > 1 & anyNA(value)) {
     value <- na.omit(value)
@@ -6,7 +6,7 @@ filter_na <- function(value) {
       value <- NA %>% as.character
     }
   }
-  value <- max(unique(value))
+  value <- ifelse(is.na(value), NA %>% as.character, max(unique(value)))
   return(value)
 }
 
