@@ -4,6 +4,7 @@ source("database/load_dependencies.R")
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
+#' @export
 build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
   # Make the create_db function available.
   source("database/create_db.R", chdir = TRUE)
