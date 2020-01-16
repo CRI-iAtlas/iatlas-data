@@ -22,10 +22,11 @@ testthat::test_that("filter_na returns the value when the passed value is NOT NA
 testthat::test_that("filter_na returns the value when the passed value is combined with an NA.", {
   testthat::expect_that(filter_na(c(14, NA)), testthat::is_identical_to(14))
 })
-# testthat::test_that("filter_na returns NA when there is no passed value or the passed value is NA.", {
-#   cat("value:", filter_na(NA), fill = TRUE, sep = " ")
-#   testthat::expect_that(filter_na(NA), testthat::is_identical_to(NA %>% as.character))
-# })
+testthat::test_that("filter_na returns NA when there is no passed value or the passed value is NA.", {
+  cat("value:", filter_na(NA), fill = TRUE, sep = " ")
+  testthat::expect_that(filter_na(), testthat::is_identical_to(NA %>% as.character))
+  testthat::expect_that(filter_na(NA), testthat::is_identical_to(NA %>% as.character))
+})
 
 # get_tag_column_names
 # Contents of the get_tag_column_names.feather:
@@ -84,15 +85,17 @@ testthat::test_that("link_to_references returns a url in curly braces.", {
 })
 
 # switch_value
-testthat::test_that("switch_value returns NA when no value present.", {
-  reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
-  object <- dplyr::tibble(gene = c("", "", ""), scoobs = c("4", "5", "6"))
+# testthat::test_that("switch_value returns NA when no value present.", {
+#   reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
+#   some_object <- dplyr::tibble(gene = c("", "", ""), scoobs = c("4", "5", "6"))
+#   result <- switch_value(reference[1,], "gene", "scoobs", some_object)
 
-  testthat::expect_that(switch_value(reference[1,], "gene", "scoobs", object), testthat::is_identical_to(NA))
-})
-testthat::test_that("switch_value returns the value from the second object.", {
-  reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
-  object <- dplyr::tibble(gene = c("1", "", ""), scoobs = c("4", "5", "6"))
+#   testthat::expect_that(result, testthat::is_identical_to(NA))
+# })
+# testthat::test_that("switch_value returns the value from the second object.", {
+#   reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
+#   some_object <- dplyr::tibble(gene = c("1", "", ""), scoobs = c("4", "5", "6"))
+#   result <- switch_value(reference[1,], "gene", "scoobs", some_object)
 
-  testthat::expect_that(switch_value(reference[1,], "gene", "scoobs", object), testthat::is_identical_to("4"))
-})
+#   testthat::expect_that(result, testthat::is_identical_to("4"))
+# })
