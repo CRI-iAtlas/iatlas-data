@@ -1,4 +1,4 @@
-source("database/load_dependencies.R")
+source("R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
@@ -6,39 +6,39 @@ rm(load_dependencies, pos = ".GlobalEnv")
 
 build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
   # Make the create_db function available.
-  source("database/create_db.R", chdir = TRUE)
+  source("R/create_db.R", chdir = TRUE)
 
   # Reset the database so new data is not corrupted by any old data.
   .GlobalEnv$create_db(env, reset)
 
   # Make the custom data functions available.
-  source("database/data_functions.R", chdir = TRUE)
+  source("R/data_functions.R", chdir = TRUE)
 
   # Make the custom database functions available.
-  source("database/database_functions.R", chdir = TRUE)
+  source("R/database_functions.R", chdir = TRUE)
 
   # Show garbage collection info
   gcinfo(show_gc_info)
 
   # The database connection.
-  source("database/connect_to_db.R", chdir = TRUE)
+  source("R/connect_to_db.R", chdir = TRUE)
 
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
 
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  source("database/build_features_tables.R", chdir = TRUE)
+  source("R/build_features_tables.R", chdir = TRUE)
 
-  source("database/build_tags_tables.R", chdir = TRUE)
+  source("R/build_tags_tables.R", chdir = TRUE)
 
-  source("database/build_gene_tables.R", chdir = TRUE)
+  source("R/build_gene_tables.R", chdir = TRUE)
 
-  source("database/build_samples_tables.R", chdir = TRUE)
+  source("R/build_samples_tables.R", chdir = TRUE)
 
-  source("database/build_driver_results_tables.R", chdir = TRUE)
+  source("R/build_driver_results_tables.R", chdir = TRUE)
 
-  source("database/build_nodes_tables.R", chdir = TRUE)
+  source("R/build_nodes_tables.R", chdir = TRUE)
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
