@@ -62,11 +62,7 @@ load_feather_data <- function(folder = "data/test") {
   return(df)
 }
 
-rebuild_gene_relational_data <- function(all_genes, ref_name, field_name = "name", relational_data = dplyr::tibble()) {
-  if (is_df_empty(relational_data)) {
-    relational_data <- dplyr::tibble() %>%
-      tibble::add_column(!!field_name := NA)
-  }
+rebuild_gene_relational_data <- function(all_genes, ref_name, field_name = "name") {
   relational_data <- all_genes %>%
     dplyr::select(ref_name) %>%
     dplyr::distinct() %>%

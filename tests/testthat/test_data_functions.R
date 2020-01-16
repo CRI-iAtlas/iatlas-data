@@ -17,6 +17,8 @@
 # filter_na
 (function() {
   library("testthat")
+  library('feather')
+
   test_that("filter_na returns the value when the passed value is NOT NA.", {
     expect_that(filter_na(c(14)), is_identical_to(14))
     expect_that(filter_na(14), is_identical_to(14))
@@ -119,5 +121,30 @@
     second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
     results <- load_feather_data("../test_data/load_feather_data_set")
     expect_equal(nrow(results), nrow(first) + nrow(second))
+  })
+
+  test_that("rebuild_gene_relational_data returns unique, non-na values from column", {
+    all_genes <- read_feather("../test_data/features.feather")
+    all_genes %>%
+    rebuild_gene_relational_data("class", "name") %>% nrow %>%
+    expect_equal(13)
+
+    all_genes %>%
+    rebuild_gene_relational_data("display", "name") %>% nrow %>%
+    expect_equal(84)
+  })
+
+  test_that("rebuild_gene_relational_data returns sorted results", {
+    all_genes <- read_feather("../test_data/features.feather")
+    random_order_genes <- all_genes[sample(1:nrow(all_genes)),]
+
+    expect_false(isTRUE(all.equal(all_genes, random_order_genes, ignore_row_order = FALSE)))
+
+    expect_true(isTRUE(all.equal(
+      all_genes %>% rebuild_gene_relational_data("class", "name"),
+      random_order_genes %>% rebuild_gene_relational_data("class", "name"),
+      ignore_row_order = FALSE))
+    )
+
   })
 })()
