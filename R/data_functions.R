@@ -2,6 +2,8 @@ filter_na <- function(value = NA %>% as.character) {
   value <- unique(value)
   if (length(value) > 1 & anyNA(value)) {
     value <- na.omit(value)
+
+    # test if there are any rows at all
     if (length(which(!is.na(value))) == 0) {
       value <- NA %>% as.character
     }
@@ -40,9 +42,12 @@ link_to_references <- function(current_link) {
 
 driver_results_label_to_hgnc <- function(label) {
   hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
-  return(ifelse(!identical(hgnc, "NA") & !is.na(hgnc), hgnc, NA))
+  return(if(!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA})
 }
 
+# load_feather_data:
+#   Loads all feather files in a directory, concatinates them togther
+#   and retruns tibble.
 load_feather_data <- function(folder = "data/test") {
   # Identify all files with feather extension.
   files <- list.files(folder, pattern = "*.feather")
@@ -76,7 +81,7 @@ switch_value <- function(current_row, reference_name, field_name, tibble_object 
   current_value <- current_row[[field_name]]
   current_reference_row <- tibble_object %>%
     dplyr::filter(!!rlang::sym(reference_name) == reference_value)
-  if (!.GlobalEnv$is_df_empty(current_reference_row)) {
+  if (!is_df_empty(current_reference_row)) {
     return(current_reference_row[[field_name]])
   } else if (!is.na(current_value)) {
     return(current_value)
