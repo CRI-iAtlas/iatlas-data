@@ -1,16 +1,28 @@
 Package: iatlas.data
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
+Title: iAtlas Data
+Version: 0.0.1
+Authors@R: c(
+    person(given = "Jon",
+           family = "Ryser",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "jon@genui.co"),
+    person(given = "Shane",
+           family = "Delamore",
+           role = "aut",
+           email = "shane@genui.co")
+    )
+Description: Data and scripts to build said data into a Postgres database for the iAtlas app.
 License: What license it uses
 Encoding: UTF-8
 LazyData: true
-Suggests: 
+Imports:
+    devtools,
     covr,
-    testthat (>= 2.1.0)
+    testthat,
+    crayon,
+    tictoc,
+    stringi,
+    magrittr,
+    feather,
+    RPostgres,
+    pool
