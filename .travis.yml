@@ -2,6 +2,7 @@ language: R
 
 services:
   - docker
+
 before_install:
   - docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=docker --name postgres postgres:11.5
   # Copy the database SQL file into the docker container.
