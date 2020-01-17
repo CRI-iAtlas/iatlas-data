@@ -6,27 +6,46 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 ## Install
 
-### Install Core Apps and System libraries
+### Requirements
 
-- R: [https://www.r-project.org/](https://www.r-project.org/) - v3.6.2
+- R: https://www.r-project.org/ - v3.6.2
 
-- RStudio: [https://rstudio.com/products/rstudio/download/](https://rstudio.com/products/rstudio/download/)
+- RStudio: https://rstudio.com/products/rstudio/download
 
-- Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+- Docker: https://www.docker.com/products/docker-desktop
 
   Ensure that the location of the repository is shared via docker:
 
-  - Mac: [https://docs.docker.com/docker-for-mac/#file-sharing](https://docs.docker.com/docker-for-mac/#file-sharing)
+  - Mac: https://docs.docker.com/docker-for-mac/#file-sharing
 
-  - Windows: [https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes)
+  - Windows: https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes
 
-- git-lfs: [https://git-lfs.github.com/](https://git-lfs.github.com/)
+- git-lfs: https://git-lfs.github.com
 
   For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
 
   Some feather files are _very_ large. `git-lfs` is used to store these files.
 
   **Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
+
+- libpq (postgres): https://www.postgresql.org/download/
+
+- lib cairo: https://www.cairographics.org/ (only required for iAtlas client)
+
+- gfortran (libgfortran): usually installed with gcc
+
+### MacOS Install instructions
+
+Install brew: https://brew.sh/
+
+Then:
+
+- brew install R
+- brew install cairo
+- brew install git-lfs
+- brew install postgres
+- download and install RStudio: https://rstudio.com/products/rstudio/download
+- download and install Docker: https://www.docker.com/products/docker-desktop
 
 ### Initialize R Packages and builds the Database
 
