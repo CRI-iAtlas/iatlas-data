@@ -24,6 +24,8 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
   For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
 
+  For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
+
   Some feather files are _very_ large. `git-lfs` is used to store these files.
 
   **Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
