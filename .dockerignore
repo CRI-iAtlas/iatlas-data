@@ -1,0 +1,5 @@
+feather_files/*
+data_model/*
+docker/**
+Dockerfile
+.git
