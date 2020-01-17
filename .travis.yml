@@ -1,10 +1,15 @@
-language: R
+language: minimal
 
 services:
   - docker
+addons:
+  apt:
+    update: true
 
 before_install:
+  - sudo apt-get -y install postgresql-client-11
   - docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=docker --name postgres postgres:11.5
+  - sleep 10
   # Copy the database SQL file into the docker container.
   - docker cp $(pwd)/sql/create_dev_db.sql postgres:/create_dev_db.sql
   # Copy the build tables SQL file into the docker container.
