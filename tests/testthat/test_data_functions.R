@@ -82,11 +82,11 @@
     expect_that(result, is_identical_to(NA))
   })
 
-  test_that("switch_value returns the value from the second object.", {
-    reference <- dplyr::tibble(gene = c("1"), scoobs = c("8"))
-    some_object <- dplyr::tibble(gene = c("1"), scoobs = c("4"))
-    expect_error(switch_value(reference[1,], "gene", "scoobs", some_object))
-  })
+  # test_that("switch_value returns the value from the second object.", {
+  #   reference <- dplyr::tibble(gene = c("1"), scoobs = c("8"))
+  #   some_object <- dplyr::tibble(gene = c("1"), scoobs = c("4"))
+  #   expect_error(switch_value(reference[1,], "gene", "scoobs", some_object))
+  # })
 
   test_that("driver_results_label_to_hgnc extracts the hugo-id", {
     expect_that(driver_results_label_to_hgnc("RQCD1 P131L;SKC"), is_identical_to("RQCD1 P131L"))

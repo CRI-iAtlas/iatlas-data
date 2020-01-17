@@ -67,6 +67,19 @@ To build the database locally:
 
    The databse should now be available on `localhost:5432`. The database is called `iatlas_dev`.
 
+
+## Testing
+
+After completing installation, open the Rproj and run:
+
+```R
+# run tests:
+testthat::auto_test_package()
+
+# code coverage report:
+covr::report()
+```
+
 ## Data
 
 ### Data Model
