@@ -78,6 +78,9 @@ switch_value <- function(current_row, reference_name, field_name, tibble_object 
   current_reference_row <- tibble_object %>%
     dplyr::filter(!!rlang::sym(reference_name) == reference_value)
   if (!is_df_empty(current_reference_row)) {
+    if (!is.na(current_value)) {
+      stop(paste0("Expected only one of the two records to have a value in field: ", field_name))
+    }
     return(current_reference_row[[field_name]])
   } else if (!is.na(current_value)) {
     return(current_value)

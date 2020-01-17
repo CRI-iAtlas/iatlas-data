@@ -1,20 +1,3 @@
-# Ensure magrittr is installed.
-# if (!'magrittr' %in% installed.packages()) {
-#   install.packages("magrittr")
-# }
-
-# Ensure RPostgres is installed.
-# if (!'RPostgres' %in% installed.packages()) {
-#   install.packages("RPostgres")
-# }
-
-# Load magrittr so %>% is available.
-# library("magrittr")
-
-# Make the custom data functions available.
-# source("../../R/data_functions.R", chdir = TRUE)
-
-# filter_na
 (function() {
   library("testthat")
   library('feather')
@@ -23,9 +6,11 @@
     expect_that(filter_na(c(14)), is_identical_to(14))
     expect_that(filter_na(14), is_identical_to(14))
   })
+
   test_that("filter_na returns the value when the passed value is combined with an NA.", {
     expect_that(filter_na(c(14, NA)), is_identical_to(14))
   })
+
   test_that("filter_na returns NA when there is no passed value or the passed value is NA.", {
     cat("value:", filter_na(NA), fill = TRUE, sep = " ")
     expect_that(filter_na(), is_identical_to(NA %>% as.character))
@@ -96,12 +81,11 @@
 
     expect_that(result, is_identical_to(NA))
   })
-  test_that("switch_value returns the value from the second object.", {
-    reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
-    some_object <- dplyr::tibble(gene = c("1", "", ""), scoobs = c("4", "5", "6"))
-    result <- switch_value(reference[1,], "gene", "scoobs", some_object)
 
-    expect_that(result, is_identical_to("4"))
+  test_that("switch_value returns the value from the second object.", {
+    reference <- dplyr::tibble(gene = c("1"), scoobs = c("8"))
+    some_object <- dplyr::tibble(gene = c("1"), scoobs = c("4"))
+    expect_error(switch_value(reference[1,], "gene", "scoobs", some_object))
   })
 
   test_that("driver_results_label_to_hgnc extracts the hugo-id", {
