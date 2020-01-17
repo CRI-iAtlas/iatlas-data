@@ -17,6 +17,7 @@ before_install:
   - docker exec -u postgres postgres psql -f //create_dev_db.sql
   # Run an R container with an explicit link to the Postgres container we just started
   - docker run --link postgres:postgres --rm -it --mount type=bind,source="$(pwd)",target=/app -e DB_HOST=postgres -e DB_NAME=iatlas_dev -e DB_PORT=5432 -e DB_USER=postgres -e DB_PW=docker rocker/verse R -e "source('/app/build_data_in_CI.R', chdir = TRUE)"
+  - docker exec -u postgres postgres ls -lart /app
   - docker exec -u postgres postgres pg_dump --format custom iatlas_dev -f /tmp/iatlas_dev.pgdata
   # Copy the binary dump file to the build agent
   - docker cp postgres:/tmp/iatlas_dev.pgdata ./
