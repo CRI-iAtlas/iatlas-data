@@ -8,6 +8,17 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 ### Requirements
 
+IMPORTANT: For the smoothest installation, install git-lfs BEFORE cloning this repository.
+
+- git-lfs: https://git-lfs.github.com
+
+  - Some feather files are _very_ large. `git-lfs` is used to store these files.
+
+  - For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
+
+
+  **Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
+
 - R: https://www.r-project.org/ - v3.6.2
 
 - RStudio: https://rstudio.com/products/rstudio/download
@@ -20,15 +31,6 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
   - Windows: https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes
 
-- git-lfs: https://git-lfs.github.com
-
-  For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
-
-  For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
-
-  Some feather files are _very_ large. `git-lfs` is used to store these files.
-
-  **Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
 
 - libpq (postgres): https://www.postgresql.org/download/
 
@@ -52,10 +54,6 @@ Then:
 ### Initialize R Packages and builds the Database
 
 To build the database locally:
-
-1. Clone this repository using `git clone` with git versions >=2.23.0. If your git version is lower than that (and it is not feasible to update it), clone the repository with the deprecated `git lfs clone`.
-
-1. Run `git lfs install` from root of the checked out project directory.
 
 1. Open `iatlas-data.Rproj` in Rstudio.
 
