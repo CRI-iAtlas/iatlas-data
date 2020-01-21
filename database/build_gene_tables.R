@@ -1,10 +1,10 @@
 cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
 driver_mutations <- dplyr::bind_rows(
-  feather::read_feather("feather_files/SQLite_data/driver_mutations1.feather"),
-  feather::read_feather("feather_files/SQLite_data/driver_mutations2.feather"),
-  feather::read_feather("feather_files/SQLite_data/driver_mutations3.feather"),
-  feather::read_feather("feather_files/SQLite_data/driver_mutations4.feather"),
-  feather::read_feather("feather_files/SQLite_data/driver_mutations5.feather")
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations1.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations2.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations3.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations4.feather"),
+  feather::read_feather("../feather_files/SQLite_data/driver_mutations5.feather")
 ) %>%
   dplyr::distinct(gene) %>%
   dplyr::arrange(gene)
@@ -12,12 +12,12 @@ cat(crayon::blue("Imported driver mutation feather files for genes"), fill = TRU
 
 cat(crayon::magenta("Importing immunomodulators feather files for genes"), fill = TRUE)
 immunomodulator_expr <- feather::read_feather(
-  "feather_files/SQLite_data/immunomodulator_expr.feather"
+  "../feather_files/SQLite_data/immunomodulator_expr.feather"
 ) %>%
   dplyr::distinct(gene) %>%
   dplyr::arrange(gene)
 
-immunomodulators <- feather::read_feather("feather_files/SQLite_data/immunomodulators.feather") %>%
+immunomodulators <- feather::read_feather("../feather_files/SQLite_data/immunomodulators.feather") %>%
   dplyr::filter(!is.na(gene)) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
   dplyr::rename_at("display2", ~("friendly_name")) %>%
@@ -35,16 +35,16 @@ cat(crayon::blue("Imported immunomodulators feather files for genes"), fill = TR
 
 cat(crayon::magenta("Importing io_target feather files for genes"), fill = TRUE)
 io_target_expr <- dplyr::bind_rows(
-  feather::read_feather("feather_files/SQLite_data/io_target_expr1.feather"),
-  feather::read_feather("feather_files/SQLite_data/io_target_expr2.feather"),
-  feather::read_feather("feather_files/SQLite_data/io_target_expr3.feather"),
-  feather::read_feather("feather_files/SQLite_data/io_target_expr4.feather")
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr1.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr2.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr3.feather"),
+  feather::read_feather("../feather_files/SQLite_data/io_target_expr4.feather")
 ) %>%
   dplyr::distinct(gene) %>%
   dplyr::arrange(gene)
 
 io_targets <-
-  feather::read_feather("feather_files/SQLite_data/io_targets.feather") %>%
+  feather::read_feather("../feather_files/SQLite_data/io_targets.feather") %>%
   dplyr::filter(!is.na(gene)) %>%
   dplyr::distinct(gene, .keep_all = TRUE) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
@@ -72,7 +72,7 @@ io_targets <-
 cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
 cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
-ecns <- feather::read_feather("feather_files/genes/ecn_genes.feather") %>%
+ecns <- feather::read_feather("../feather_files/genes/ecn_genes.feather") %>%
   dplyr::rename_at("hgnc", ~("gene")) %>%
   dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
   tibble::add_column(
@@ -91,12 +91,17 @@ cat(crayon::blue("Imported extra cellular network (ecn) feather files for genes.
 
 cat(crayon::magenta("Building mutation_codes data."), fill = TRUE)
 mutation_codes <- driver_mutations %>%
-  tibble::add_column(code %>% as.character) %>%
   dplyr::distinct(gene) %>%
+  dplyr::rowwise() %>%
   dplyr::mutate(code = ifelse(!is.na(gene), .GlobalEnv$get_mutation_code(gene), NA)) %>%
   dplyr::distinct(code) %>%
   dplyr::filter(!is.na(code))
 cat(crayon::blue("Built mutation_codes data."), fill = TRUE)
+
+cat(crayon::magenta("Building mutation_codes table."), fill = TRUE)
+.GlobalEnv$delete_rows("mutation_codes")
+table_written <- mutation_codes %>% .GlobalEnv$write_table_ts("mutation_codes")
+cat(crayon::blue("Built mutation_codes table. (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
 cat(crayon::magenta("Binding gene expr data."), fill = TRUE)
 all_genes_expr <- driver_mutations %>%
