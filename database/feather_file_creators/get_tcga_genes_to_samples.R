@@ -1,11 +1,11 @@
-source("../load_dependencies.R")
+source("../../R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../connect_to_db.R", chdir = TRUE)
+source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -17,23 +17,21 @@ get_tcga_genes_to_samples <- function() {
 
   genes_to_samples <- current_pool %>%
     dplyr::tbl("genes_to_samples") %>%
-    dplyr::as_tibble() %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("genes") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, hgnc),
       by = c("gene_id" = "id")
     ) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("samples") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, sample_id) %>%
         dplyr::rename_at("sample_id", ~("sample")),
       by = c("sample_id" = "id")
     ) %>%
-    dplyr::distinct(hgnc, sample, rna_seq_expr, status)
+    dplyr::distinct(hgnc, sample, rna_seq_expr, status) %>%
+    dplyr::as_tibble()
 
   pool::poolReturn(current_pool)
 

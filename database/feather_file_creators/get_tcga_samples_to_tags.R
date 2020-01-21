@@ -1,11 +1,11 @@
-source("../load_dependencies.R")
+source("../../R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../connect_to_db.R", chdir = TRUE)
+source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -17,15 +17,12 @@ get_tcga_samples_to_tags <- function(study) {
 
   samples_to_tags <- current_pool %>%
     dplyr::tbl("samples_to_tags") %>%
-    dplyr::as_tibble() %>%
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("tags_to_tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble() %>%
             dplyr::select(id, name) %>%
             dplyr::rename_at("name", ~("study_name")),
           by = c("related_tag_id" = "id")
@@ -36,7 +33,6 @@ get_tcga_samples_to_tags <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("samples") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, sample_id) %>%
         dplyr::rename_at("sample_id", ~("sample")),
       by = c("related_tag_id" = "id")
@@ -44,12 +40,12 @@ get_tcga_samples_to_tags <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, name) %>%
         dplyr::rename_at("name", ~("tag")),
       by = c("tag_id" = "id")
     ) %>%
-    dplyr::distinct(sample, tag)
+    dplyr::distinct(sample, tag) %>%
+    dplyr::as_tibble()
 
   pool::poolReturn(current_pool)
 

@@ -1,11 +1,11 @@
-source("../load_dependencies.R")
+source("../../R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../connect_to_db.R", chdir = TRUE)
+source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -17,28 +17,25 @@ get_tags_by_study <- function(study) {
 
   tags <- current_pool %>%
     dplyr::tbl("tags") %>%
-    dplyr::as_tibble() %>%
     dplyr::right_join(
       current_pool %>%
-        dplyr::tbl("tags_to_tags") %>%
-        dplyr::as_tibble(),
+        dplyr::tbl("tags_to_tags"),
       by = c("id" = "tag_id")
     ) %>%
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("tags_to_tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble() %>%
             dplyr::select(id, name) %>%
             dplyr::rename_at("name", ~("related_tag_name")),
           by = c("related_tag_id" = "id")) %>%
         dplyr::filter(related_tag_name == study),
       by = c("id" = "tag_id")
     ) %>%
-    dplyr::distinct(name, characteristics, display, color)
+    dplyr::distinct(name, characteristics, display, color) %>%
+    dplyr::as_tibble()
 
   pool::poolReturn(current_pool)
 

@@ -1,11 +1,11 @@
-source("../load_dependencies.R")
+source("../../R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../connect_to_db.R", chdir = TRUE)
+source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -17,17 +17,14 @@ get_samples_by_study <- function(study) {
 
   samples <- current_pool %>%
     dplyr::tbl("samples") %>%
-    dplyr::as_tibble() %>%
     dplyr::right_join(
       current_pool %>%
-        dplyr::tbl("samples_to_tags") %>%
-        dplyr::as_tibble(),
+        dplyr::tbl("samples_to_tags"),
       by = c("id" = "sample_id")
     ) %>%
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, name) %>%
         dplyr::rename_at("name", ~("tag_name")),
       by = c("tag_id" = "id")
@@ -35,17 +32,16 @@ get_samples_by_study <- function(study) {
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("tags_to_tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags") %>%
-            dplyr::as_tibble() %>%
             dplyr::select(id, name),
           by = c("related_tag_id" = "id")) %>%
         dplyr::filter(name == study),
       by = "tag_id"
     ) %>%
-    dplyr::select(sample_id, tissue_id)
+    dplyr::select(sample_id, tissue_id) %>%
+    dplyr::as_tibble()
 
   pool::poolReturn(current_pool)
 

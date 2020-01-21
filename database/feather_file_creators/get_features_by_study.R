@@ -1,11 +1,11 @@
-source("../load_dependencies.R")
+source("../../R/load_dependencies.R")
 
 .GlobalEnv$load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
 # The database connection.
-source("../connect_to_db.R", chdir = TRUE)
+source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
 .GlobalEnv$pool <- .GlobalEnv$connect_to_db()
@@ -17,25 +17,20 @@ get_features_by_study <- function(study) {
 
   features <- current_pool %>%
     dplyr::tbl("features") %>%
-    dplyr::as_tibble() %>%
     dplyr::right_join(
       current_pool %>%
-        dplyr::tbl("features_to_samples") %>%
-        dplyr::as_tibble(),
+        dplyr::tbl("features_to_samples"),
       by = c("id" = "feature_id")
     ) %>%
     dplyr::right_join(
       current_pool %>%
         dplyr::tbl("samples_to_tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::right_join(
           current_pool %>%
             dplyr::tbl("tags_to_tags") %>%
-            dplyr::as_tibble() %>%
             dplyr::right_join(
               current_pool %>%
                 dplyr::tbl("tags") %>%
-                dplyr::as_tibble() %>%
                 dplyr::select(id, name) %>%
                 dplyr::rename_at("name", ~("study_name")),
               by = c("related_tag_id" = "id")
@@ -48,7 +43,6 @@ get_features_by_study <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("classes") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, name) %>%
         dplyr::rename_at("name", ~("class")),
       by = c("class_id" = "id")
@@ -56,12 +50,12 @@ get_features_by_study <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("method_tags") %>%
-        dplyr::as_tibble() %>%
         dplyr::select(id, name) %>%
         dplyr::rename_at("name", ~("method_tag")),
       by = c("method_tag_id" = "id")
     ) %>%
-    dplyr::distinct(class, display, method_tag, name, order, unit)
+    dplyr::distinct(class, display, method_tag, name, order, unit) %>%
+    dplyr::as_tibble()
 
   pool::poolReturn(current_pool)
 
