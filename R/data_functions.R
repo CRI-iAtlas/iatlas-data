@@ -1,8 +1,20 @@
-filter_na <- function(value = NA %>% as.character) {
+driver_results_label_to_hgnc <- function(label) {
+  hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
+  if (!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA}
+}
+
+filter_na <- function(value = NA %>% as.character, log = NA, group = NA) {
+  if (!is.na(log)) {
+    values <- value[!is.na(value)]
+    if (length(values) > 1) {
+      if (var(value) != 0) {
+        stop("DUPLICATE DATA! Found multiple RNA sequence values for gene id: ", group[["gene_id"]], " sample id: ",group[["sample_id"]], " rna_seq_expr: [ ", paste(group[["rna_seq_expr"]], ", "), "]")
+      }
+    }
+  }
   value <- unique(value)
   if (length(value) > 1 & anyNA(value)) {
     value <- na.omit(value)
-
     # test if there are any rows at all
     if (length(which(!is.na(value))) == 0) {
       value <- NA %>% as.character
@@ -10,6 +22,14 @@ filter_na <- function(value = NA %>% as.character) {
   }
   value <- ifelse(is.na(value), NA %>% as.character, max(unique(value)))
   return(value)
+}
+
+get_mutation_code <- function(value) {
+  code <- value %>% stringi::stri_extract_first(regex = "(?=\\s) (.*)")
+  if (length(code) > 0 & !identical(code, "NA") & !is.na(code)) {
+    return(code)
+  }
+  return(NA)
 }
 
 get_tag_column_names <- function(df) {
@@ -38,11 +58,6 @@ link_to_references <- function(current_link) {
     }
   }
   return(NA)
-}
-
-driver_results_label_to_hgnc <- function(label) {
-  hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
-  return(if(!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA})
 }
 
 # load_feather_data:
