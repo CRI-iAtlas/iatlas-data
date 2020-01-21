@@ -196,10 +196,13 @@ CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene
 CREATE TABLE genes_to_samples (
     gene_id INTEGER REFERENCES genes NOT NULL,
     sample_id INTEGER REFERENCES samples NOT NULL,
-    "status" STATUS_ENUM,
+    mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
     "rna_seq_expr" NUMERIC,
-    PRIMARY KEY (gene_id, sample_id)
+    "status" STATUS_ENUM,
+    PRIMARY KEY (gene_id, sample_id, mutation_code_id)
 );
+CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
+CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
 CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
 
 -- samples_to_tags table
