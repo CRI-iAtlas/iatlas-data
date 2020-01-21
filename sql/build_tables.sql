@@ -184,6 +184,14 @@ CREATE TABLE genes_to_types (
 );
 CREATE INDEX gene_to_type_type_id_index ON genes_to_types ("type_id");
 
+-- mutation_codes_to_gene_types table
+CREATE TABLE mutation_codes_to_gene_types (
+    mutation_code_id INTEGER REFERENCES mutation_codes,
+    "type_id" INTEGER REFERENCES gene_types,
+    PRIMARY KEY (mutation_code_id, "type_id")
+);
+CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
+
 -- genes_to_samples table
 CREATE TABLE genes_to_samples (
     gene_id INTEGER REFERENCES genes NOT NULL,
