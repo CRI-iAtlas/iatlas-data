@@ -1,0 +1,56 @@
+# Input variables
+# - Core R release number (e.g. 3.6.2)
+# - Postgresql release number (e.g. 11.5)
+# - RDS target URL
+# - RDS target credentials
+# - Environment name?
+
+variables:
+  POSTGRES_DB: iatlas_staging
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: docker
+
+stages:
+  - build_data
+  - deploy_to_staging
+  - deploy_to_prod
+
+Build Data:
+  stage: build_data
+  only:
+    - staging
+  image: rocker/verse:3.6.2
+  services:
+    - postgres:11.5
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - /tmp/*.pgdata
+  artifacts:
+    name: "iatlas_data_${CI_COMMIT_REF_NAME}"
+    paths:
+      - /tmp/*.pgdata
+  script:
+    # Update the Apt cache
+    sudo apt-get -y update
+    # Install the Postgres 11 client
+    - sudo apt-get -y install postgresql-client-11
+    # Build the database structure
+    - psql "postgres://postgres:docker@postgres/postgres" -f create_dev_db.sql
+    # Build the data
+    - R -e "source('build_data_in_CI.R')"
+    # Do a binary dump of the database
+    - pg_dump "postgres://postgres:docker@postgres/iatlas_staging" --format custom -f /tmp/iatlas_staging.pgdata
+
+Deploy To Staging:
+  stage: deploy_to_staging
+  only:
+    - staging
+  image: postgres:11.5
+  variables:
+    # Don't pull the repo into this stage, it's not needed
+    GIT_STRATEGY: none
+  script:
+    - scripts/travis_build_db.sh
+  
+
