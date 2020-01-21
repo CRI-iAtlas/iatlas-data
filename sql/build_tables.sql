@@ -129,6 +129,13 @@ CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
 CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
 CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
 
+-- mutation_codes table
+CREATE TABLE mutation_codes (
+    id SERIAL,
+    code VARCHAR NOT NULL,
+    PRIMARY KEY (id)
+);
+
 -- driver_results table
 CREATE TABLE driver_results (
     id SERIAL,
