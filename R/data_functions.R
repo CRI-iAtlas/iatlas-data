@@ -3,15 +3,7 @@ driver_results_label_to_hgnc <- function(label) {
   if (!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA}
 }
 
-filter_na <- function(value = NA %>% as.character, log = NA, group = NA) {
-  if (!is.na(log)) {
-    values <- value[!is.na(value)]
-    if (length(values) > 1) {
-      if (var(value) != 0) {
-        stop("DUPLICATE DATA! Found multiple RNA sequence values for gene id: ", group[["gene_id"]], " sample id: ",group[["sample_id"]], " rna_seq_expr: [ ", paste(group[["rna_seq_expr"]], ", "), "]")
-      }
-    }
-  }
+filter_na <- function(value = NA %>% as.character) {
   value <- unique(value)
   if (length(value) > 1 & anyNA(value)) {
     value <- na.omit(value)
@@ -22,6 +14,37 @@ filter_na <- function(value = NA %>% as.character, log = NA, group = NA) {
   }
   value <- ifelse(is.na(value), NA %>% as.character, max(unique(value)))
   return(value)
+}
+
+#' Validate duplicates
+#'
+#' Ensures that there is no conflicting data in the group before sumarising
+#'
+#' @param through_put information that gets piped to next function if no conflicts found.
+#' @param values .data pronoun containing info about the current group
+#' @param by vector that contains the fields where to look for duplicates/conflicts
+#' @param info extra fields printed to provide more context when a conflict is found.
+#' @return through_put or stops if conflict is found.
+#'
+
+validate_dupes <- function(through_put, values = NA, by = c(), info = c()) {
+  for (i in 1:length(by)) {
+    value <- values[[by[i]]]
+    valid_values <- value[!is.na(value)]
+    if (length(valid_values) > 1) {
+      if (var(valid_values) != 0) {
+        print_dupe_info(values,info)
+        stop("DUPLICATE DATA! Found multiple values for ",by[i],": ",paste(valid_values,collapse = ", "))
+      }
+    }
+  }
+  return(through_put)
+}
+
+print_dupe_info <- function(values = NA, info = c()) {
+  for (i in 1:length(info)) {
+    print(paste(info[i],":",values[[info[i]]]))
+  }
 }
 
 get_mutation_code <- function(value) {

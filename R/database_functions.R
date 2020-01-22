@@ -8,7 +8,7 @@ delete_rows <- function(table_name) {
 }
 
 read_table <- function(table_name) {
-  tictoc::tic(paste0("Time taken to read from the `", table_name, "`` table in the DB"))
+  tictoc::tic(paste0("Time taken to read from the `", table_name, "` table in the DB"))
   current_pool <- pool::poolCheckout(.GlobalEnv$pool)
   result <- pool::dbReadTable(current_pool, table_name)
   pool::poolReturn(current_pool)
