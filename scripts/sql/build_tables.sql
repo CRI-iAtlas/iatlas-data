@@ -95,7 +95,7 @@ CREATE TABLE features (
     display VARCHAR,
     "order" INTEGER,
     unit UNIT_ENUM,
-    class_id INTEGER REFERENCES classes,
+    class_id INTEGER REFERENCES classes NOT NULL,
     method_tag_id INTEGER REFERENCES method_tags,
     PRIMARY KEY (id)
 );
@@ -170,7 +170,7 @@ CREATE TABLE edges (
     id SERIAL,
     node_1_id INTEGER REFERENCES nodes NOT NULL,
     node_2_id INTEGER REFERENCES nodes NOT NULL,
-    ratio_score NUMERIC,
+    score NUMERIC,
     PRIMARY KEY (id)
 );
 CREATE INDEX edge_node_2_id_index ON edges (node_2_id);

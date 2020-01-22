@@ -42,7 +42,7 @@ validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
     valid_values <- get_unique_valid_values(group[[field]])
     if (length(valid_values) > 1) {
       print_dupe_info(group,info)
-      stop("DUPLICATE DATA! Found multiple values for ",field,": ",paste(valid_values,collapse = ", "))
+      stop("DIRTY DATA! Found multiple values for ", field, ": ", paste(valid_values, collapse = ", "))
     }
   }
   return(pass_through)
