@@ -131,4 +131,16 @@
     )
 
   })
+
+  test_that("test validate dupes defaults", {
+    validate_dupes(1) %>%
+    expect_equal(1)
+  })
+
+  test_that("test validate dupes when values in group are equal", {
+      values <- list("a" = c(2,2), "b" = c(1,1), "c" = c(NA,4))
+      validate_dupes(1,values,c("a","b")) %>%
+      expect_equal(1)
+  })
+
 })()
