@@ -138,9 +138,24 @@
   })
 
   test_that("test validate dupes when values in group are equal", {
-      values <- list("a" = c(2,2), "b" = c(1,1), "c" = c(NA,4))
-      validate_dupes(1,values,c("a","b")) %>%
-      expect_equal(1)
+    values <- list("a" = c(2,2), "b" = c(1,1), "c" = c(NA,4))
+    validate_dupes(1,values,c("a","b")) %>%
+    expect_equal(1)
+  })
+
+  test_that("get_unique_valid_values removes NAs", {
+    get_unique_valid_values(c(NA,1,NA,2,NA,NA)) %>%
+    expect_equal(c(1,2))
+  })
+
+  test_that("get_unique_valid_values removes dupes", {
+    get_unique_valid_values(c(1,2,1,1,2,3)) %>%
+    expect_equal(c(1,2,3))
+  })
+
+  test_that("get_unique_valid_values removes dupes and NAs", {
+    get_unique_valid_values(c(1,2,1,NA,1,2,NA,3)) %>%
+    expect_equal(c(1,2,3))
   })
 
 })()
