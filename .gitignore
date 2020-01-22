@@ -1,3 +1,6 @@
+# used by git-log to rewrite usernames
+.mailmap
+
 # History files
 .Rhistory
 .Rapp.history

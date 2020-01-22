@@ -16,34 +16,41 @@ filter_na <- function(value = NA %>% as.character) {
   return(value)
 }
 
+#' get_unique_valid_values
+#'
+#' Takes a list and returns a new list with all NA values and all duplicate values removed
+#'
+#' @param values is a list
+#' @return unique, non-na values
+get_unique_valid_values <- function(values) {
+  unique(values[!is.na(values)])
+}
+
 #' Validate duplicates
 #'
 #' Ensures that there is no conflicting data in the group before sumarising
 #'
 #' @param through_put information that gets piped to next function if no conflicts found.
-#' @param values .data pronoun containing info about the current group
-#' @param by vector that contains the fields where to look for duplicates/conflicts
+#' @param group .data pronoun containing info about the current group
+#' @param fields vector that contains the fields where to look for duplicates/conflicts
 #' @param info extra fields printed to provide more context when a conflict is found.
-#' @return through_put or stops if conflict is found.
+#' @return pass_through or stops if conflict is found.
 #'
 
-validate_dupes <- function(through_put, values = NA, by = c(), info = c()) {
-  for (i in 1:length(by)) {
-    value <- values[[by[i]]]
-    valid_values <- value[!is.na(value)]
+validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
+  for (field in fields) {
+    valid_values <- get_unique_valid_values(group[[field]])
     if (length(valid_values) > 1) {
-      if (var(valid_values) != 0) {
-        print_dupe_info(values, info)
-        stop("DIRTY DATA! Found multiple values for ", by[i], ": ", paste(valid_values, collapse = ", "))
-      }
+      print_dupe_info(group,info)
+      stop("DIRTY DATA! Found multiple values for ", field, ": ", paste(valid_values, collapse = ", "))
     }
   }
-  return(through_put)
+  return(pass_through)
 }
 
-print_dupe_info <- function(values = NA, info = c()) {
-  for (i in 1:length(info)) {
-    print(paste(info[i],":",values[[info[i]]]))
+print_dupe_info <- function(group = NA, info = c()) {
+  for (field in info) {
+    print(paste(field,":",group[[field]]))
   }
 }
 
