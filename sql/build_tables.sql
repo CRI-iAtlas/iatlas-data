@@ -95,7 +95,7 @@ CREATE TABLE features (
     display VARCHAR,
     "order" INTEGER,
     unit UNIT_ENUM,
-    class_id INTEGER REFERENCES classes,
+    class_id INTEGER REFERENCES classes NOT NULL,
     method_tag_id INTEGER REFERENCES method_tags,
     PRIMARY KEY (id)
 );
