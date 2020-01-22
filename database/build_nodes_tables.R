@@ -4,30 +4,23 @@ nodes <- .GlobalEnv$load_feather_data("../feather_files/nodes") %>%
   dplyr::arrange(Node, Group, Immune, UpBinRatio)
 cat(crayon::blue("Imported feather files for nodes"), fill = TRUE)
 
-cat(crayon::magenta("Building the node_names data"), fill = TRUE)
-node_names <- nodes %>%
-  dplyr::distinct(Node) %>%
-  dplyr::rename_at("Node", ~("name"))
-cat(crayon::blue("Built the node_names data"), fill = TRUE)
-
-cat(crayon::magenta("Building the node_names table."), fill = TRUE)
-table_written <- node_names %>% .GlobalEnv$write_table_ts("node_names")
-cat(crayon::blue("Built the node_names table. (", nrow(node_names), "rows )"), fill = TRUE, sep = " ")
-
 cat(crayon::magenta("Building the nodes data"), fill = TRUE)
-node_names <- .GlobalEnv$read_table("node_names") %>% dplyr::as_tibble()
-
 nodes <- nodes %>%
   dplyr::rename_at("Node", ~("name")) %>%
-  dplyr::inner_join(node_names, by = "name") %>%
-  dplyr::rename_at("id", ~("node_name_id")) %>%
-  dplyr::rename_at("UpBinRatio", ~("ecn_value")) %>%
+  dplyr::left_join(
+    .GlobalEnv$read_table("genes") %>%
+      dplyr::select(id, hgnc) %>%
+      dplyr::rename_at("id", ~("gene_id")) %>%
+      dplyr::as_tibble(),
+    by = c("name" = "hgnc")
+  ) %>%
+  dplyr::rename_at("UpBinRatio", ~("score")) %>%
   tibble::add_column(id = 1:nrow(nodes), .before = "name")
 cat(crayon::blue("Built the nodes data"), fill = TRUE)
 
 cat(crayon::magenta("Building the nodes table."), fill = TRUE)
 table_written <- nodes %>%
-  dplyr::select(id, ecn_value, node_name_id) %>%
+  dplyr::select(id, gene_id, score) %>%
   .GlobalEnv$write_table_ts("nodes")
 cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
@@ -56,7 +49,7 @@ cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows 
 cat(crayon::magenta("Importing feather files for edges"), fill = TRUE)
 edges <- .GlobalEnv$load_feather_data("../feather_files/edges") %>%
   dplyr::distinct(From, To, Group, Immune, ratioScore) %>%
-  dplyr::rename_at("ratioScore", ~("ratio_score")) %>%
+  dplyr::rename_at("ratioScore", ~("score")) %>%
   dplyr::arrange(From, To, Group, Immune)
 cat(crayon::blue("Imported feather files for edges"), fill = TRUE)
 
@@ -66,8 +59,8 @@ edges <- edges %>%
   dplyr::rename_at("id", ~("node_1_id")) %>%
   dplyr::inner_join(nodes, by = c("To" = "name", "Group" = "Group", "Immune" = "Immune")) %>%
   dplyr::rename_at("id", ~("node_2_id")) %>%
-  dplyr::distinct(node_1_id, node_2_id, ratio_score) %>%
-  dplyr::arrange(node_1_id, node_2_id, ratio_score)
+  dplyr::distinct(node_1_id, node_2_id, score) %>%
+  dplyr::arrange(node_1_id, node_2_id, score)
 cat(crayon::blue("Built the edges data"), fill = TRUE)
 
 cat(crayon::magenta("Building the edges table.\n(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
@@ -77,7 +70,6 @@ cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE
 # Clean up.
 rm(edges)
 rm(nodes)
-rm(node_names)
 rm(tags)
 rm(node_set_group)
 rm(node_set_immune)
