@@ -65,7 +65,7 @@ To build the database locally:
       build_iatlas_db(reset = "reset")
       ```
 
-   The databse should now be available on `localhost:5432`. The database is called `iatlas_dev`.
+   The database should now be available on `localhost:5432`. The database is called `iatlas_dev`.
 
 
 ## Testing
