@@ -158,4 +158,9 @@
     expect_equal(c(1,2,3))
   })
 
+  test_that("test validate dupes when values in group have conflicts", {
+    values <- list("a" = c(2,2), "b" = c(1,3), "c" = c(NA,4))
+    expect_error(validate_dupes(1,values,c("a","b"),c("c")))
+  })
+
 })()
