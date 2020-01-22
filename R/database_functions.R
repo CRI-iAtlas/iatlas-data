@@ -17,9 +17,9 @@ read_table <- function(table_name) {
 }
 
 # update_table <- function(df, table_name) {
-#   return(pool::poolWithTransaction(.GlobalEnv$pool, function(conn) {
+#   return(pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
 #     pool::dbGetQuery(
-#       conn,
+#       connection,
 #       paste0("INSERT INTO", table_name, "(id, column_1, column_2)
 #       VALUES (1, 'A', 'X'), (2, 'B', 'Y'), (3, 'C', 'Z')
 #       ON CONFLICT (id) DO UPDATE
@@ -31,9 +31,9 @@ read_table <- function(table_name) {
 
 write_table_ts <- function(df, table_name) {
   tictoc::tic(paste0("Time taken to write to the `", table_name, "` table in the DB"))
-  result <- pool::poolWithTransaction(.GlobalEnv$pool, function(conn) {
+  result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
     # Disable all table indexes.
-    conn %>% pool::dbExecute(paste0(
+    connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=false ",
       "WHERE indrelid = (",
@@ -43,10 +43,10 @@ write_table_ts <- function(df, table_name) {
       ");"
     ))
 
-    conn %>% pool::dbWriteTable(table_name, df, append = TRUE, copy = TRUE)
+    connection %>% pool::dbWriteTable(table_name, df, append = TRUE, copy = TRUE)
 
     # Re-enable all table indexes.
-    conn %>% pool::dbExecute(paste0(
+    connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=true ",
       "WHERE indrelid = (",
@@ -57,7 +57,7 @@ write_table_ts <- function(df, table_name) {
     ))
 
     # Reindex the table
-    conn %>% pool::dbExecute(paste0("REINDEX TABLE ", table_name, ";"))
+    connection %>% pool::dbExecute(paste0("REINDEX TABLE ", table_name, ";"))
   })
   tictoc::toc()
 
