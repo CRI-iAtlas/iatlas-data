@@ -37,7 +37,6 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
 
   source("R/build_gene_tables.R")
   build_gene_tables("feather_files")
-  # source("database/build_gene_tables.R", chdir = TRUE)
 
   # source("database/build_samples_tables.R", chdir = TRUE)
 
