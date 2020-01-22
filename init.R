@@ -6,6 +6,11 @@ rm(load_dependencies, pos = ".GlobalEnv")
 
 #' @export
 build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
+
+  run_build_script <- function(script_name, param) {
+    source(paste0("R/",script_name,".R"))$value(param)
+  }
+
   # Make the create_db function available.
   source("R/create_db.R", chdir = TRUE)
 
@@ -29,21 +34,15 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE) {
 
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  source("R/build_features_table.R")
-  build_features_table("feather_files/SQLite_data/features.feather")
+  run_build_script("build_features_table", "feather_files/SQLite_data/features.feather")
+  run_build_script("build_tags_tables", "feather_files/SQLite_data/groups.feather")
+  run_build_script("build_gene_tables", "feather_files")
 
-  source("R/build_tags_tables.R")
-  build_tags_tables("feather_files/SQLite_data/groups.feather")
+  source("database/build_samples_tables.R", chdir = TRUE)
 
-  source("R/build_gene_tables.R")
-  build_gene_tables("feather_files")
-  # source("database/build_gene_tables.R", chdir = TRUE)
-
-  # source("database/build_samples_tables.R", chdir = TRUE)
-
-  # # source("database/build_driver_results_tables.R", chdir = TRUE)
-  # #
-  # # source("database/build_nodes_tables.R", chdir = TRUE)
+  # source("database/build_driver_results_tables.R", chdir = TRUE)
+  #
+  # source("database/build_nodes_tables.R", chdir = TRUE)
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
