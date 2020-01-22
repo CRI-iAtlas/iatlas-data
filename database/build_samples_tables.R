@@ -128,7 +128,7 @@ genes_to_samples <- all_samples %>%
   dplyr::group_by(sample_id, gene_id) %>%
   dplyr::summarise(
     status = .GlobalEnv$filter_na(status),
-    rna_seq_expr = .GlobalEnv$filter_na(rna_seq_expr) %>% as.numeric()
+    rna_seq_expr = .GlobalEnv$validate_dupes(rna_seq_expr, values = .data, by = c("rna_seq_expr"),info = c("gene_id","sample_id")) %>% .GlobalEnv$filter_na() %>% as.numeric()
   )
 cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
