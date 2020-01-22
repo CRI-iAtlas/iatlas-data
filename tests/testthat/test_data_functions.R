@@ -21,6 +21,7 @@
     expect_that(build_references(reference), is_identical_to(expected))
   })
 
+  # filter_na
   test_that("filter_na returns the value when the passed value is NOT NA.", {
     expect_that(filter_na(c(14)), is_identical_to(14))
     expect_that(filter_na(14), is_identical_to(14))
@@ -33,6 +34,25 @@
   test_that("filter_na returns NA when there is no passed value or the passed value is NA.", {
     expect_that(filter_na(), is_identical_to(NA %>% as.character))
     expect_that(filter_na(NA), is_identical_to(NA %>% as.character))
+  })
+
+  # get_mutation_code
+  test_that("get_mutation_code returns NA when no value present.", {
+    expect_that(get_mutation_code(NA), is_identical_to(NA))
+  })
+  test_that("get_mutation_code returns all text after the first space.", {
+    hgnc <- "plokij uhygtf knowledge"
+    expected <- "uhygtf knowledge"
+    expect_that(get_mutation_code(hgnc), is_identical_to(expected))
+  })
+  test_that("get_mutation_code returns NA as there are no spaces.", {
+    hgnc <- "plokij"
+    expect_that(get_mutation_code(hgnc), is_identical_to(NA))
+  })
+  test_that("get_mutation_code returns a list of strings.", {
+    hgncs <- c("plokijuh", "uhygtf plokij knowledge", "knowledge")
+    expected <- c(NA, "plokij knowledge", NA)
+    expect_that(get_mutation_code(hgncs), is_identical_to(expected))
   })
 
   # get_tag_column_names

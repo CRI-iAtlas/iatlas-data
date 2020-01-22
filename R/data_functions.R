@@ -25,7 +25,7 @@ filter_na <- function(value = NA %>% as.character) {
 }
 
 get_mutation_code <- function(value) {
-  code <- value %>% stringi::stri_extract_first(regex = "(?=\\s) (.*)")
+  code <- value %>% stringi::stri_extract_first(regex = "(?=\\s) (.*)") %>% trimws()
   return(ifelse(length(code) > 0 & !identical(code, "NA") & !is.na(code), code, NA))
 }
 
