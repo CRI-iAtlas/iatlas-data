@@ -2,6 +2,25 @@
   library("testthat")
   library('feather')
 
+  # build_references
+  test_that("build_references returns NA when no value present.", {
+    expect_that(build_references(NA), is_identical_to(NA))
+  })
+  test_that("build_references returns NA when reference value is 'NA'.", {
+    reference <- 'NA'
+    expect_that(build_references(reference), is_identical_to(NA))
+  })
+  test_that("build_references returns a comma separated list of references in curly braces.", {
+    reference <- "http://someplace.com?query=yes#pow | http://otherplace.com?query=yes#pow"
+    expected <- '{http://someplace.com?query=yes#pow,http://otherplace.com?query=yes#pow}'
+    expect_that(build_references(reference), is_identical_to(expected))
+  })
+  test_that("build_references returns a list of references in curly braces.", {
+    reference <- c("http://someplace.com?query=yes#pow", "http://otherplace.com?query=yes#pow")
+    expected <- c("{http://someplace.com?query=yes#pow}", "{http://otherplace.com?query=yes#pow}")
+    expect_that(build_references(reference), is_identical_to(expected))
+  })
+
   test_that("filter_na returns the value when the passed value is NOT NA.", {
     expect_that(filter_na(c(14)), is_identical_to(14))
     expect_that(filter_na(14), is_identical_to(14))
@@ -12,7 +31,6 @@
   })
 
   test_that("filter_na returns NA when there is no passed value or the passed value is NA.", {
-    cat("value:", filter_na(NA), fill = TRUE, sep = " ")
     expect_that(filter_na(), is_identical_to(NA %>% as.character))
     expect_that(filter_na(NA), is_identical_to(NA %>% as.character))
   })
@@ -156,6 +174,25 @@
   test_that("get_unique_valid_values removes dupes and NAs", {
     get_unique_valid_values(c(1,2,1,NA,1,2,NA,3)) %>%
     expect_equal(c(1,2,3))
+  })
+
+  # trim_hgnc
+  test_that("trim_hgnc returns NA when no value present.", {
+    expect_that(trim_hgnc(NA), is_identical_to(NA))
+  })
+  test_that("trim_hgnc returns only the text up to the first space.", {
+    hgnc <- "plokij uhygtf knowledge"
+    expected <- "plokij"
+    expect_that(trim_hgnc(hgnc), is_identical_to(expected))
+  })
+  test_that("trim_hgnc returns the passed string as there are no spaces.", {
+    hgnc <- "plokij"
+    expect_that(trim_hgnc(hgnc), is_identical_to(hgnc))
+  })
+  test_that("trim_hgnc returns a list of strings.", {
+    hgncs <- c("plokijuh", "uhygtf plokij knowledge", "knowledge")
+    expected <- c("plokijuh", "uhygtf", "knowledge")
+    expect_that(trim_hgnc(hgncs), is_identical_to(expected))
   })
 
   test_that("test validate dupes when values in group have conflicts", {
