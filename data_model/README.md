@@ -10,13 +10,13 @@ The database makes use of a couple enumerables. These "enums" are built into the
 
 The available enums are:
 
-- status_enum:
+- ### status_enum:
 
   `( 'Wt', 'Mut' )`
 
   This enum represents the status of a gene. Wt = Wild Type, Mut = Mutant
 
-- unit_enum:
+- ### unit_enum:
 
   `( 'Fraction', 'Count', 'Score', 'Per Megabase', ''Year' )`
 
@@ -50,9 +50,9 @@ The main tables are:
 
   Tags may be used to associate entities. For example, a number of individual samples may be associated with the "TCGA_Study" tag. Further, a number of tags may be with a tag like "TCGA_Study". this allows the entities associated with the initial tags to utlimately be associated with "TCGA_Study" through the initial tags. Instead of thinking of "groups", we can think of tags. This tagging allows us to create groups and hierarchies by association.
 
-- ### results
+- ### driver_results
 
-  Each row describes an individual result.
+  Each row describes an individual driver result.
 
 - ### nodes
 
@@ -72,25 +72,29 @@ The sub tables are:
 
 - ### [Genes](#genes) Sub Tables
 
-  - #### gene_functions
-
-    Each row describes an individual gene function.
-
   - #### gene_families
 
     Each row describes an individual gene family.
+
+  - #### gene_functions
+
+    Each row describes an individual gene function.
 
   - #### gene_types
 
     Each row describes an individual gene type. The current gene types are "immunomodulator", "io_target", "driver_mutation", and "extra_cellular_network".
 
-  - #### pathways
-
-    Each row describes an individual pathway.
-
   - #### immune_checkpoints
 
     Each row describes an individual immune checkpoint.
+
+  - #### mutation_codes
+
+    Each row describes an individual mutation code.
+
+  - #### pathways
+
+    Each row describes an individual pathway.
 
   - #### super_categories
 
@@ -109,12 +113,6 @@ The sub tables are:
   - #### method_tags
 
     Each row describes an individual method tag.
-
-- ### [Results](#results) Sub Tables
-
-  - #### result_labels
-
-    Each row describes an individual result label.
 
 - ### [Nodes](#nodes) Sub Tables
 
@@ -145,6 +143,12 @@ The relational (join) tables are:
   Each row describes a gene to gene type relationship.
 
   For example, "Gene A" may be related to "Type 1". That would be one row. "Gene B" may also be related to "Type 1". That would be an additional row. "Gene A" may also be related to "Type 2". That would be yet again another row, and so on.
+
+- ### mutation_codes_to_gene_types
+
+  Each row describes a mutation code to gene type relationship.
+
+  For example, "Mutation Code A" may be related to "Type 1". That would be one row. "Mutation Code B" may also be related to "Type 1". That would be an additional row. "Mutation Code A" may also be related to "Type 2". That would be yet again another row, and so on.
 
 - ### tags_to_tags
 
@@ -186,25 +190,37 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `hgnc` - The unique HUGO Id (HGNC Symbol) for this gene. (a string)
 
+  - `description` - A text description of the gene. (a string)
+
+  - `friendly_name` - A human friendly name for the gene. (a string)
+
   - `gene_family_id` - The database identifier of the gene family associated with this gene. Relates to the `id` field in a row in the [gene_families](#gene_families) sub table. (an integer)
-
-  - `super_cat_id` - The database identifier of the super category associated with this gene. Relates to the `id` field in a row in the [super_categories](#super_categories) sub table. (an integer)
-
-  - `immune_checkpoint_id` - The database identifier of the immune checkpoint associated with this gene. Relates to the `id` field in a row in the [immune_checkpoints](#immune_checkpoints) sub table. (an integer)
 
   - `gene_function_id` - The database identifier of the gene function associated with this gene. Relates to the `id` field in a row in the [gene_functions](#gene_functions) sub table. (an integer)
 
+  - `immune_checkpoint_id` - The database identifier of the immune checkpoint associated with this gene. Relates to the `id` field in a row in the [immune_checkpoints](#immune_checkpoints) sub table. (an integer)
+
+  - `io_landscape_name` - A string that represents the genes specific io landscape name. (a string)
+
   - `pathway_id` - The database identifier of the pathway associated with this gene. Relates to the `id` field in a row in the [pathways](#pathways) sub table. (an integer)
+
+  - `super_cat_id` - The database identifier of the super category associated with this gene. Relates to the `id` field in a row in the [super_categories](#super_categories) sub table. (an integer)
 
   - `therapy_type_id` - The database identifier of the therapy type associated with this gene. Relates to the `id` field in a row in the [therapy_types](#therapy_types) sub table. (an integer)
 
-  - `description` - A text description of the gene. (a string)
-
   - `references` - An array of URLs related to this gene. (an array of string)
 
-  - `canonical` - A string that may be used for displaying the gene in a header. (a string)
+- [gene_family](#gene_family)
 
-  - `display` - A human friendly name for the gene. (a string)
+  - `id` - A unique database identifier for the specific gene family. This is an integer that is generated by the database. (an integer)
+
+  - `name` - The unique name of the gene family. (a string)
+
+- [gene_function](#gene_function)
+
+  - `id` - A unique database identifier for the specific gene function. This is an integer that is generated by the database. (an integer)
+
+  - `name` - The unique name of the gene function. (a string)
 
 - [gene_types](#gene_types)
 
@@ -220,17 +236,11 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `name` - The unique name of the immune checkpoint. (a string)
 
-- [gene_family](#gene_family)
+- [mutation_codes](#mutation_codes)
 
-  - `id` - A unique database identifier for the specific gene family. This is an integer that is generated by the database. (an integer)
+  - `id` - A unique database identifier for the specific mutation code. This is an integer that is generated by the database. (an integer)
 
-  - `name` - The unique name of the gene family. (a string)
-
-- [gene_function](#gene_function)
-
-  - `id` - A unique database identifier for the specific gene function. This is an integer that is generated by the database. (an integer)
-
-  - `name` - The unique name of the gene function. (a string)
+  - `code` - The unique code of the mutation code. (a string)
 
 - [pathways](#pathways)
 
@@ -256,9 +266,17 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `type_id` - The database identifier of a specific gene type. Relates to the `id` field in a row in the [gene_types](#gene_types) sub table. (an integer)
 
+- [mutation_codes_to_gene_types](#mutation_codes_to_gene_types)
+
+  - `mutation_code_id` - The database identifier of a specific mutation code. Relates to the `id` field in a row in the [mutation_codes](#mutation_codes) sub table. (an integer)
+
+  - `type_id` - The database identifier of a specific gene type. Relates to the `id` field in a row in the [gene_types](#gene_types) sub table. (an integer)
+
 - [patients](#patients)
 
   - `id` - A unique database identifier for the specific patient. This is an integer that is generated by the database. (an integer)
+
+  - `barcode` - The unique barcode identifier assigned for this patient. (a string)
 
   - `ethnicity` - The ethnicity of the patient. (a string)
 
@@ -270,10 +288,12 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `id` - A unique database identifier for the specific sample. This is an integer that is generated by the database. (an integer)
 
-  - `sample_id` - The unique name for the specific sample. (a string)
+  - `sample_id` - The unique name or barcode for the specific sample. (a string)
 
   - `tissue_id` - The unique tissue id for the specific sample. This may be used to access the sample image. (a string)\
     ie: `https://quip1.bmi.stonybrook.edu:443/camicroscope/osdCamicroscope.php?tissueId={tissue_id}`
+
+  - `patient_id` - The unique patient id for the specific sample. Relates to the `id` field in a row in the [patients](#patients) sub table. (an integer)
 
 - [sampless_to_patients](#sampless_to_patients)
 
@@ -287,35 +307,33 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `sample_id` - The database identifier of a specific sample. Relates to the `id` field in a row in the [samples](#samples) main table. (an integer)
 
-- [results](#results)
+  - `mutation_code_id` - The database identifier of a specific mutation code. Relates to the `id` field in a row in the [mutation_codes](#mutation_codes) sub table. (an integer)
 
-  - `id` - A unique database identifier for the specific result. This is an integer that is generated by the database. (an integer)
+  - `status` - The status of the gene in this relationship. May be a value from the [status_enum](#status_enum). (a status_enum)
+
+  - `rna_seq_expr` - The RNA Sequence Expresion of the gene and sample in this relationship. (a numeric value)
+
+- [driver_results](#driver_results)
+
+  - `id` - A unique database identifier for the specific driver result. This is an integer that is generated by the database. (an integer)
+
+  - `gene_id` - The database identifier of a specific gene. Relates to the `id` field in a row in the [genes](#genes) main table. (an integer)
 
   - `feature_id` - The database identifier of a specific feature. Relates to the `id` field in a row in the [features](#features) main table. (an integer)
 
-  - `label_id` - The database identifier of the result label associated with this result. Relates to the `id` field in a row in the [result_labels](#result_labels) sub table. (an integer)
+  - `tag_id` - The database identifier of the specific tag associated with this driver result. Relates to the `id` field in a row in the [tags](#tags) main table. (an integer)
 
-  - `tag_id` - The database identifier of the specific tag associated with this result. Relates to the `id` field in a row in the [tags](#tags) main table. (an integer)
+  - `p_value` - The p value of the driver result. (a numeric value)
 
-  - `p_value` - The p value of the result. (a numeric value)
+  - `log10_p_value` - The log base 10 representation of the p value of the driver result. (a numeric value)
 
-  - `log10_p_value` - The log base 10 representation of the p value of the result. (a numeric value)
+  - `fold_change` - The fold change of the driver result. (a numeric value)
 
-  - `fold_change` - The fold change of the result. (a numeric value)
+  - `log10_p_fold_change` - The log base 10 representation of the fold change of the driver result. (a numeric value)
 
-  - `log10_p_fold_change` - The log base 10 representation of the fold change of the result. (a numeric value)
+  - `n_wt` - The number of wild type genes in the driver result. (an integer)
 
-  - `correlation` - The correlation value of the result. (a smallint)
-
-  - `n_wt` - The number of wild type genes in the result. (an integer)
-
-  - `n_mut` - The number of mutant genes in the result. (an integer)
-
-- [result_labels](#result_labels)
-
-  - `id` - A unique database identifier for the specific result label. This is an integer that is generated by the database. (an integer)
-
-  - `name` - The unique name of the result label. (a string)
+  - `n_mut` - The number of mutant genes in the driver result. (an integer)
 
 - [features](#features)
 
@@ -329,7 +347,7 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `unit` - The priority of the feature. This may be used to display features in order. (a unit_enum)
 
-  - `class_id` - The database identifier of the specific class associated with this feature. Relates to the `id` field in a row in the [classes](#classes) sub table. (an integer)
+  - `class_id` - The database identifier of the specific class associated with this feature. A class may NOT be empty. Relates to the `id` field in a row in the [classes](#classes) sub table. (an integer)
 
   - `method_tag_id` - The database identifier of the specific method tag associated with this feature. Relates to the `id` field in a row in the [method_tags](#method_tags) sub table. (an integer)
 
@@ -365,7 +383,7 @@ The following are descriptions of each field in each table. This should be exhau
 
 - [samples_to_tags](#samples_to_tags)
 
-  - `sample_id` - The database identifier of a specific gene type. Relates to the `id` field in a row in the [samples](#samples) main table. (an integer)
+  - `sample_id` - The database identifier of a specific sample. Relates to the `id` field in a row in the [samples](#samples) main table. (an integer)
 
   - `tag_id` - The database identifier of a specific tag. Relates to the `id` field in a row in the [tags](#tags) main table. (an integer)
 
@@ -375,13 +393,19 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `feature_id` - The database identifier of a specific feature. Relates to the `id` field in a row in the [features](#features) main table. (an integer)
 
+  - `value` - The feature value related to this specific sample. (a numeric value)
+
+  - `inf_value` - If a value (from the "value" column) is infinity (Inf or -Inf), the value is stored in this column. (a real value) This is using an approach similar to [https://stackoverflow.com/a/45603066](https://stackoverflow.com/a/45603066)
+
 - [nodes](#nodes)
 
   - `id` - A unique database identifier for the specific node. This is an integer that is generated by the database. (an integer)
 
-  - `node_name_id` - The database identifier of a specific node name. Relates to the `id` field in a row in the [node_names](#node_names) sub table. (an integer)
+  - `gene_id` - The database identifier of a specific gene. Relates to the `id` field in a row in the [genes](#genes) main table. (an integer)
 
-  - `ecn_value` - The extra cellular network value of the specific node. (an integer)
+  - `feature_id` - The database identifier of a specific feature. Relates to the `id` field in a row in the [features](#features) main table. (an integer)
+
+  - `score` - The score (value) of the specific node. (an integer)
 
 - [nodes_to_tags](#nodes_to_tags)
 
@@ -397,7 +421,7 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `node_2_id` - The database identifier of a specific node. Relates to the `id` field in a row in the [nodes](#nodes) main table. (an integer)
 
-  - `ratio_score` - The relationship value between the two nodes. (an integer)
+  - `score` - The relationship value between the two nodes. (an integer)
 
 ## Data Structure
 
