@@ -1,8 +1,8 @@
-features_table_builder <- function() {
+build_features_table <- function(feather_file_name) {
   default_class <- "Other"
 
   cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
-  features <- feather::read_feather("../feather_files/SQLite_data/features.feather") %>%
+  features <- feather::read_feather(feather_file_name) %>%
     dplyr::rename_at("feature", ~("name")) %>%
     dplyr::mutate(class = ifelse(is.na(class), default_class, class))
   cat(crayon::blue("Imported feather file for features."), fill = TRUE)
