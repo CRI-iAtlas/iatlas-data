@@ -33,8 +33,8 @@ validate_dupes <- function(through_put, values = NA, by = c(), info = c()) {
     valid_values <- value[!is.na(value)]
     if (length(valid_values) > 1) {
       if (var(valid_values) != 0) {
-        print_dupe_info(values,info)
-        stop("DUPLICATE DATA! Found multiple values for ",by[i],": ",paste(valid_values,collapse = ", "))
+        print_dupe_info(values, info)
+        stop("DIRTY DATA! Found multiple values for ", by[i], ": ", paste(valid_values, collapse = ", "))
       }
     }
   }
