@@ -129,6 +129,13 @@ CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
 CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
 CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
 
+-- mutation_codes table
+CREATE TABLE mutation_codes (
+    id SERIAL,
+    code VARCHAR NOT NULL,
+    PRIMARY KEY (id)
+);
+
 -- driver_results table
 CREATE TABLE driver_results (
     id SERIAL,
@@ -177,14 +184,25 @@ CREATE TABLE genes_to_types (
 );
 CREATE INDEX gene_to_type_type_id_index ON genes_to_types ("type_id");
 
+-- mutation_codes_to_gene_types table
+CREATE TABLE mutation_codes_to_gene_types (
+    mutation_code_id INTEGER REFERENCES mutation_codes,
+    "type_id" INTEGER REFERENCES gene_types,
+    PRIMARY KEY (mutation_code_id, "type_id")
+);
+CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
+
 -- genes_to_samples table
 CREATE TABLE genes_to_samples (
     gene_id INTEGER REFERENCES genes NOT NULL,
     sample_id INTEGER REFERENCES samples NOT NULL,
-    "status" STATUS_ENUM,
+    mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
     "rna_seq_expr" NUMERIC,
-    PRIMARY KEY (gene_id, sample_id)
+    "status" STATUS_ENUM,
+    PRIMARY KEY (gene_id, sample_id, mutation_code_id)
 );
+CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
+CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
 CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
 
 -- samples_to_tags table

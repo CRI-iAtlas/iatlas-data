@@ -30,7 +30,7 @@ read_table <- function(table_name) {
 # }
 
 write_table_ts <- function(df, table_name) {
-  tictoc::tic(paste0("Time taken to write to the `", table_name, "`` table in the DB"))
+  tictoc::tic(paste0("Time taken to write to the `", table_name, "` table in the DB"))
   result <- pool::poolWithTransaction(.GlobalEnv$pool, function(conn) {
     # Disable all table indexes.
     conn %>% pool::dbExecute(paste0(
