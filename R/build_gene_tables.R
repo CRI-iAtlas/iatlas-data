@@ -1,7 +1,7 @@
 build_gene_tables <- function(feather_file_folder) {
 
   apply_path <- function(sub_path) {
-    paste0(feather_file_folder,"/",sub_path)
+    paste0(feather_file_folder, "/", sub_path)
   }
 
   cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
@@ -25,11 +25,9 @@ build_gene_tables <- function(feather_file_folder) {
 
   immunomodulators <- feather::read_feather(apply_path("SQLite_data/immunomodulators.feather")) %>%
     dplyr::filter(!is.na(gene)) %>%
-    dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::rename_at("display2", ~("friendly_name")) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(references = paste0("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}")) %>%
-    dplyr::select(-c("display", "reference")) %>%
+    dplyr::mutate(references = .GlobalEnv$build_references(reference)) %>%
+    dplyr::select(-c("display", "entrez", "reference")) %>%
     tibble::add_column(
       io_landscape_name = NA %>% as.character,
       pathway = NA %>% as.character,
@@ -49,11 +47,10 @@ build_gene_tables <- function(feather_file_folder) {
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
 
-  io_targets <-
-    feather::read_feather(apply_path("SQLite_data/io_targets.feather")) %>%
+  io_targets <- feather::read_feather(apply_path("SQLite_data/io_targets.feather")) %>%
     dplyr::filter(!is.na(gene)) %>%
     dplyr::distinct(gene, .keep_all = TRUE) %>%
-    dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
+    dplyr::select(-c("entrez")) %>%
     dplyr::rename_at("display2", ~("io_landscape_name")) %>%
     tibble::add_column(
       friendly_name = NA %>% as.character(),
@@ -62,9 +59,11 @@ build_gene_tables <- function(feather_file_folder) {
       immune_checkpoint = NA %>% as.character(),
       references = NA %>% as.character(),
       super_category = NA %>% as.character()
-    ) %>%
-    dplyr::rowwise() %>%
+    )
+  io_targets <- io_targets %>%
     dplyr::mutate(references = .GlobalEnv$link_to_references(link)) %>%
+    dplyr::select(-c("display", "link")) %>%
+    dplyr::rowwise() %>%
     dplyr::mutate(
       friendly_name = .GlobalEnv$switch_value(.data, "gene", "friendly_name", immunomodulators),
       gene_family = .GlobalEnv$switch_value(.data, "gene", "gene_family", immunomodulators),
@@ -73,14 +72,13 @@ build_gene_tables <- function(feather_file_folder) {
       references = .GlobalEnv$switch_value(.data, "gene", "references", immunomodulators),
       super_category = .GlobalEnv$switch_value(.data, "gene", "super_category", immunomodulators)
     ) %>%
-    dplyr::select(-c("display", "link")) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
   ecns <- feather::read_feather(apply_path("genes/ecn_genes.feather")) %>%
     dplyr::rename_at("hgnc", ~("gene")) %>%
-    dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
+    dplyr::select(-c("entrez")) %>%
     tibble::add_column(
       description = NA %>% as.character,
       friendly_name = NA %>% as.character(),
@@ -98,7 +96,6 @@ build_gene_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building mutation_codes data."), fill = TRUE)
   mutation_codes <- driver_mutations %>%
     dplyr::distinct(gene) %>%
-    dplyr::rowwise() %>%
     dplyr::mutate(code = ifelse(!is.na(gene), .GlobalEnv$get_mutation_code(gene), NA)) %>%
     dplyr::distinct(code) %>%
     dplyr::filter(!is.na(code))
@@ -111,7 +108,7 @@ build_gene_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Binding gene expr data."), fill = TRUE)
   all_genes_expr <- driver_mutations %>%
     dplyr::bind_rows(immunomodulator_expr, io_target_expr) %>%
-    dplyr::mutate(gene = gene %>% base::strsplit("\\s") %>% .[[1]]) %>%
+    dplyr::mutate(gene = ifelse(!is.na(gene), .GlobalEnv$trim_hgnc(gene), NA)) %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Bound gene expr data."), fill = TRUE)
@@ -141,9 +138,7 @@ build_gene_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building all gene data.\n(Please be patient, this may take a little while.)"), fill = TRUE)
   all_genes_expr <- all_genes_expr %>%
     tibble::add_column(
-      canonical = NA %>% as.character,
       description = NA %>% as.character,
-      entrez = NA %>% as.character,
       friendly_name = NA %>% as.character,
       gene_family = NA %>% as.character,
       gene_function = NA %>% as.character,
@@ -157,7 +152,6 @@ build_gene_tables <- function(feather_file_folder) {
     dplyr::rowwise() %>%
     dplyr::mutate(
       description = .GlobalEnv$switch_value(.data, "gene", "description", all_genes) %>% as.character(),
-      entrez = .GlobalEnv$switch_value(.data, "gene", "entrez", all_genes) %>% as.numeric(),
       friendly_name = .GlobalEnv$switch_value(.data, "gene", "friendly_name", all_genes) %>% as.character(),
       gene_family = .GlobalEnv$switch_value(.data, "gene", "gene_family", all_genes) %>% as.character(),
       gene_function = .GlobalEnv$switch_value(.data, "gene", "gene_function", all_genes) %>% as.character(),
@@ -174,6 +168,11 @@ build_gene_tables <- function(feather_file_folder) {
     dplyr::as_tibble() %>%
     dplyr::rename_at("gene", ~("hgnc")) %>%
     dplyr::arrange(hgnc)
+  all_genes <- all_genes %>%
+    dplyr::left_join(
+      feather::read_feather(apply_path("gene_ids.feather")),
+      by = "hgnc"
+    )
   cat(crayon::blue("Built all gene data."), fill = TRUE)
 
   # Clean up.
