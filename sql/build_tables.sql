@@ -18,11 +18,15 @@ CREATE TABLE patients (
     gender VARCHAR,
     race VARCHAR,
     ethnicity VARCHAR,
+    age VARCHAR,
+    "weight" VARCHAR,
     PRIMARY KEY (id)
 );
 CREATE INDEX patient_gender_index ON patients (gender);
 CREATE INDEX patient_race_index ON patients (race);
 CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
+CREATE INDEX patient_age_index ON patients (age);
+CREATE INDEX patient_weight_index ON patients ("weight");
 
 -- samples table
 CREATE TABLE samples (
