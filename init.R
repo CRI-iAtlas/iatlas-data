@@ -69,7 +69,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
 
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  run_build_script("build_features_table", "feather_files/SQLite_data/features.feather")
+  run_build_script("build_features_tables", "feather_files/SQLite_data/features.feather")
   run_build_script("build_tags_tables", "feather_files/SQLite_data/groups.feather")
   run_build_script("build_gene_tables", "feather_files")
   run_build_script("build_samples_tables", "feather_files")
@@ -88,16 +88,26 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   rm(pool, pos = ".GlobalEnv")
 
   # Functions
+  rm(build_features_tables, pos = ".GlobalEnv")
+  rm(build_genes_tables, pos = ".GlobalEnv")
+  rm(build_references, pos = ".GlobalEnv")
+  rm(build_tags_tables, pos = ".GlobalEnv")
   rm(connect_to_db, pos = ".GlobalEnv")
   rm(delete_rows, pos = ".GlobalEnv")
   rm(driver_results_label_to_hgnc, pos = ".GlobalEnv")
   rm(filter_na, pos = ".GlobalEnv")
+  rm(get_mutation_code, pos = ".GlobalEnv")
+  rm(get_tag_column_names, pos = ".GlobalEnv")
+  rm(get_unique_valid_values, pos = ".GlobalEnv")
   rm(is_df_empty, pos = ".GlobalEnv")
   rm(link_to_references, pos = ".GlobalEnv")
   rm(load_feather_data, pos = ".GlobalEnv")
+  rm(print_dupe_info, pos = ".GlobalEnv")
   rm(read_table, pos = ".GlobalEnv")
   rm(rebuild_gene_relational_data, pos = ".GlobalEnv")
   rm(switch_value, pos = ".GlobalEnv")
+  rm(trim_hgnc, pos = ".GlobalEnv")
+  rm(validate_dupes, pos = ".GlobalEnv")
   rm(write_table_ts, pos = ".GlobalEnv")
   if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
 
