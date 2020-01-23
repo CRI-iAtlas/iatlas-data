@@ -11,12 +11,16 @@ rm(load_dependencies, pos = ".GlobalEnv")
 #' @param env
 #' @param reset "reset" or "create" or NULL
 #' @param resume_at = NULL or step-name-string - will skip all steps until the specified step, which will be executed as well as all following steps
+#' resume_at can also == "auto" and it will resume at the previous fail-point, or, if none, it will start at the top
+#'
 #' @param stop_after = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
 build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_after = NULL) {
 
   present <- function (a) {!is.na(a) && !is.null(a)}
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
+  if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
+  if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
   running_is_on <- is.null(resume_at)
 
   run_build_script <- function(script_name, ...) {
@@ -27,7 +31,11 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
       tryCatch({
         source(paste0("R/",script_name,".R"))$value(...)
       }, error = function(e) {
-        cat(crayon::magenta(crayon::bold(paste0("resume here with option: resume_at = '", script_name, "'"))), fill = TRUE)
+        .GlobalEnv$resume_at <- script_name
+        cat(crayon::magenta(crayon::bold(paste0(script_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
+
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(..., resume_at = 'auto')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(..., resume_at = '", script_name, "')"))), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
@@ -91,6 +99,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   rm(rebuild_gene_relational_data, pos = ".GlobalEnv")
   rm(switch_value, pos = ".GlobalEnv")
   rm(write_table_ts, pos = ".GlobalEnv")
+  if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
 
   cat("Cleaned up.", fill = TRUE)
   gc()
