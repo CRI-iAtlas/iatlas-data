@@ -1,5 +1,15 @@
 # Create a database connection.
 connect_to_db <- function() {
+  cat(crayon::blue(paste(
+    "connect_to_db:",
+    "\n  dbname: ", .GlobalEnv$DB_NAME,
+    "\n  host:   ", .GlobalEnv$DB_HOST,
+    "\n  port:   ", .GlobalEnv$DB_PORT,
+    "\n  user:   ", .GlobalEnv$DB_USER,
+    "\n"
+
+  ), fill = TRUE))
+
   return(pool::dbPool(
     # Connect to a PostgreSQL database.
     drv = RPostgres::Postgres(),
