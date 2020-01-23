@@ -1,4 +1,4 @@
-build_features_table <- function(feather_file_name) {
+build_features_tables <- function(feather_file_name) {
   default_class <- "Other"
 
   cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
