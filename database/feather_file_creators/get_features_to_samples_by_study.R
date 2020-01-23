@@ -43,8 +43,8 @@ get_features_to_samples_by_study <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("samples") %>%
-        dplyr::select(id, sample_id) %>%
-        dplyr::rename_at("sample_id", ~("sample")),
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("sample")),
       by = c("sample_id" = "id")
     ) %>%
     dplyr::distinct(feature, sample, value, inf_value) %>%

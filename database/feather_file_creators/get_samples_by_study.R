@@ -40,7 +40,7 @@ get_samples_by_study <- function(study) {
         dplyr::filter(name == study),
       by = "tag_id"
     ) %>%
-    dplyr::select(sample_id, tissue_id) %>%
+    dplyr::select(name, tissue_id) %>%
     dplyr::as_tibble()
 
   pool::poolReturn(current_pool)

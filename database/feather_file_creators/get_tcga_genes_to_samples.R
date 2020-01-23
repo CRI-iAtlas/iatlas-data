@@ -26,8 +26,8 @@ get_tcga_genes_to_samples <- function() {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("samples") %>%
-        dplyr::select(id, sample_id) %>%
-        dplyr::rename_at("sample_id", ~("sample")),
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("sample")),
       by = c("sample_id" = "id")
     ) %>%
     dplyr::distinct(hgnc, sample, rna_seq_expr, status) %>%

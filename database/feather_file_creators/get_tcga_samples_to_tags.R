@@ -33,8 +33,8 @@ get_tcga_samples_to_tags <- function(study) {
     dplyr::left_join(
       current_pool %>%
         dplyr::tbl("samples") %>%
-        dplyr::select(id, sample_id) %>%
-        dplyr::rename_at("sample_id", ~("sample")),
+        dplyr::select(id, name) %>%
+        dplyr::rename_at("name", ~("sample")),
       by = c("related_tag_id" = "id")
     ) %>%
     dplyr::left_join(

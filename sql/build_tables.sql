@@ -27,11 +27,11 @@ CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
 -- samples table
 CREATE TABLE samples (
     id SERIAL,
-    sample_id VARCHAR NOT NULL,
+    "name" VARCHAR NOT NULL,
     tissue_id VARCHAR,
     PRIMARY KEY (id)
 );
-CREATE UNIQUE INDEX sample_sample_id_index ON samples (sample_id);
+CREATE UNIQUE INDEX sample_name_index ON samples ("name");
 
 -- gene_families table
 CREATE TABLE gene_families (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
