@@ -75,7 +75,7 @@ build_samples_tables <- function(feather_file_folder) {
     dplyr::distinct(sample, tag_id)
   samples_to_tags <- sample_set_tcga_study %>%
     dplyr::bind_rows(sample_set_tcga_subtype, sample_set_immune_subtype) %>%
-    dplyr::inner_join(samples, by = c("sample" = "sample_id")) %>%
+    dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, tag_id) %>%
     dplyr::rename_at("id", ~("sample_id"))
   cat(crayon::blue("Built samples_to_tags data."), fill = TRUE)
@@ -101,7 +101,7 @@ build_samples_tables <- function(feather_file_folder) {
     dplyr::rename_at("id", ~("feature_id")) %>%
     dplyr::distinct(sample, feature_id, value)
   features_to_samples <- sample_set_features %>%
-    dplyr::inner_join(samples, by = c("sample" = "sample_id")) %>%
+    dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, feature_id, value) %>%
     dplyr::rename_at("id", ~("sample_id")) %>%
     dplyr::rowwise() %>%
