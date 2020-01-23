@@ -27,7 +27,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
       tryCatch({
         source(paste0("R/",script_name,".R"))$value(...)
       }, error = function(e) {
-        cat(crayon::magenta(crayon::bold(paste0("resume here with option: resume_at = '", script_name, "'"))))
+        cat(crayon::magenta(crayon::bold(paste0("resume here with option: resume_at = '", script_name, "'"))), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
