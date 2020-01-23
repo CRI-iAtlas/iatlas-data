@@ -8,7 +8,7 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 ### Requirements
 
-IMPORTANT: For the smoothest installation, install git-lfs BEFORE cloning this repository.
+**IMPORTANT**: For the smoothest installation, install git-lfs BEFORE cloning this repository.
 
 - git-lfs: https://git-lfs.github.com
 
@@ -16,8 +16,7 @@ IMPORTANT: For the smoothest installation, install git-lfs BEFORE cloning this r
 
   - For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
 
-
-  **Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
+**Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
 
 - R: https://www.r-project.org/ - v3.6.2
 
@@ -31,12 +30,21 @@ IMPORTANT: For the smoothest installation, install git-lfs BEFORE cloning this r
 
   - Windows: https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes
 
-
 - libpq (postgres): https://www.postgresql.org/download/
 
 - lib cairo: https://www.cairographics.org/ (only required for iAtlas client)
 
 - gfortran (libgfortran): usually installed with gcc
+
+- The (very large) RNA Seq Expression file.
+
+  1. Please create a folder called `tsv_files` in the root of the project directory.
+
+  1. Please go to [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
+
+  1. Please find _RNA (Final) - `EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv`_ on the page and click the file to download it.
+
+  1. Please save the file to the `tsv_files` folder that you created in step 1.
 
 ### MacOS Install instructions
 
@@ -66,7 +74,6 @@ To build the database locally:
       ```
 
    The database should now be available on `localhost:5432`. The database is called `iatlas_dev`.
-
 
 ## Testing
 
