@@ -3,6 +3,7 @@ if (Sys.getenv("RSTUDIO") == "1" | Sys.getenv("DOCKERBUILD") == "1") {
   try(install.packages("startup"))
 }
 
-
 # Attempt to run startup
 try(startup::startup())
+
+source("./init.R")

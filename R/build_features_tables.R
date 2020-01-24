@@ -19,7 +19,7 @@ build_features_tables <- function(feather_file_name) {
 
   # Create the classes table with data.
   cat(crayon::magenta("Building classes table."), fill = TRUE)
-  table_written <- classes %>% .GlobalEnv$write_table_ts("classes")
+  table_written <- classes %>% iatlas.data::write_table_ts("classes")
   cat(crayon::blue("Built classes table. (", nrow(classes), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building method_tags data."), fill = TRUE)
@@ -32,12 +32,12 @@ build_features_tables <- function(feather_file_name) {
 
   # Create the method_tags table with data.
   cat(crayon::magenta("Building method_tags table."), fill = TRUE)
-  table_written <- method_tags %>% .GlobalEnv$write_table_ts("method_tags")
+  table_written <- method_tags %>% iatlas.data::write_table_ts("method_tags")
   cat(crayon::blue("Built method_tags table. (", nrow(method_tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building features data."), fill = TRUE)
-  classes <- .GlobalEnv$read_table("classes") %>% dplyr::as_tibble()
-  method_tags <- .GlobalEnv$read_table("method_tags") %>% dplyr::as_tibble()
+  classes <- iatlas.data::read_table("classes") %>% dplyr::as_tibble()
+  method_tags <- iatlas.data::read_table("method_tags") %>% dplyr::as_tibble()
   features <- features %>%
     dplyr::left_join(classes, by = c("class" = "name")) %>%
     dplyr::rename_at("id", ~("class_id")) %>%
@@ -48,7 +48,7 @@ build_features_tables <- function(feather_file_name) {
   cat(crayon::blue("Built features data"), fill = TRUE)
 
   cat(crayon::magenta("Built features table."), fill = TRUE)
-  table_written <- features %>% .GlobalEnv$write_table_ts("features")
+  table_written <- features %>% iatlas.data::write_table_ts("features")
   cat(crayon::blue("Built features table. (", nrow(features), "rows )"), fill = TRUE, sep = " ")
 
   cat("Cleaned up.", fill = TRUE)

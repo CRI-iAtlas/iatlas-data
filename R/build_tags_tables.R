@@ -32,11 +32,11 @@ build_tags_tables <- function(feather_file_name) {
   cat(crayon::magenta("Building tags table."), fill = TRUE)
   table_written <- tags %>%
     dplyr::select(-c("parent_group", "parent_group_display", "subtype_group", "subtype_group_display")) %>%
-    .GlobalEnv$write_table_ts("tags")
+    iatlas.data::write_table_ts("tags")
   cat(crayon::blue("Built tags table. (", nrow(tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building tags_to_tags data."), fill = TRUE)
-  tags_db <- .GlobalEnv$read_table("tags") %>%
+  tags_db <- iatlas.data::read_table("tags") %>%
     dplyr::as_tibble() %>%
     dplyr::select(id, name)
   all_tags_with_tag_ids <- tags %>%
@@ -59,7 +59,7 @@ build_tags_tables <- function(feather_file_name) {
   cat(crayon::magenta("Built tags_to_tags data."), fill = TRUE)
 
   cat(crayon::magenta("Building tags_to_tags table."), fill = TRUE)
-  table_written <- tags_to_tags %>% .GlobalEnv$write_table_ts("tags_to_tags")
+  table_written <- tags_to_tags %>% iatlas.data::write_table_ts("tags_to_tags")
   cat(crayon::magenta("Built tags_to_tags table. (", nrow(tags_to_tags), "rows )"), fill = TRUE, sep = " ")
 
   cat("Cleaned up.", fill = TRUE)
