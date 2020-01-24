@@ -95,5 +95,5 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
 
   # Don't show garbage collection details any longer.
   gcinfo(FALSE)
-  return(NA);
+  invisible(NULL);
 }
