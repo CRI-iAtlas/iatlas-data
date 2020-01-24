@@ -254,13 +254,6 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built genes table. (", nrow(genes), "rows )"), fill = TRUE, sep = " ")
 
   # Clean up.
-  rm(all_genes)
-  rm(gene_families)
-  rm(gene_functions)
-  rm(immune_checkpoints)
-  rm(pathways)
-  rm(super_categories)
-  rm(therapy_types)
   cat("Cleaned up.", fill = TRUE)
   gc()
 
