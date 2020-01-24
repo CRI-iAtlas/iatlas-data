@@ -20,7 +20,7 @@
   test_that("build_features_tables", {
     expect_equal(.GlobalEnv$DB_NAME, "iatlas_shiny_test")
 
-    build_features_tables("ho")
+    build_features_tables("../../feather_files/SQLite_data/features.feather")
   })
 
   teardown(pool::poolClose(.GlobalEnv$pool))
