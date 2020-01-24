@@ -25,6 +25,32 @@
   .GlobalEnv$DB_USER <- Sys.getenv("DB_USER", unset = "postgres")
   .GlobalEnv$DB_PW <- Sys.getenv("DB_PW", unset = "docker")
 
+  exists <- function (file) {
+    paste0(
+      file,
+      " exists: ",
+      file.exists(file)
+    )
+  }
+
+  # system("find ../../ > /Users/shanebdavis/temp/iatlas.data.cover.files.txt")
+
+  # stop(crayon::yellow(paste(
+  #   "\n====================================================================",
+  #   exists("../test_data"),
+  #   exists("../test_data/integrations"),
+  #   exists("../test_data/integrations/features.feather"),
+  #   # "getwd: ",
+  #   # getwd(),
+  #   # "find_root: ",
+  #   # rprojroot::find_root("DESCRIPTION"),
+  #   # exists("../../iatlas.data-feather_files"),
+  #   # exists("../feather_files"),
+  #   "====================================================================",
+  #   sep = "\n"
+  # )))
+
+
   test_that("create_db", {
     iatlas.data::create_db("test", "reset")
     expect_equal("fun", "fun")
@@ -37,19 +63,19 @@
   })
 
   test_that("build_features_tables", {
-    iatlas.data::build_features_tables("../../feather_files/SQLite_data/features.feather")
+    iatlas.data::build_features_tables("../test_data/integrations/features.feather")
     expect_equal("todo","todo")
   })
 
   test_that("build_tags_tables", {
-    iatlas.data::build_tags_tables("../../feather_files/SQLite_data/groups.feather")
+    iatlas.data::build_tags_tables("../test_data/integrations/groups.feather")
     expect_equal("todo","todo")
   })
 
-  test_that("build_gene_tables", {
-    iatlas.data::build_gene_tables("../../feather_files")
-    expect_equal("todo","todo")
-  })
+  # test_that("build_gene_tables", {
+  #   iatlas.data::build_gene_tables("../../feather_files")
+  #   expect_equal("todo","todo")
+  # })
 
   teardown(pool::poolClose(.GlobalEnv$pool))
   teardown(rm(pool, pos = ".GlobalEnv"))
