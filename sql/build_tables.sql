@@ -53,6 +53,10 @@ CREATE UNIQUE INDEX gene_type_name_index ON gene_types ("name");
 CREATE TABLE immune_checkpoints (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
 CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints ("name");
 
+-- node_types table
+CREATE TABLE node_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+CREATE UNIQUE INDEX node_type_name_index ON node_types ("name");
+
 -- pathways table
 CREATE TABLE pathways (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
 CREATE UNIQUE INDEX pathway_name_index ON pathways ("name");
@@ -118,6 +122,7 @@ CREATE TABLE genes (
     gene_family_id INTEGER REFERENCES gene_families,
     gene_function_id INTEGER REFERENCES gene_functions,
     immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
+    node_type_id INTEGER REFERENCES node_types,
     pathway_id INTEGER REFERENCES pathways,
     "references" TEXT[],
     super_cat_id INTEGER REFERENCES super_categories,
@@ -129,6 +134,7 @@ CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);
 CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);
 CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);
 CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);
+CREATE INDEX gene_node_type_id_index ON genes (node_type_id);
 CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
 CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
 CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
