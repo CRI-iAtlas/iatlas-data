@@ -105,7 +105,6 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   rm(print_dupe_info, pos = ".GlobalEnv")
   rm(read_table, pos = ".GlobalEnv")
   rm(rebuild_gene_relational_data, pos = ".GlobalEnv")
-  rm(switch_value, pos = ".GlobalEnv")
   rm(trim_hgnc, pos = ".GlobalEnv")
   rm(validate_dupes, pos = ".GlobalEnv")
   rm(write_table_ts, pos = ".GlobalEnv")

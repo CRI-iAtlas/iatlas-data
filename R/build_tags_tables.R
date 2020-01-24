@@ -1,9 +1,7 @@
 build_tags_tables <- function(feather_file_name) {
   cat(crayon::magenta("Importing feather file for tags."), fill = TRUE)
   initial_tags <- feather::read_feather(feather_file_name) %>%
-    dplyr::as_tibble() %>%
-    dplyr::rename_at("group", ~("name")) %>%
-    dplyr::rename_at("group_name", ~("display"))
+    dplyr::rename(name = group, display = group_name)
   cat(crayon::blue("Imported feather file for tags."), fill = TRUE)
 
   cat(crayon::magenta("Building tags data"), fill = TRUE)
@@ -11,16 +9,14 @@ build_tags_tables <- function(feather_file_name) {
     dplyr::filter(!is.na(parent_group)) %>%
     dplyr::distinct(parent_group, .keep_all = TRUE) %>%
     dplyr::select(parent_group, parent_group_display) %>%
-    dplyr::rename_at("parent_group", ~("name")) %>%
-    dplyr::rename_at("parent_group_display", ~("display")) %>%
+    dplyr::rename(name = parent_group,display = parent_group_display) %>%
     tibble::add_column(characteristics = NA, color = NA, .after = "display") %>%
     dplyr::arrange(name)
   subtype <- initial_tags %>%
     dplyr::filter(!is.na(subtype_group)) %>%
     dplyr::distinct(subtype_group, .keep_all = TRUE) %>%
     dplyr::select(subtype_group, subtype_group_display) %>%
-    dplyr::rename_at("subtype_group", ~("name")) %>%
-    dplyr::rename_at("subtype_group_display", ~("display")) %>%
+    dplyr::rename(name = subtype_group, display = subtype_group_display) %>%
     tibble::add_column(characteristics = NA, color = NA, .after = "display") %>%
     dplyr::arrange(name)
   tags <- parents %>%
@@ -42,17 +38,17 @@ build_tags_tables <- function(feather_file_name) {
   all_tags_with_tag_ids <- tags %>%
     dplyr::inner_join(tags_db, by = "name") %>%
     dplyr::select(id, parent_group, subtype_group) %>%
-    dplyr::rename_at("id", ~("tag_id"))
+    dplyr::rename(tag_id = id)
   related_parent_tags <- all_tags_with_tag_ids %>%
-    dplyr::rename_at("parent_group", ~("name")) %>%
+    dplyr::rename(name = parent_group) %>%
     dplyr::inner_join(tags_db, by = "name") %>%
     dplyr::select(tag_id, id) %>%
-    dplyr::rename_at("id", ~("related_tag_id"))
+    dplyr::rename(related_tag_id = id)
   related_subtype_tags <- all_tags_with_tag_ids %>%
-    dplyr::rename_at("subtype_group", ~("name")) %>%
+    dplyr::rename(name = subtype_group) %>%
     dplyr::inner_join(tags_db, by = "name") %>%
     dplyr::select(tag_id, id) %>%
-    dplyr::rename_at("id", ~("related_tag_id"))
+    dplyr::rename(related_tag_id = id)
   tags_to_tags <- related_parent_tags %>%
     dplyr::bind_rows(related_subtype_tags) %>%
     dplyr::distinct(tag_id, related_tag_id)
