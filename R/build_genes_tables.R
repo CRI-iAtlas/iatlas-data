@@ -216,7 +216,7 @@ build_genes_tables <- function(feather_file_folder) {
     dplyr::rename(super_cat_id = id)
   cat(crayon::cyan("Adding therapy_type ids."), fill = TRUE)
   genes <- genes %>%
-    dplyr::left_join(.GlobalEnv$read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
+    dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename(therapy_type_id = id) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
   cat(crayon::blue("Built genes data."), fill = TRUE)
