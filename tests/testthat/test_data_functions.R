@@ -111,21 +111,6 @@
     expect_that(link_to_references(link), is_identical_to(expected))
   })
 
-  # switch_value
-  test_that("switch_value returns NA when no value present.", {
-    reference <- dplyr::tibble(gene = c("1", "2", "3"), scoobs = c(NA, NA, NA))
-    some_object <- dplyr::tibble(gene = c("", "", ""), scoobs = c("4", "5", "6"))
-    result <- switch_value(reference[1,], "gene", "scoobs", some_object)
-
-    expect_that(result, is_identical_to(NA))
-  })
-
-  # test_that("switch_value returns the value from the second object.", {
-  #   reference <- dplyr::tibble(gene = c("1"), scoobs = c("8"))
-  #   some_object <- dplyr::tibble(gene = c("1"), scoobs = c("4"))
-  #   expect_error(switch_value(reference[1,], "gene", "scoobs", some_object))
-  # })
-
   test_that("driver_results_label_to_hgnc extracts the hugo-id", {
     expect_that(driver_results_label_to_hgnc("RQCD1 P131L;SKC"), is_identical_to("RQCD1 P131L"))
     expect_that(driver_results_label_to_hgnc("APC R213*;COAD"), is_identical_to("APC R213*"))

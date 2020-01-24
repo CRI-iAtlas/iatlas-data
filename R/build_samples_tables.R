@@ -21,7 +21,7 @@ build_samples_tables <- function(feather_file_folder) {
       feather::read_feather(apply_path("SQLite_data/io_target_expr4.feather")),
       feather::read_feather(apply_path("SQLite_data/immunomodulator_expr.feather"))
     ) %>%
-    dplyr::rename_at("value", ~("rna_seq_expr")) %>%
+    dplyr::rename(rna_seq_expr = value) %>%
     dplyr::bind_rows(feature_values_long) %>%
     dplyr::arrange(sample)
   cat(crayon::blue("Imported feather files for samples and combined all the sample data."), fill = TRUE)
@@ -36,10 +36,10 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building samples data."), fill = TRUE)
   samples <- all_samples %>%
     dplyr::distinct(sample) %>%
-    dplyr::rename_at("sample", ~("name")) %>%
+    dplyr::rename(name = sample) %>%
     merge(til_image_links, by.x = "name", by.y = "sample", all = TRUE) %>%
     dplyr::arrange(name) %>%
-    dplyr::rename_at("link", ~("tissue_id")) %>%
+    dplyr::rename(tissue_id = link) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(tissue_id = stringi::stri_extract_first(tissue_id, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"))
   cat(crayon::blue("Built samples data."), fill = TRUE)
@@ -61,23 +61,23 @@ build_samples_tables <- function(feather_file_folder) {
   sample_set_tcga_study <- all_samples %>%
     dplyr::distinct(sample, TCGA_Study) %>%
     dplyr::inner_join(tags, by = c("TCGA_Study" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   sample_set_tcga_subtype <- all_samples %>%
     dplyr::distinct(sample, TCGA_Subtype) %>%
     dplyr::inner_join(tags, by = c("TCGA_Subtype" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   sample_set_immune_subtype <- all_samples %>%
     dplyr::distinct(sample, Immune_Subtype) %>%
     dplyr::inner_join(tags, by = c("Immune_Subtype" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   samples_to_tags <- sample_set_tcga_study %>%
     dplyr::bind_rows(sample_set_tcga_subtype, sample_set_immune_subtype) %>%
     dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, tag_id) %>%
-    dplyr::rename_at("id", ~("sample_id"))
+    dplyr::rename(sample_id = id)
   cat(crayon::blue("Built samples_to_tags data."), fill = TRUE)
 
   rm(sample_set_tcga_study)
@@ -98,12 +98,12 @@ build_samples_tables <- function(feather_file_folder) {
   sample_set_features <- all_samples %>%
     dplyr::distinct(sample, feature, value) %>%
     dplyr::inner_join(features, by = c("feature" = "name")) %>%
-    dplyr::rename_at("id", ~("feature_id")) %>%
+    dplyr::rename(feature_id = id) %>%
     dplyr::distinct(sample, feature_id, value)
   features_to_samples <- sample_set_features %>%
     dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, feature_id, value) %>%
-    dplyr::rename_at("id", ~("sample_id")) %>%
+    dplyr::rename(sample_id = id) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(inf_value = ifelse(is.infinite(value), value, NA), value = ifelse(is.finite(value), value, NA))
   cat(crayon::blue("Built samples_to_features data."), fill = TRUE)
@@ -128,9 +128,9 @@ build_samples_tables <- function(feather_file_folder) {
       hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)
     )
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(genes %>% dplyr::rename_at("id", ~("gene_id")), by = "hgnc")
+    dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(mutation_codes %>% dplyr::rename_at("id", ~("mutation_code_id")), by = "code")
+    dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
   genes_to_samples <- genes_to_samples %>%
     dplyr::distinct(sample, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
@@ -138,7 +138,7 @@ build_samples_tables <- function(feather_file_folder) {
   genes_to_samples <- genes_to_samples %>%
     dplyr::distinct(id, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
-    dplyr::rename_at("id", ~("sample_id")) %>%
+    dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
     dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%

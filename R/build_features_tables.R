@@ -3,14 +3,14 @@ build_features_tables <- function(feather_file_name) {
 
   cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
   features <- feather::read_feather(feather_file_name) %>%
-    dplyr::rename_at("feature", ~("name")) %>%
+    dplyr::rename(name = feature) %>%
     dplyr::mutate(class = ifelse(is.na(class), default_class, class))
   cat(crayon::blue("Imported feather file for features."), fill = TRUE)
 
   cat(crayon::magenta("Building classes data."), fill = TRUE)
   classes <- features %>%
     dplyr::distinct(class) %>%
-    dplyr::rename_at("class", ~("name")) %>%
+    dplyr::rename(name = class) %>%
     dplyr::add_row(name = "Survival Time") %>%
     dplyr::add_row(name = "Survival Status") %>%
     dplyr::add_row(name = "Miscellaneous") %>%
@@ -26,7 +26,7 @@ build_features_tables <- function(feather_file_name) {
   method_tags <- features %>%
     dplyr::filter(!is.na(methods_tag)) %>%
     dplyr::distinct(methods_tag) %>%
-    dplyr::rename_at("methods_tag", ~("name")) %>%
+    dplyr::rename(name = methods_tag) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built method_tags data"), fill = TRUE)
 
@@ -40,9 +40,9 @@ build_features_tables <- function(feather_file_name) {
   method_tags <- iatlas.data::read_table("method_tags") %>% dplyr::as_tibble()
   features <- features %>%
     dplyr::left_join(classes, by = c("class" = "name")) %>%
-    dplyr::rename_at("id", ~("class_id")) %>%
+    dplyr::rename(class_id = id) %>%
     dplyr::left_join(method_tags, by = c("methods_tag" = "name")) %>%
-    dplyr::rename_at("id", ~("method_tag_id")) %>%
+    dplyr::rename(method_tag_id = id) %>%
     dplyr::select(name, display, order, unit, class_id, method_tag_id) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built features data"), fill = TRUE)

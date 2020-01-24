@@ -25,8 +25,13 @@ build_genes_tables <- function(feather_file_folder) {
 
   immunomodulators <- feather::read_feather(apply_path("SQLite_data/immunomodulators.feather")) %>%
     dplyr::filter(!is.na(gene)) %>%
+<<<<<<< HEAD
     dplyr::rename_at("display2", ~("friendly_name")) %>%
     dplyr::mutate(references = iatlas.data::build_references(reference)) %>%
+=======
+    dplyr::rename(friendly_name = display2) %>%
+    dplyr::mutate(references = .GlobalEnv$build_references(reference)) %>%
+>>>>>>> feature/feather_file_structure
     dplyr::select(-c("display", "entrez", "reference")) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported immunomodulators feather files for genes"), fill = TRUE)
@@ -45,8 +50,13 @@ build_genes_tables <- function(feather_file_folder) {
     dplyr::filter(!is.na(gene)) %>%
     dplyr::distinct(gene, .keep_all = TRUE) %>%
     dplyr::select(-c("entrez")) %>%
+<<<<<<< HEAD
     dplyr::rename_at("display2", ~("io_landscape_name")) %>%
     dplyr::mutate(references = iatlas.data::link_to_references(link)) %>%
+=======
+    dplyr::rename(io_landscape_name = display2) %>%
+    dplyr::mutate(references = .GlobalEnv$link_to_references(link)) %>%
+>>>>>>> feature/feather_file_structure
     dplyr::select(-c("display", "link")) %>%
     dplyr::left_join(immunomodulators, by = "gene",suffix = c("",".y"))  %>%
     dplyr::select(-dplyr::ends_with(".y")) %>%
@@ -55,7 +65,7 @@ build_genes_tables <- function(feather_file_folder) {
 
   cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
   ecns <- feather::read_feather(apply_path("genes/ecn_genes.feather")) %>%
-    dplyr::rename_at("hgnc", ~("gene")) %>%
+    dplyr::rename(gene = hgnc) %>%
     dplyr::select(-c("entrez")) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported extra cellular network (ecn) feather files for genes."), fill = TRUE)
@@ -91,6 +101,7 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Bound ecn, immunomodulators, and io_targets."), fill = TRUE)
 
   cat(crayon::magenta("Building all gene data.\n(Please be patient, this may take a little while.)"), fill = TRUE)
+<<<<<<< HEAD
   all_genes_expr <- all_genes_expr %>%
     tibble::add_column(
       description = NA %>% as.character,
@@ -118,10 +129,11 @@ build_genes_tables <- function(feather_file_folder) {
       therapy_type = iatlas.data::switch_value(.data, "gene", "therapy_type", all_genes) %>% as.character()
     ) %>%
     dplyr::anti_join(all_genes, by = "gene")
+=======
+>>>>>>> feature/feather_file_structure
   all_genes <- all_genes_expr %>%
-    dplyr::bind_rows(all_genes) %>%
-    dplyr::as_tibble() %>%
-    dplyr::rename_at("gene", ~("hgnc")) %>%
+    dplyr::full_join(all_genes, by = "gene") %>%
+    dplyr::rename(hgnc = gene) %>%
     dplyr::arrange(hgnc)
   all_genes <- all_genes %>%
     dplyr::left_join(
@@ -149,11 +161,19 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
+<<<<<<< HEAD
   mutation_codes_to_gene_types <- iatlas.data::read_table("mutation_codes") %>%
     dplyr::rename_at("id", ~("mutation_code_id")) %>%
     tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
     dplyr::left_join(iatlas.data::read_table("gene_types"), by = c("type" = "name")) %>%
     dplyr::rename_at("id", ~("type_id")) %>%
+=======
+  mutation_codes_to_gene_types <- .GlobalEnv$read_table("mutation_codes") %>%
+    dplyr::rename(mutation_code_id = id) %>%
+    tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
+    dplyr::left_join(.GlobalEnv$read_table("gene_types"), by = c("type" = "name")) %>%
+    dplyr::rename(type_id = id) %>%
+>>>>>>> feature/feather_file_structure
     dplyr::distinct(mutation_code_id, type_id)
   cat(crayon::blue("Built mutation_codes_to_gene_types data (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
@@ -220,6 +240,7 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building genes data."), fill = TRUE)
   cat(crayon::cyan("Adding gene_family ids."), fill = TRUE)
   genes <- all_genes %>%
+<<<<<<< HEAD
     dplyr::left_join(iatlas.data::read_table("gene_families"), by = c("gene_family" = "name")) %>%
     dplyr::rename_at("id", ~("gene_family_id"))
   cat(crayon::cyan("Adding gene_function ids."), fill = TRUE)
@@ -246,6 +267,34 @@ build_genes_tables <- function(feather_file_folder) {
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename_at("id", ~("therapy_type_id")) %>%
+=======
+    dplyr::left_join(.GlobalEnv$read_table("gene_families"), by = c("gene_family" = "name")) %>%
+    dplyr::rename(gene_family_id = id)
+  cat(crayon::cyan("Adding gene_function ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("gene_functions"), by = c("gene_function" = "name")) %>%
+    dplyr::rename(gene_function_id = id)
+  cat(crayon::cyan("Adding immune_checkpoint ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("immune_checkpoints"), by = c("immune_checkpoint" = "name")) %>%
+    dplyr::rename(immune_checkpoint_id = id)
+  cat(crayon::cyan("Adding node_type ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("node_types"), by = c("node_type" = "name")) %>%
+    dplyr::rename(node_type_id = id)
+  cat(crayon::cyan("Adding pathway ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("pathways"), by = c("pathway" = "name")) %>%
+    dplyr::rename(pathway_id = id)
+  cat(crayon::cyan("Adding super_category ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("super_categories"), by = c("super_category" = "name")) %>%
+    dplyr::rename(super_cat_id = id)
+  cat(crayon::cyan("Adding therapy_type ids."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::left_join(.GlobalEnv$read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
+    dplyr::rename(therapy_type_id = id) %>%
+>>>>>>> feature/feather_file_structure
     dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
   cat(crayon::blue("Built genes data."), fill = TRUE)
 
@@ -275,7 +324,7 @@ build_genes_tables <- function(feather_file_folder) {
   genes_to_types <- driver_mutations %>%
     dplyr::bind_rows(ecns, immunomodulator_expr, io_target_expr) %>%
     dplyr::inner_join(genes, by = c("gene" = "hgnc")) %>%
-    dplyr::rename_at("id", ~("gene_id")) %>%
+    dplyr::rename(gene_id = id) %>%
     dplyr::distinct(gene_id, type_id) %>%
     dplyr::arrange(gene_id, type_id)
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
