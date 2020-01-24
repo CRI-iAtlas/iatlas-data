@@ -71,7 +71,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
 
   run_build_script("build_features_tables", "feather_files/SQLite_data/features.feather")
   run_build_script("build_tags_tables", "feather_files/SQLite_data/groups.feather")
-  run_build_script("build_gene_tables", "feather_files")
+  run_build_script("build_genes_tables", "feather_files")
   run_build_script("build_samples_tables", "feather_files")
 
   source("database/build_driver_results_tables.R", chdir = TRUE)
