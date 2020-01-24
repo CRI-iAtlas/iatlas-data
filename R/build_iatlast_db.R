@@ -51,34 +51,22 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
     }
   }
 
-  # Make the custom data functions available.
-  # source("R/data_functions.R", chdir = TRUE)
-
-  # Make the custom database functions available.
-  # source("R/database_functions.R", chdir = TRUE)
-
-  # The database connection.
-  # source("R/connect_to_db.R", chdir = TRUE)
+  # Show garbage collection info
+  gcinfo(show_gc_info)
 
   # Reset the database so new data is not corrupted by any old data.
   run_skippable_function(create_db, env, reset)
-
-  # Show garbage collection info
-  gcinfo(show_gc_info)
 
   # Create a global variable to hold the pool DB connection.
   cat(crayon::green("CREATE: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(build_features_tables, "feather_files/SQLite_data/features.feather")
-  run_skippable_function(build_tags_tables,     "feather_files/SQLite_data/groups.feather")
-  run_skippable_function(build_genes_tables,    "feather_files")
-
-  run_skippable_function(build_samples_tables,  "feather_files")
-
-  source("database/build_driver_results_tables.R", chdir = TRUE)
-
-  run_skippable_function(build_nodes_tables, "feather_files")
+  run_skippable_function(build_features_tables,       "feather_files/SQLite_data/features.feather")
+  run_skippable_function(build_tags_tables,           "feather_files/SQLite_data/groups.feather")
+  run_skippable_function(build_genes_tables,          "feather_files")
+  run_skippable_function(build_samples_tables,        "feather_files")
+  run_skippable_function(build_driver_results_tables, "feather_files")
+  run_skippable_function(build_nodes_tables,          "feather_files")
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
