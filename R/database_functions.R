@@ -7,6 +7,20 @@ delete_rows <- function(table_name) {
   return(result)
 }
 
+table_exists <- function(table_name) {
+  current_pool <- pool::poolCheckout(.GlobalEnv$pool)
+  result <- pool::dbExistsTable(current_pool, table_name)
+  pool::poolReturn(current_pool)
+  return(result)
+}
+
+db_get_query <- function(query) {
+  current_pool <- pool::poolCheckout(.GlobalEnv$pool)
+  result <- pool::dbGetQuery(current_pool, query)
+  pool::poolReturn(current_pool)
+  return(result)
+}
+
 read_table <- function(table_name) {
   tictoc::tic(paste0("Time taken to read from the `", table_name, "` table in the DB"))
   current_pool <- pool::poolCheckout(.GlobalEnv$pool)
@@ -32,7 +46,7 @@ read_table <- function(table_name) {
 write_table_ts <- function(df, table_name) {
   tictoc::tic(paste0("Time taken to write to the `", table_name, "` table in the DB"))
   result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
-    # Disable all table indexes.
+    # Disable table_name's indexes.
     connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=false ",
@@ -45,7 +59,7 @@ write_table_ts <- function(df, table_name) {
 
     connection %>% pool::dbWriteTable(table_name, df, append = TRUE, copy = TRUE)
 
-    # Re-enable all table indexes.
+    # Re-enable table_name's indexes.
     connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=true ",

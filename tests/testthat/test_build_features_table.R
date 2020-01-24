@@ -72,10 +72,10 @@
     expect_equal("todo","todo")
   })
 
-  # test_that("build_gene_tables", {
-  #   iatlas.data::build_gene_tables("../../feather_files")
-  #   expect_equal("todo","todo")
-  # })
+  test_that("build_genes_tables", {
+    iatlas.data::build_genes_tables("../../feather_files")
+    expect_equal("todo","todo")
+  })
 
   teardown(pool::poolClose(.GlobalEnv$pool))
   teardown(rm(pool, pos = ".GlobalEnv"))
