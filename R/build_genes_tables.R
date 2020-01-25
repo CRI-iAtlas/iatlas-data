@@ -218,7 +218,7 @@ build_genes_tables <- function(feather_file_folder) {
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename(therapy_type_id = id) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
+    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, node_type_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
   cat(crayon::blue("Built genes data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes table."), fill = TRUE)
