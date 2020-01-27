@@ -28,10 +28,10 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
       cat(crayon::green(paste0("START: ", function_name)), fill = TRUE)
 
       tryCatch({
+        .GlobalEnv$resume_at <- function_name
         f(...)
         gc()
       }, error = function(e) {
-        .GlobalEnv$resume_at <- function_name
         cat(crayon::magenta(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
 
         cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(..., resume_at = 'auto')"))), fill = TRUE)

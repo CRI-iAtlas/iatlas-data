@@ -3,6 +3,11 @@ build_samples_tables <- function(feather_file_folder) {
     paste0(feather_file_folder, "/", sub_path)
   }
 
+  iatlas.data::drop_table("genes_to_samples")
+  iatlas.data::drop_table("features_to_samples")
+  iatlas.data::drop_table("samples_to_tags")
+  iatlas.data::delete_rows("samples")
+
   # Combine all the sample data. Include the feature_values_long dataframe but
   # ensure its "value" field (from feature_values_long) remains distinct from
   # the "value" field renamed to "rna_seq_expr".
@@ -45,8 +50,9 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  table_written <- samples %>% iatlas.data::write_table_ts("samples")
+  samples %>% iatlas.data::write_table_ts("samples")
   samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
+  .GlobalEnv$samples <- samples
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
 
   # Remove the large til_image_links as we are done with it.
@@ -88,7 +94,7 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building samples_to_tags table."), fill = TRUE)
-  table_written <- samples_to_tags %>% iatlas.data::write_table_ts("samples_to_tags")
+  samples_to_tags %>% iatlas.data::replace_table("samples_to_tags")
   cat(crayon::blue("Built samples_to_tags table. (", nrow(samples_to_tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building samples_to_features data."), fill = TRUE)
@@ -114,9 +120,7 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building features_to_samples table.\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
-  # .GlobalEnv$features_to_samples <- features_to_samples
-  # stop("right there!")
-  features_to_samples %>% iatlas.data::write_table_ts("features_to_samples")
+  features_to_samples %>% iatlas.data::replace_table("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building genes_to_samples data.\n(These are two large datasets, please be patient as they are rebuilt.)"), fill = TRUE)
@@ -151,6 +155,6 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_samples table.\n(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
-  genes_to_samples %>% iatlas.data::write_table_ts("genes_to_samples")
+  genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
   cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"), fill = TRUE, sep = " ")
 }

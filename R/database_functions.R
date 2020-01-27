@@ -9,11 +9,20 @@ with_db_pool <- function(f) {
 timed_with_db_pool <- function(context, f) {
   tictoc::tic(context)
   on.exit(tictoc::toc())
-  with_db_pool(f)
+  tryCatch(
+    with_db_pool(f),
+    error = function(e) {
+      cat(crayon::red(paste0("error: ", e,"\nin: ", context)), fill = TRUE)
+      stop(e)
+    }
+  )
 }
 
 delete_rows <- function(table_name)
-  with_db_pool(function(connection) pool::dbSendQuery(connection, paste0("DELETE FROM ", table_name)))
+  timed_with_db_pool(
+    paste0("reset table using DELETE-FROM: ", table_name),
+    function(connection) pool::dbSendQuery(connection, paste0("DELETE FROM ", table_name))
+  )
 
 table_exists <- function(table_name)
   with_db_pool(function(connection) pool::dbExistsTable(connection, table_name))
@@ -25,6 +34,15 @@ read_table <- function(table_name)
   timed_with_db_pool(
     paste0("Time taken to read from the `", table_name, "` table in the DB"),
     function(connection) pool::dbReadTable(connection, table_name)
+  )
+
+drop_table <- function(table_name)
+  db_execute(paste0("DROP TABLE IF EXISTS ", table_name))
+
+db_execute <- function(query)
+  timed_with_db_pool(
+    paste0("dbExecute: ", query),
+    function(connection) pool::dbExecute(connection, query)
   )
 
 write_table_ts <- function(df, table_name) {
@@ -60,4 +78,18 @@ write_table_ts <- function(df, table_name) {
   tictoc::toc()
 
   return(result)
+}
+
+# NOTE: table_name must be in the sql_schema.R data structure
+replace_table <- function (data, table_name) {
+  drop_table(table_name)
+  db_execute(sql_schema[[table_name]]$create)
+  timed_with_db_pool(
+    paste0("dbWriteTable ", table_name, " (", nrow(data), " rows)"),
+    function (connection) pool::dbWriteTable(connection, table_name, data, overwrite = TRUE, copy = TRUE)
+  )
+  for (sql in sql_schema[[table_name]]$addSchema) {
+    iatlas.data::db_execute(sql)
+  }
+  data
 }

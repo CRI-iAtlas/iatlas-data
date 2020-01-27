@@ -203,35 +203,35 @@ CREATE TABLE mutation_codes_to_gene_types (
 CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
 
 -- genes_to_samples table
-CREATE TABLE genes_to_samples (
-    gene_id INTEGER REFERENCES genes NOT NULL,
-    sample_id INTEGER REFERENCES samples NOT NULL,
-    mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
-    "rna_seq_expr" NUMERIC,
-    "status" STATUS_ENUM,
-    PRIMARY KEY (gene_id, sample_id, mutation_code_id)
-);
-CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
-CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
-CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
+-- CREATE TABLE genes_to_samples (
+--     gene_id INTEGER REFERENCES genes NOT NULL,
+--     sample_id INTEGER REFERENCES samples NOT NULL,
+--     mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
+--     "rna_seq_expr" NUMERIC,
+--     "status" STATUS_ENUM,
+--     PRIMARY KEY (gene_id, sample_id, mutation_code_id)
+-- );
+-- CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
+-- CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
+-- CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
 
 -- samples_to_tags table
-CREATE TABLE samples_to_tags (
-    sample_id INTEGER REFERENCES samples,
-    tag_id INTEGER REFERENCES tags,
-    PRIMARY KEY (sample_id, tag_id)
-);
-CREATE INDEX sample_to_tag_tag_id_index ON samples_to_tags (tag_id);
+-- CREATE TABLE samples_to_tags (
+--     sample_id INTEGER REFERENCES samples,
+--     tag_id INTEGER REFERENCES tags,
+--     PRIMARY KEY (sample_id, tag_id)
+-- );
+-- CREATE INDEX sample_to_tag_tag_id_index ON samples_to_tags (tag_id);
 
 -- features_to_samples table
-CREATE TABLE features_to_samples (
-    feature_id INTEGER REFERENCES features,
-    sample_id INTEGER REFERENCES samples,
-    "value" NUMERIC,
-    "inf_value" REAL,
-    PRIMARY KEY (feature_id, sample_id)
-);
-CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
+-- CREATE TABLE features_to_samples (
+--     feature_id INTEGER REFERENCES features,
+--     sample_id INTEGER REFERENCES samples,
+--     "value" NUMERIC,
+--     "inf_value" REAL,
+--     PRIMARY KEY (feature_id, sample_id)
+-- );
+-- CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
 
 -- nodes_to_tags table
 CREATE TABLE nodes_to_tags (
