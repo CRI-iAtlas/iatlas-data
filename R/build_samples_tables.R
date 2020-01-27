@@ -3,6 +3,47 @@ build_samples_tables <- function(feather_file_folder) {
     paste0(feather_file_folder, "/", sub_path)
   }
 
+  cat(crayon::magenta("Importing HUGE RNA Seq Expr tsv file.\n(This is VERY large and will take some time to open. Please be patient.)"), fill = TRUE)
+  # rna_seq_exprs <- read.table(file=paste0(getwd(), "/tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = "\t", header = TRUE, check.names = TRUE) %>% dplyr::as_tibble()
+  rna_seq_exprs <- feather::read_feather(apply_path("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather")) %>%
+    dplyr::as_tibble()
+  barcodes <- rna_seq_exprs %>%
+    names() %>%
+    stringi::stri_sub(to = 12L)
+  sample_codes <- rna_seq_exprs %>%
+    names() %>%
+    stringi::stri_sub(to = 15L)
+  barcodes[1] <- "gene"
+  names(rna_seq_exprs) <- barcodes
+  cat(crayon::blue("Imported HUGE RNA Seq Expr tsv file."), fill = TRUE)
+
+  cat(crayon::magenta("Building patients data.)"), fill = TRUE)
+  fmx <- feather::read_feather(apply_path("original_data/fmx_df.feather")) %>%
+    dplyr::select(
+      barcode = ParticipantBarcode,
+      age = age_at_initial_pathologic_diagnosis,
+      ethnicity,
+      gender,
+      height,
+      race,
+      weight
+    )
+  # Add all patient barcodes.
+  patients <- dplyr::tibble(barcode = barcodes[barcodes != "gene"])
+  # Add ages, ethnicities, genders, heights, races, and weights.
+  patients <- patients %>% dplyr::left_join(fmx, by = "barcode")
+  cat(crayon::blue("Built patients data."), fill = TRUE)
+
+  cat(crayon::magenta("Building patients table."), fill = TRUE, sep = " ")
+  .GlobalEnv$delete_rows("patients")
+  table_written <- patients %>% .GlobalEnv$write_table_ts("patients")
+  cat(crayon::blue("Built patients table. (", nrow(patients), "rows )"), fill = TRUE, sep = " ")
+
+  rm(fmx)
+  rm(patients)
+  cat("Cleaned up.", fill = TRUE)
+  gc()
+
   # Combine all the sample data. Include the feature_values_long dataframe but
   # ensure its "value" field (from feature_values_long) remains distinct from
   # the "value" field renamed to "rna_seq_expr".
@@ -39,13 +80,16 @@ build_samples_tables <- function(feather_file_folder) {
     dplyr::rename_at("sample", ~("name")) %>%
     merge(til_image_links, by.x = "name", by.y = "sample", all = TRUE) %>%
     dplyr::arrange(name) %>%
-    dplyr::rename_at("link", ~("tissue_id")) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(tissue_id = stringi::stri_extract_first(tissue_id, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"))
+    dplyr::rename_at("link", ~("slide")) %>%
+    dplyr::mutate(slide = ifelse(!is.na(slide), stringi::stri_extract_first(slide, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"), NA))
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  table_written <- samples %>% .GlobalEnv$write_table_ts("samples")
+  .GlobalEnv$delete_rows("samples_to_tags") %>% RPostgres::dbClearResult()
+  .GlobalEnv$delete_rows("features_to_samples") %>% RPostgres::dbClearResult()
+  .GlobalEnv$delete_rows("genes_to_samples") %>% RPostgres::dbClearResult()
+  .GlobalEnv$delete_rows("samples") %>% RPostgres::dbClearResult()
+  table_written <- samples %>% dplyr::select(-c("slide")) %>% .GlobalEnv$write_table_ts("samples")
   samples <- .GlobalEnv$read_table("samples") %>% dplyr::as_tibble()
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
 
@@ -104,7 +148,6 @@ build_samples_tables <- function(feather_file_folder) {
     dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, feature_id, value) %>%
     dplyr::rename_at("id", ~("sample_id")) %>%
-    dplyr::rowwise() %>%
     dplyr::mutate(inf_value = ifelse(is.infinite(value), value, NA), value = ifelse(is.finite(value), value, NA))
   cat(crayon::blue("Built samples_to_features data."), fill = TRUE)
 
@@ -117,16 +160,22 @@ build_samples_tables <- function(feather_file_folder) {
   table_written <- features_to_samples %>% .GlobalEnv$write_table_ts("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
-  cat(crayon::magenta("Building genes_to_samples data.\n(These are two large datasets, please be patient as they are rebuilt.)"), fill = TRUE)
+  cat(crayon::magenta("Building genes_to_samples data.\n(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
   genes <- .GlobalEnv$read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc)
   mutation_codes <- .GlobalEnv$read_table("mutation_codes") %>% dplyr::as_tibble()
-  genes_to_samples <- all_samples %>%
-    dplyr::distinct(sample, gene, status, rna_seq_expr)
+  genes_to_samples <- all_samples %>% dplyr::distinct(sample, gene, status)
   genes_to_samples <- genes_to_samples %>%
     dplyr::mutate(
       code = ifelse(!is.na(gene), .GlobalEnv$get_mutation_code(gene), NA),
-      hgnc = ifelse(!is.na(gene), .GlobalEnv$trim_hgnc(gene), NA)
+      hgnc = ifelse(!is.na(gene), .GlobalEnv$trim_hgnc(gene), NA),
+      rna_seq_expr = ifelse(
+        !is.na(hgnc) & !is.na(sample) & deparse(substitute(sample)) %in% barcodes,
+        rna_seq_exprs[sample] %>% dplyr::filter(grepl(paste0(hgnc, "\\|"), gene)),
+        NA
+      )
     )
+  genes_to_samples <- genes_to_samples %>%
+    dplyr::distinct(sample, hgnc, code, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(genes %>% dplyr::rename_at("id", ~("gene_id")), by = "hgnc")
   genes_to_samples <- genes_to_samples %>%
