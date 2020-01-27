@@ -53,6 +53,10 @@ CREATE UNIQUE INDEX gene_type_name_index ON gene_types ("name");
 CREATE TABLE immune_checkpoints (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
 CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints ("name");
 
+-- node_types table
+CREATE TABLE node_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+CREATE UNIQUE INDEX node_type_name_index ON node_types ("name");
+
 -- pathways table
 CREATE TABLE pathways (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
 CREATE UNIQUE INDEX pathway_name_index ON pathways ("name");
@@ -118,6 +122,7 @@ CREATE TABLE genes (
     gene_family_id INTEGER REFERENCES gene_families,
     gene_function_id INTEGER REFERENCES gene_functions,
     immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
+    node_type_id INTEGER REFERENCES node_types,
     pathway_id INTEGER REFERENCES pathways,
     "references" TEXT[],
     super_cat_id INTEGER REFERENCES super_categories,
@@ -129,6 +134,7 @@ CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);
 CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);
 CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);
 CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);
+CREATE INDEX gene_node_type_id_index ON genes (node_type_id);
 CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
 CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
 CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
@@ -197,35 +203,35 @@ CREATE TABLE mutation_codes_to_gene_types (
 CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
 
 -- genes_to_samples table
-CREATE TABLE genes_to_samples (
-    gene_id INTEGER REFERENCES genes NOT NULL,
-    sample_id INTEGER REFERENCES samples NOT NULL,
-    mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
-    "rna_seq_expr" NUMERIC,
-    "status" STATUS_ENUM,
-    PRIMARY KEY (gene_id, sample_id, mutation_code_id)
-);
-CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
-CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
-CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
+-- CREATE TABLE genes_to_samples (
+--     gene_id INTEGER REFERENCES genes NOT NULL,
+--     sample_id INTEGER REFERENCES samples NOT NULL,
+--     mutation_code_id INTEGER REFERENCES mutation_codes NOT NULL,
+--     "rna_seq_expr" NUMERIC,
+--     "status" STATUS_ENUM,
+--     PRIMARY KEY (gene_id, sample_id, mutation_code_id)
+-- );
+-- CREATE INDEX gene_to_sample_gene_id_sample_id_index ON genes_to_samples (gene_id, sample_id);
+-- CREATE INDEX gene_to_sample_mutation_code_id_index ON genes_to_samples (mutation_code_id);
+-- CREATE INDEX gene_to_sample_sample_id_index ON genes_to_samples (sample_id);
 
 -- samples_to_tags table
-CREATE TABLE samples_to_tags (
-    sample_id INTEGER REFERENCES samples,
-    tag_id INTEGER REFERENCES tags,
-    PRIMARY KEY (sample_id, tag_id)
-);
-CREATE INDEX sample_to_tag_tag_id_index ON samples_to_tags (tag_id);
+-- CREATE TABLE samples_to_tags (
+--     sample_id INTEGER REFERENCES samples,
+--     tag_id INTEGER REFERENCES tags,
+--     PRIMARY KEY (sample_id, tag_id)
+-- );
+-- CREATE INDEX sample_to_tag_tag_id_index ON samples_to_tags (tag_id);
 
 -- features_to_samples table
-CREATE TABLE features_to_samples (
-    feature_id INTEGER REFERENCES features,
-    sample_id INTEGER REFERENCES samples,
-    "value" NUMERIC,
-    "inf_value" REAL,
-    PRIMARY KEY (feature_id, sample_id)
-);
-CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
+-- CREATE TABLE features_to_samples (
+--     feature_id INTEGER REFERENCES features,
+--     sample_id INTEGER REFERENCES samples,
+--     "value" NUMERIC,
+--     "inf_value" REAL,
+--     PRIMARY KEY (feature_id, sample_id)
+-- );
+-- CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
 
 -- nodes_to_tags table
 CREATE TABLE nodes_to_tags (

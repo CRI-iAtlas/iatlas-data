@@ -3,6 +3,11 @@ build_samples_tables <- function(feather_file_folder) {
     paste0(feather_file_folder, "/", sub_path)
   }
 
+  iatlas.data::drop_table("genes_to_samples")
+  iatlas.data::drop_table("features_to_samples")
+  iatlas.data::drop_table("samples_to_tags")
+  iatlas.data::delete_rows("samples")
+
   cat(crayon::magenta("Importing HUGE RNA Seq Expr tsv file.\n(This is VERY large and will take some time to open. Please be patient.)"), fill = TRUE)
   # rna_seq_exprs <- read.table(file=paste0(getwd(), "/tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = "\t", header = TRUE, check.names = TRUE) %>% dplyr::as_tibble()
   rna_seq_exprs <- feather::read_feather(apply_path("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather")) %>%
@@ -62,7 +67,7 @@ build_samples_tables <- function(feather_file_folder) {
       feather::read_feather(apply_path("SQLite_data/io_target_expr4.feather")),
       feather::read_feather(apply_path("SQLite_data/immunomodulator_expr.feather"))
     ) %>%
-    dplyr::rename_at("value", ~("rna_seq_expr")) %>%
+    dplyr::rename(rna_seq_expr = value) %>%
     dplyr::bind_rows(feature_values_long) %>%
     dplyr::arrange(sample)
   cat(crayon::blue("Imported feather files for samples and combined all the sample data."), fill = TRUE)
@@ -77,20 +82,16 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building samples data."), fill = TRUE)
   samples <- all_samples %>%
     dplyr::distinct(sample) %>%
-    dplyr::rename_at("sample", ~("name")) %>%
+    dplyr::rename(name = sample) %>%
     merge(til_image_links, by.x = "name", by.y = "sample", all = TRUE) %>%
     dplyr::arrange(name) %>%
-    dplyr::rename_at("link", ~("slide")) %>%
+    dplyr::rename(slide = link) %>%
     dplyr::mutate(slide = ifelse(!is.na(slide), stringi::stri_extract_first(slide, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"), NA))
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  .GlobalEnv$delete_rows("samples_to_tags") %>% RPostgres::dbClearResult()
-  .GlobalEnv$delete_rows("features_to_samples") %>% RPostgres::dbClearResult()
-  .GlobalEnv$delete_rows("genes_to_samples") %>% RPostgres::dbClearResult()
-  .GlobalEnv$delete_rows("samples") %>% RPostgres::dbClearResult()
-  table_written <- samples %>% dplyr::select(-c("slide")) %>% .GlobalEnv$write_table_ts("samples")
-  samples <- .GlobalEnv$read_table("samples") %>% dplyr::as_tibble()
+  samples %>% iatlas.data::write_table_ts("samples")
+  samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
 
   # Remove the large til_image_links as we are done with it.
@@ -99,29 +100,29 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building samples_to_tags data."), fill = TRUE)
-  tags <- .GlobalEnv$read_table("tags") %>%
+  tags <- iatlas.data::read_table("tags") %>%
     dplyr::as_tibble() %>%
     dplyr::select(id, name)
   sample_set_tcga_study <- all_samples %>%
     dplyr::distinct(sample, TCGA_Study) %>%
     dplyr::inner_join(tags, by = c("TCGA_Study" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   sample_set_tcga_subtype <- all_samples %>%
     dplyr::distinct(sample, TCGA_Subtype) %>%
     dplyr::inner_join(tags, by = c("TCGA_Subtype" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   sample_set_immune_subtype <- all_samples %>%
     dplyr::distinct(sample, Immune_Subtype) %>%
     dplyr::inner_join(tags, by = c("Immune_Subtype" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id")) %>%
+    dplyr::rename(tag_id = id) %>%
     dplyr::distinct(sample, tag_id)
   samples_to_tags <- sample_set_tcga_study %>%
     dplyr::bind_rows(sample_set_tcga_subtype, sample_set_immune_subtype) %>%
     dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, tag_id) %>%
-    dplyr::rename_at("id", ~("sample_id"))
+    dplyr::rename(sample_id = id)
   cat(crayon::blue("Built samples_to_tags data."), fill = TRUE)
 
   rm(sample_set_tcga_study)
@@ -132,22 +133,22 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building samples_to_tags table."), fill = TRUE)
-  table_written <- samples_to_tags %>% .GlobalEnv$write_table_ts("samples_to_tags")
+  samples_to_tags %>% iatlas.data::replace_table("samples_to_tags")
   cat(crayon::blue("Built samples_to_tags table. (", nrow(samples_to_tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building samples_to_features data."), fill = TRUE)
-  features <- .GlobalEnv$read_table("features") %>%
+  features <- iatlas.data::read_table("features") %>%
     dplyr::as_tibble() %>%
     dplyr::select(id, name)
   sample_set_features <- all_samples %>%
     dplyr::distinct(sample, feature, value) %>%
     dplyr::inner_join(features, by = c("feature" = "name")) %>%
-    dplyr::rename_at("id", ~("feature_id")) %>%
+    dplyr::rename(feature_id = id) %>%
     dplyr::distinct(sample, feature_id, value)
   features_to_samples <- sample_set_features %>%
     dplyr::inner_join(samples, by = c("sample" = "name")) %>%
     dplyr::distinct(id, feature_id, value) %>%
-    dplyr::rename_at("id", ~("sample_id")) %>%
+    dplyr::rename(sample_id = id) %>%
     dplyr::mutate(inf_value = ifelse(is.infinite(value), value, NA), value = ifelse(is.finite(value), value, NA))
   cat(crayon::blue("Built samples_to_features data."), fill = TRUE)
 
@@ -157,7 +158,7 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building features_to_samples table.\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
-  table_written <- features_to_samples %>% .GlobalEnv$write_table_ts("features_to_samples")
+  features_to_samples %>% iatlas.data::replace_table("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building genes_to_samples data.\n(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
@@ -177,9 +178,9 @@ build_samples_tables <- function(feather_file_folder) {
   genes_to_samples <- genes_to_samples %>%
     dplyr::distinct(sample, hgnc, code, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(genes %>% dplyr::rename_at("id", ~("gene_id")), by = "hgnc")
+    dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(mutation_codes %>% dplyr::rename_at("id", ~("mutation_code_id")), by = "code")
+    dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
   genes_to_samples <- genes_to_samples %>%
     dplyr::distinct(sample, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
@@ -187,28 +188,17 @@ build_samples_tables <- function(feather_file_folder) {
   genes_to_samples <- genes_to_samples %>%
     dplyr::distinct(id, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
-    dplyr::rename_at("id", ~("sample_id")) %>%
+    dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
   genes_to_samples <- genes_to_samples %>%
     dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
     dplyr::summarise(
-      status = .GlobalEnv$validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% .GlobalEnv$filter_na(),
-      rna_seq_expr = .GlobalEnv$validate_dupes(rna_seq_expr, group = .data, fields = c("rna_seq_expr"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% .GlobalEnv$filter_na() %>% as.numeric()
+      status = iatlas.data::validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na(),
+      rna_seq_expr = iatlas.data::validate_dupes(rna_seq_expr, group = .data, fields = c("rna_seq_expr"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na() %>% as.numeric()
     )
   cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_samples table.\n(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
-  table_written <- genes_to_samples %>% .GlobalEnv$write_table_ts("genes_to_samples")
+  genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
   cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"), fill = TRUE, sep = " ")
-
-  # Remove the data we are done with.
-  rm(features_to_samples)
-  rm(genes)
-  rm(genes_to_samples)
-  rm(samples_to_tags)
-  rm(table_written)
-  rm(all_samples)
-  rm(samples)
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }

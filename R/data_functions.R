@@ -102,23 +102,6 @@ rebuild_gene_relational_data <- function(all_genes, ref_name, field_name = "name
   return(relational_data)
 }
 
-switch_value <- function(current_row, reference_name, field_name, tibble_object = dplyr::tibble()) {
-  reference_value <- current_row[[reference_name]]
-  current_value <- current_row[[field_name]]
-  current_reference_row <- tibble_object %>%
-    dplyr::filter(!!rlang::sym(reference_name) == reference_value)
-  if (!is_df_empty(current_reference_row)) {
-    # if (!is.na(current_value)) {
-    #   stop(paste0("Expected only one of the two records to have a value in field: ", field_name))
-    # }
-    return(current_reference_row[[field_name]])
-  } else if (!is.na(current_value)) {
-    return(current_value)
-  } else {
-    return(NA)
-  }
-}
-
 trim_hgnc <- function(hgnc) {
   hgnc <- hgnc %>% stringi::stri_extract_first(regex = "([^\\s]+)")
   return(ifelse(length(hgnc) > 0 & !identical(hgnc, "NA") & !is.na(hgnc), hgnc, NA))

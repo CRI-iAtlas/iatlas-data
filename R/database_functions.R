@@ -1,38 +1,54 @@
 # Database helper functions.
 
-delete_rows <- function(table_name) {
-  current_pool <- pool::poolCheckout(.GlobalEnv$pool)
-  result <- pool::dbSendQuery(current_pool, paste0("DELETE FROM ", table_name))
-  pool::poolReturn(current_pool)
-  return(result)
+with_db_pool <- function(f) {
+  connection <- pool::poolCheckout(.GlobalEnv$pool)
+  on.exit(pool::poolReturn(connection))
+  f(connection)
 }
 
-read_table <- function(table_name) {
-  tictoc::tic(paste0("Time taken to read from the `", table_name, "` table in the DB"))
-  current_pool <- pool::poolCheckout(.GlobalEnv$pool)
-  result <- pool::dbReadTable(current_pool, table_name)
-  pool::poolReturn(current_pool)
-  tictoc::toc()
-  return(result)
+timed_with_db_pool <- function(context, f) {
+  tictoc::tic(context)
+  on.exit(tictoc::toc())
+  tryCatch(
+    with_db_pool(f),
+    error = function(e) {
+      cat(crayon::red(paste0("error: ", e,"\nin: ", context)), fill = TRUE)
+      stop(e)
+    }
+  )
 }
 
-# update_table <- function(df, table_name) {
-#   return(pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
-#     pool::dbGetQuery(
-#       connection,
-#       paste0("INSERT INTO", table_name, "(id, column_1, column_2)
-#       VALUES (1, 'A', 'X'), (2, 'B', 'Y'), (3, 'C', 'Z')
-#       ON CONFLICT (id) DO UPDATE
-#         SET column_1 = excluded.column_1,
-#           column_2 = excluded.column_2;")
-#     )
-#   }))
-# }
+delete_rows <- function(table_name)
+  timed_with_db_pool(
+    paste0("reset table using DELETE-FROM: ", table_name),
+    function(connection) pool::dbSendQuery(connection, paste0("DELETE FROM ", table_name))
+  )
+
+table_exists <- function(table_name)
+  with_db_pool(function(connection) pool::dbExistsTable(connection, table_name))
+
+db_get_query <- function(query)
+  with_db_pool(function(connection) pool::dbGetQuery(connection, query))
+
+read_table <- function(table_name)
+  timed_with_db_pool(
+    paste0("Time taken to read from the `", table_name, "` table in the DB"),
+    function(connection) pool::dbReadTable(connection, table_name)
+  )
+
+drop_table <- function(table_name)
+  db_execute(paste0("DROP TABLE IF EXISTS ", table_name))
+
+db_execute <- function(query)
+  timed_with_db_pool(
+    paste0("dbExecute: ", query),
+    function(connection) pool::dbExecute(connection, query)
+  )
 
 write_table_ts <- function(df, table_name) {
   tictoc::tic(paste0("Time taken to write to the `", table_name, "` table in the DB"))
   result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
-    # Disable all table indexes.
+    # Disable table_name's indexes.
     connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=false ",
@@ -45,7 +61,7 @@ write_table_ts <- function(df, table_name) {
 
     connection %>% pool::dbWriteTable(table_name, df, append = TRUE, copy = TRUE)
 
-    # Re-enable all table indexes.
+    # Re-enable table_name's indexes.
     connection %>% pool::dbExecute(paste0(
       "UPDATE pg_index ",
       "SET indisready=true ",
@@ -62,4 +78,18 @@ write_table_ts <- function(df, table_name) {
   tictoc::toc()
 
   return(result)
+}
+
+# NOTE: table_name must be in the sql_schema.R data structure
+replace_table <- function (data, table_name) {
+  drop_table(table_name)
+  db_execute(sql_schema[[table_name]]$create)
+  timed_with_db_pool(
+    paste0("dbWriteTable ", table_name, " (", nrow(data), " rows)"),
+    function (connection) pool::dbWriteTable(connection, table_name, data, overwrite = TRUE, copy = TRUE)
+  )
+  for (sql in sql_schema[[table_name]]$addSchema) {
+    iatlas.data::db_execute(sql)
+  }
+  data
 }

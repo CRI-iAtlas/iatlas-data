@@ -1,6 +1,6 @@
 source("../../R/load_dependencies.R")
 
-.GlobalEnv$load_dependencies()
+iatlas.data::load_dependencies()
 
 rm(load_dependencies, pos = ".GlobalEnv")
 
@@ -8,7 +8,7 @@ rm(load_dependencies, pos = ".GlobalEnv")
 source("../../R/connect_to_db.R", chdir = TRUE)
 
 # Create a global variable to hold the pool DB connection.
-.GlobalEnv$pool <- .GlobalEnv$connect_to_db()
+.GlobalEnv$pool <- iatlas.data::connect_to_db()
 
 cat(crayon::green("Created DB connection."), fill = TRUE)
 
