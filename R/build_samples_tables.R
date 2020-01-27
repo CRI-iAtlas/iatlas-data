@@ -114,8 +114,8 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building features_to_samples table.\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
-  .GlobalEnv$features_to_samples <- features_to_samples
-  stop("right there!")
+  # .GlobalEnv$features_to_samples <- features_to_samples
+  # stop("right there!")
   features_to_samples %>% iatlas.data::write_table_ts("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
