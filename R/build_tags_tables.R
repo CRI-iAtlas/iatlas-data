@@ -57,7 +57,4 @@ build_tags_tables <- function(feather_file_name) {
   cat(crayon::magenta("Building tags_to_tags table."), fill = TRUE)
   table_written <- tags_to_tags %>% iatlas.data::write_table_ts("tags_to_tags")
   cat(crayon::magenta("Built tags_to_tags table. (", nrow(tags_to_tags), "rows )"), fill = TRUE, sep = " ")
-
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }

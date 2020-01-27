@@ -255,7 +255,4 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
   table_written <- genes_to_types %>% iatlas.data::write_table_ts("genes_to_types")
   cat(crayon::blue("Built genes_to_types table. (", nrow(genes_to_types), "rows )"), fill = TRUE, sep = " ")
-
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }

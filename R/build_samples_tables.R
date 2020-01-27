@@ -114,7 +114,9 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building features_to_samples table.\n(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
-  table_written <- features_to_samples %>% iatlas.data::write_table_ts("features_to_samples")
+  # .GlobalEnv$features_to_samples <- features_to_samples
+  # stop("right there!")
+  features_to_samples %>% iatlas.data::write_table_ts("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building genes_to_samples data.\n(These are two large datasets, please be patient as they are rebuilt.)"), fill = TRUE)
@@ -149,17 +151,6 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_samples table.\n(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
-  table_written <- genes_to_samples %>% iatlas.data::write_table_ts("genes_to_samples")
+  genes_to_samples %>% iatlas.data::write_table_ts("genes_to_samples")
   cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"), fill = TRUE, sep = " ")
-
-  # Remove the data we are done with.
-  rm(features_to_samples)
-  rm(genes)
-  rm(genes_to_samples)
-  rm(samples_to_tags)
-  rm(table_written)
-  rm(all_samples)
-  rm(samples)
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }

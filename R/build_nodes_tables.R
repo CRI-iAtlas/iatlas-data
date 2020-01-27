@@ -71,15 +71,4 @@ build_nodes_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building the edges table.\n(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- edges %>% iatlas.data::write_table_ts("edges")
   cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE, sep = " ")
-
-  # Clean up.
-  rm(edges)
-  rm(nodes)
-  rm(tags)
-  rm(node_set_group)
-  rm(node_set_immune)
-  rm(nodes_to_tags)
-  rm(table_written)
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }
