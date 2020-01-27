@@ -28,7 +28,8 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
       cat(crayon::green(paste0("START: ", function_name)), fill = TRUE)
 
       tryCatch({
-        source(paste0("R/",function_name,".R"))$value(...)
+        f(...)
+        gc()
       }, error = function(e) {
         .GlobalEnv$resume_at <- function_name
         cat(crayon::magenta(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
@@ -78,8 +79,6 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   cat(crayon::bold(crayon::blue("\n================================================================================")), fill = TRUE)
   cat(crayon::bold(crayon::blue(paste0("SUCCESS! iAtlas DB created."))), fill = TRUE)
   tictoc::toc()
-
-  gc()
 
   # Don't show garbage collection details any longer.
   gcinfo(FALSE)

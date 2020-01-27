@@ -47,8 +47,4 @@ build_driver_results_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building driver_results table.\n(Please be patient, this may take a little while as there are", nrow(results), "rows to write.)"), fill = TRUE, spe = " ")
   table_written <- results %>% iatlas.data::write_table_ts("driver_results")
   cat(crayon::blue("Built driver_results table. (", nrow(results), "rows )"), fill = TRUE, sep = " ")
-
-  # Remove the data we are done with.
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }

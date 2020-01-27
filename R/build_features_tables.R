@@ -50,7 +50,4 @@ build_features_tables <- function(feather_file_name) {
   cat(crayon::magenta("Built features table."), fill = TRUE)
   table_written <- features %>% iatlas.data::write_table_ts("features")
   cat(crayon::blue("Built features table. (", nrow(features), "rows )"), fill = TRUE, sep = " ")
-
-  cat("Cleaned up.", fill = TRUE)
-  gc()
 }
