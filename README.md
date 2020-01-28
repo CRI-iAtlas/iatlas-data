@@ -10,13 +10,13 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 **IMPORTANT**: For the smoothest installation, install git-lfs BEFORE cloning this repository.
 
+> If you've already cloned, you may be able to do a `git pull` after installing git-lfs to fetch the large files (unverified).
+
 - git-lfs: [https://git-lfs.github.com](https://git-lfs.github.com)
 
   - Some feather files are _very_ large. `git-lfs` is used to store these files.
 
   - For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
-
-**Please note**: `git lfs install` _must_ be executed within the repository directory immediately after cloning the repo.
 
 - R: [https://www.r-project.org/](https://www.r-project.org/) - v3.6.2
 
@@ -46,12 +46,13 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
   1. Please save the file to the `tsv_files` folder that you created in step 1.
 
-### MacOS Install instructions
+#### Requirements: MacOS Install instructions
 
 Install brew: [https://brew.sh/](https://brew.sh/)
 
-Then:
+Then run these in your shell:
 
+- xcode-select --install
 - brew install R
 - brew install cairo
 - brew install git-lfs
@@ -65,15 +66,10 @@ To build the database locally:
 
 1. Open `iatlas-data.Rproj` in Rstudio.
 
-1. Build the database locally with the following:
+1. Follow the instructions.
 
-   1. Build the database by executing the following in the R console:
 
-      ```R
-      build_iatlas_db(reset = "reset")
-      ```
-
-   The database should now be available on `localhost:5432`. The database is called `iatlas_dev`.
+When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
 ## Testing
 
