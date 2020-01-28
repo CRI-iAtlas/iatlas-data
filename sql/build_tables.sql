@@ -12,30 +12,43 @@ EXCEPTION
     WHEN duplicate_object THEN NULL;
 END $$;
 
--- samples table
+-- patients table
 CREATE TABLE patients (
     id SERIAL,
-    gender VARCHAR,
-    race VARCHAR,
+    age INTEGER,
+    barcode VARCHAR,
     ethnicity VARCHAR,
-    age VARCHAR,
-    "weight" VARCHAR,
+    gender VARCHAR,
+    height NUMERIC,
+    race VARCHAR,
+    "weight" NUMERIC,
     PRIMARY KEY (id)
 );
-CREATE INDEX patient_gender_index ON patients (gender);
-CREATE INDEX patient_race_index ON patients (race);
-CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
 CREATE INDEX patient_age_index ON patients (age);
-CREATE INDEX patient_weight_index ON patients ("weight");
+CREATE INDEX patient_barcode_index ON patients (barcode);
+CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
+CREATE INDEX patient_gender_index ON patients (gender);
+CREATE INDEX patient_height_index ON patients (height);
+CREATE INDEX patient_race_index ON patients (race);
+
+-- slides table
+CREATE TABLE slides (
+    id SERIAL,
+    "name" VARCHAR NOT NULL,
+    "description" VARCHAR,
+    PRIMARY KEY (id)
+);
+CREATE UNIQUE INDEX slide_name_index ON slides ("name");
 
 -- samples table
 CREATE TABLE samples (
     id SERIAL,
     "name" VARCHAR NOT NULL,
-    tissue_id VARCHAR,
+    patient_id INTEGER REFERENCES patients,
     PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX sample_name_index ON samples ("name");
+CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);
 
 -- gene_families table
 CREATE TABLE gene_families (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
@@ -232,6 +245,14 @@ CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene
 --     PRIMARY KEY (feature_id, sample_id)
 -- );
 -- CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
+
+-- patients_to_slides table
+CREATE TABLE patients_to_slides (
+    patient_id INTEGER REFERENCES patients,
+    slide_id INTEGER REFERENCES slides,
+    PRIMARY KEY (patient_id, slide_id)
+);
+CREATE INDEX patients_to_slides_slide_id_index ON patients_to_slides (slide_id);
 
 -- nodes_to_tags table
 CREATE TABLE nodes_to_tags (

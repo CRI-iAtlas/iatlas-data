@@ -4,11 +4,12 @@ sql_schema <- list(
       CREATE TABLE samples (
         id SERIAL,
         name VARCHAR NOT NULL,
-        tissue_id VARCHAR,
+        patient_id INTEGER REFERENCES patients NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX sample_name_index ON samples (name);"
+      "CREATE UNIQUE INDEX sample_name_index ON samples (name);",
+      "CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);"
     )
   ),
   samples_to_tags = list(
