@@ -15,10 +15,15 @@ build_samples_tables <- function(feather_file_folder) {
 
   # Import RNA Seq Expr data ---------------------------------------------------
   cat(crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and will take some time to open. Please be patient.)"), fill = TRUE)
-  # rna_seq_exprs <- read.table(file=paste0(getwd(), "/tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = "\t", header = TRUE, check.names = TRUE) %>% dplyr::as_tibble()
-  rna_seq_exprs <- feather::read_feather(apply_path("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather")) %>% dplyr::as_tibble()
-  # Capture all the barcodes (column names). Removing the fist column name "gene_id".
-  barcodes <- rna_seq_exprs %>% names() %>% .[-1]
+  # rna_seq_expr_matrix <- read.table(file=paste0(getwd(), "/tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = "\t", header = TRUE, check.names = TRUE) %>% dplyr::as_tibble()
+  rna_seq_expr_matrix <- feather::read_feather(apply_path("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather")) %>%
+    dplyr::as_tibble() %>%
+    tidyr::separate(gene_id, c("hugo", "entrez"), sep = "[|]") %>%
+    dplyr::select(-c(entrez)) %>%
+    dplyr::filter(hugo != "?") %>%
+    dplyr::distinct(hugo, .keep_all = TRUE)
+  # Capture all the barcodes (column names). Removing the fist column "hugo".
+  barcodes <- rna_seq_expr_matrix %>% names() %>% .[-1]
   # Capture all the patient barcodes (first 12 characters) ie "TCGA-OR-A5J1"
   patient_barcodes <- barcodes %>% stringi::stri_sub(to = 12L)
   # Capture all the sample barcodes (first 15 characters) ie "TCGA-OR-A5J1-01"
@@ -53,8 +58,8 @@ build_samples_tables <- function(feather_file_folder) {
   gc()
 
   # Import expr_matrix and slide data ---------------------------------------------------
-  cat(crayon::magenta("Importing the Representative_Expression_Matrix_AliquotBarcode data and the til_image_link data."), fill = TRUE)
-  expr_matrix <- feather::read_feather(apply_path("Representative_Expression_Matrix_AliquotBarcode.feather"))
+  cat(crayon::magenta("Importing the Representative Expression Matrix AliquotBarcode data and the til_image_link data."), fill = TRUE)
+  expr_matrix <- feather::read_feather(apply_path("expr_matrix.feather"))
   til_image_links <- feather::read_feather(apply_path("SQLite_data/til_image_links.feather"))
   cat(crayon::blue("Imported the Representative_Expression_Matrix_AliquotBarcode data and the til_image_link data."), fill = TRUE)
 
@@ -221,48 +226,64 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 
   # genes_to_samples data ---------------------------------------------------
-  cat(crayon::magenta("Building genes_to_samples data.\n(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
-  genes <- iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc)
-  mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
-  genes_to_samples <- all_samples %>% dplyr::distinct(sample, gene, status, rna_seq_expr, barcode)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::mutate(
-      code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA),
-      hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)
-    )
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::mutate(
-      rna_seq_expr = ifelse(
-        !is.na(hgnc) & !is.na(sample) & deparse(substitute(sample)) %in% patient_barcodes,
-        rna_seq_exprs[sample] %>% dplyr::filter(grepl(paste0(hgnc, "\\|"), gene)),
-        ifelse(!is.na(rna_seq_expr), rna_seq_expr, NA)
-      )
-    )
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::distinct(sample, hgnc, code, status, rna_seq_expr)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::distinct(sample, gene_id, mutation_code_id, status, rna_seq_expr)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(samples, by = c("sample" = "name"))
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::distinct(id, gene_id, mutation_code_id, status, rna_seq_expr)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::rename(sample_id = id) %>%
-    dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
-    dplyr::summarise(
-      status = iatlas.data::validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na(),
-      rna_seq_expr = iatlas.data::validate_dupes(rna_seq_expr, group = .data, fields = c("rna_seq_expr"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na() %>% as.numeric()
-    )
-  cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
-  # genes_to_samples table ---------------------------------------------------
-  cat(crayon::magenta("Building genes_to_samples table.\n(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
-  genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
-  cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"), fill = TRUE, sep = " ")
+  cat(crayon::magenta("Building genes_to_samples data.\n(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
+
+  get_rna_value_from_matrix <- function(hgnc, barcode, matrix) {
+    if (!is.na(hgnc) & !is.na(barcode)) {
+      value <- matrix %>% dplyr::filter(hugo == hgnc) %>% .[[barcode]]
+      return(value)
+    }
+    return(NA)
+  }
+  get_rna_value_from_matrix_v <- Vectorize(get_rna_value_from_matrix, vectorize.args = c("hgnc", "barcode"))
+
+  # genes <- iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc)
+  # mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
+  # cat(crayon::cyan("Ensuring no duplicates so there is a smaller data set to work with."), fill = TRUE)
+  # genes_to_samples <- all_samples %>% dplyr::distinct(sample, gene, status, rna_seq_expr, barcode, patient_id)
+  # cat(crayon::cyan("Separating the mutation code from the HUGO id."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::mutate(
+  #     code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA),
+  #     hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)
+  #   )
+  # cat(crayon::cyan("Getting the correct RNA Seq Expr value."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::mutate(rna_seq_expr = get_rna_value_from_matrix_v(hgnc, barcode, rna_seq_expr_matrix))
+  # cat(crayon::cyan("Ensuring no duplicates."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::distinct(sample, hgnc, code, status, rna_seq_expr)
+  # cat(crayon::cyan("Joining gene_ids."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
+  # cat(crayon::cyan("Joining mutation_code_ids."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
+  # cat(crayon::cyan("Ensuring no duplicates."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::distinct(sample, gene_id, mutation_code_id, status, rna_seq_expr)
+  # cat(crayon::cyan("Joining samples to get ids."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::left_join(samples, by = c("sample" = "name"))
+  # cat(crayon::cyan("Ensuring no duplicates."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::distinct(id, gene_id, mutation_code_id, status, rna_seq_expr)
+  # cat(crayon::cyan("Rename id to sample_id and arrange."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::rename(sample_id = id) %>%
+  #   dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
+  # cat(crayon::cyan("Summarise status and rna_seq_expr."), fill = TRUE)
+  # genes_to_samples <- genes_to_samples %>%
+  #   dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
+  #   dplyr::summarise(
+  #     status = iatlas.data::validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na(),
+  #     rna_seq_expr = iatlas.data::validate_dupes(rna_seq_expr, group = .data, fields = c("rna_seq_expr"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na() %>% as.numeric()
+  #   )
+  # cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
+  #
+  # # genes_to_samples table ---------------------------------------------------
+  # cat(crayon::magenta("Building genes_to_samples table.\n(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
+  # genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
+  # cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"), fill = TRUE, sep = " ")
 }
