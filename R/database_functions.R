@@ -7,6 +7,7 @@ with_db_pool <- function(f) {
 }
 
 timed_with_db_pool <- function(context, f) {
+  cat(paste0("START: ", context, "\n"))
   tictoc::tic(context)
   on.exit(tictoc::toc())
   tryCatch(
@@ -32,7 +33,7 @@ db_get_query <- function(query)
 
 read_table <- function(table_name)
   timed_with_db_pool(
-    paste0("Time taken to read from the `", table_name, "` table in the DB"),
+    paste0("read all records from `", table_name, "`"),
     function(connection) pool::dbReadTable(connection, table_name)
   )
 
@@ -46,7 +47,7 @@ db_execute <- function(query)
   )
 
 write_table_ts <- function(df, table_name) {
-  tictoc::tic(paste0("Time taken to write to the `", table_name, "` table in the DB"))
+  tictoc::tic(paste0("write all records to `", table_name, "`"))
   result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
     # Disable table_name's indexes.
     connection %>% pool::dbExecute(paste0(

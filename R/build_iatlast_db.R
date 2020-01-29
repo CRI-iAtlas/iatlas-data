@@ -7,9 +7,9 @@
 #' @param resume_at = NULL or step-name-string - will skip all steps until the specified step, which will be executed as well as all following steps
 #' resume_at can also == "auto" and it will resume at the previous fail-point, or, if none, it will start at the top
 #'
-#' @param stop_after = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
+#' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_after = NULL) {
+build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_at = NULL) {
 
   present <- function (a) {!is.na(a) && !is.null(a)}
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
@@ -41,12 +41,12 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
       })
       cat(crayon::green(paste0("SUCCESS: ", function_name)), fill = TRUE)
     } else if (stopped) {
-      cat(crayon::yellow(paste0("STOPPED. SKIPPING: '", function_name, "' (as requested by stop_after option)" )), fill = TRUE)
+      cat(crayon::yellow(paste0("STOPPED. SKIPPING: '", function_name, "' (as requested by stop_at option)" )), fill = TRUE)
     } else {
       cat(crayon::yellow(paste0("SKIPPING: '", function_name, "' (as requested by resume_at options)" )), fill = TRUE)
     }
-    if (option_equal(stop_after, function_name)) {
-      cat(crayon::bold(crayon::yellow(paste0("STOPPING AFTER: '", function_name, "' (as requested by stop_after = '",function_name, "')"))), fill = TRUE)
+    if (option_equal(stop_at, function_name)) {
+      cat(crayon::bold(crayon::yellow(paste0("STOPPING AFTER: '", function_name, "' (as requested by stop_at = '",function_name, "')"))), fill = TRUE)
       stopped <<- TRUE
       running_is_on <<- FALSE;
     }
@@ -65,9 +65,19 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   run_skippable_function(build_features_tables,       "feather_files/SQLite_data/features.feather")
   run_skippable_function(build_tags_tables,           "feather_files/SQLite_data/groups.feather")
   run_skippable_function(build_genes_tables,          "feather_files")
-  run_skippable_function(build_samples_tables,        "feather_files")
+
+  all_samples <- load_all_samples("feather_files")
+
+  run_skippable_function(build_samples_table,         "feather_files", all_samples)
+
+  samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
+
+  run_skippable_function(build_samples_to_tags_table,     "feather_files", all_samples, samples)
+  run_skippable_function(build_samples_to_features_table, "feather_files", all_samples, samples)
+
+  # run_skippable_function(build_samples_tables,        "feather_files")
   run_skippable_function(build_driver_results_tables, "feather_files")
-  run_skippable_function(build_nodes_tables,          "feather_files")
+  # run_skippable_function(build_nodes_tables,          "feather_files")
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)

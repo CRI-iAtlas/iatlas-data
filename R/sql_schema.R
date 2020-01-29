@@ -57,5 +57,29 @@ sql_schema <- list(
       "ALTER TABLE genes_to_samples ADD FOREIGN KEY (sample_id) REFERENCES samples;",
       "ALTER TABLE genes_to_samples ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
     )
+  ),
+  driver_results = list(
+    create = "
+      CREATE TABLE driver_results (
+        id SERIAL,
+        p_value NUMERIC,
+        fold_change NUMERIC,
+        log10_p_value NUMERIC,
+        log10_fold_change NUMERIC,
+        n_wt INTEGER,
+        n_mut INTEGER,
+        feature_id INTEGER,
+        gene_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX driver_results_feature_id_index ON driver_results (feature_id);",
+      "CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);",
+      "CREATE INDEX driver_results_tag_id_id_index ON driver_results (tag_id);",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
   )
 )
