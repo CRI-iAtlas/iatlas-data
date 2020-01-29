@@ -62,18 +62,27 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   cat(crayon::green("CREATE: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(build_features_tables,       "feather_files/SQLite_data/features.feather")
+  run_skippable_function(build_features_tables,       "feather_files")
   run_skippable_function(build_tags_tables,           "feather_files/SQLite_data/groups.feather")
   run_skippable_function(build_genes_tables,          "feather_files")
 
-  all_samples <- load_all_samples("feather_files")
+  all_samples <- NULL
+  get_all_samples <- function () {
+    if (is.null(all_samples)) {
+      all_samples <<- load_all_samples("feather_files")
+    }
+    all_samples
+  }
+  all_samples <- get_all_samples()
 
-  run_skippable_function(build_samples_table,         "feather_files", all_samples)
+  run_skippable_function(build_samples_table,         "feather_files", get_all_samples)
 
   samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
 
-  run_skippable_function(build_samples_to_tags_table,     "feather_files", all_samples, samples)
-  run_skippable_function(build_samples_to_features_table, "feather_files", all_samples, samples)
+  run_skippable_function(build_samples_to_tags_table,     "feather_files", get_all_samples, samples)
+  run_skippable_function(build_samples_to_features_table, "feather_files", get_all_samples, samples)
+
+  all_samples <- NULL
 
   # run_skippable_function(build_samples_tables,        "feather_files")
   run_skippable_function(build_driver_results_tables, "feather_files")

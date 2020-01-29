@@ -1,4 +1,5 @@
-build_samples_to_tags_table <- function(feather_file_folder, all_samples, samples) {
+build_samples_to_tags_table <- function(feather_file_folder, get_all_samples, samples) {
+  all_samples <- get_all_samples()
   cat(crayon::magenta("Building samples_to_tags data."), fill = TRUE)
   tags <- iatlas.data::read_table("tags") %>%
     dplyr::as_tibble() %>%

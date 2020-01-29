@@ -6,9 +6,9 @@ with_db_pool <- function(f) {
   f(connection)
 }
 
-timed_with_db_pool <- function(context, f) {
-  cat(paste0("START: ", context, "\n"))
-  tictoc::tic(context)
+timed_with_db_pool <- function(context, f, slow = FALSE) {
+  if (slow) cat(paste0("START: ", context, "\n"))
+  tictoc::tic(paste0("DONE:  ", context))
   on.exit(tictoc::toc())
   tryCatch(
     with_db_pool(f),
@@ -21,7 +21,7 @@ timed_with_db_pool <- function(context, f) {
 
 delete_rows <- function(table_name)
   timed_with_db_pool(
-    paste0("reset table using DELETE-FROM: ", table_name),
+    paste0("dbSendQuery: DELETE-FROM ", table_name),
     function(connection) pool::dbSendQuery(connection, paste0("DELETE FROM ", table_name))
   )
 
@@ -31,19 +31,21 @@ table_exists <- function(table_name)
 db_get_query <- function(query)
   with_db_pool(function(connection) pool::dbGetQuery(connection, query))
 
-read_table <- function(table_name)
+read_table <- function(table_name, ...)
   timed_with_db_pool(
-    paste0("read all records from `", table_name, "`"),
-    function(connection) pool::dbReadTable(connection, table_name)
+    paste0("dbReadTable: `", table_name, "`"),
+    function(connection) pool::dbReadTable(connection, table_name),
+    ...
   )
 
 drop_table <- function(table_name)
   db_execute(paste0("DROP TABLE IF EXISTS ", table_name))
 
-db_execute <- function(query)
+db_execute <- function(query, ...)
   timed_with_db_pool(
     paste0("dbExecute: ", query),
-    function(connection) pool::dbExecute(connection, query)
+    function(connection) pool::dbExecute(connection, query),
+    ...
   )
 
 write_table_ts <- function(df, table_name) {
@@ -83,14 +85,16 @@ write_table_ts <- function(df, table_name) {
 
 # NOTE: table_name must be in the sql_schema.R data structure
 replace_table <- function (data, table_name) {
+  slow <- nrow(data) > 50000
   drop_table(table_name)
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(
-    paste0("dbWriteTable ", table_name, " (", nrow(data), " rows)"),
-    function (connection) RPostgres::dbWriteTable(connection, table_name, data, append = TRUE)
+    paste0("dbWriteTable: ", table_name, " (", nrow(data), " rows)"),
+    function (connection) RPostgres::dbWriteTable(connection, table_name, data, append = TRUE),
+    slow = slow
   )
   for (sql in sql_schema[[table_name]]$addSchema) {
-    iatlas.data::db_execute(sql)
+    iatlas.data::db_execute(sql, slow = slow)
   }
   data
 }

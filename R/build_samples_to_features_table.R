@@ -1,4 +1,6 @@
-build_samples_to_features_table <- function(feather_file_folder, all_samples, samples) {
+build_samples_to_features_table <- function(feather_file_folder, get_all_samples, samples) {
+  all_samples <- get_all_samples()
+
   cat(crayon::magenta("Building samples_to_features data."), fill = TRUE)
   features <- iatlas.data::read_table("features") %>%
     dplyr::as_tibble() %>%

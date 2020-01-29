@@ -1,4 +1,6 @@
-build_samples_table <- function(feather_file_folder, all_samples) {
+build_samples_table <- function(feather_file_folder, get_all_samples) {
+
+  all_samples <- get_all_samples()
 
   iatlas.data::drop_table("genes_to_samples")
   iatlas.data::drop_table("features_to_samples")
