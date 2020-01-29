@@ -6,7 +6,7 @@ build_samples_tables <- function(feather_file_folder) {
   iatlas.data::drop_table("genes_to_samples")
   iatlas.data::drop_table("features_to_samples")
   iatlas.data::drop_table("samples_to_tags")
-  iatlas.data::delete_rows("samples")
+  iatlas.data::drop_table("samples")
 
   # Combine all the sample data. Include the feature_values_long dataframe but
   # ensure its "value" field (from feature_values_long) remains distinct from
@@ -50,7 +50,7 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  samples %>% iatlas.data::write_table_ts("samples")
+  samples %>% iatlas.data::replace_table("samples")
   samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
   .GlobalEnv$samples <- samples
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
