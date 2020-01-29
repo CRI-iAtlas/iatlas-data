@@ -6,6 +6,9 @@ build_references <- function(reference) {
   ))
 }
 
+read_iatlas_data_file <- function(root_path, relative_path)
+  feather::read_feather(paste0(root_path, "/", relative_path))
+
 driver_results_label_to_hgnc <- function(label) {
   hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
   if (!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA}

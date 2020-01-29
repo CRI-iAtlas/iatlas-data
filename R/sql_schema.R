@@ -13,7 +13,7 @@ sql_schema <- list(
   ),
   samples_to_tags = list(
     create = "
-        CREATE TABLE samples_to_tags (
+      CREATE TABLE samples_to_tags (
         sample_id INTEGER,
         tag_id INTEGER,
         PRIMARY KEY (sample_id, tag_id)
@@ -27,8 +27,8 @@ sql_schema <- list(
   features_to_samples = list(
     create = "
       CREATE TABLE features_to_samples (
-        feature_id INTEGER REFERENCES features,
-        sample_id INTEGER REFERENCES samples,
+        feature_id INTEGER,
+        sample_id INTEGER,
         value NUMERIC,
         inf_value REAL,
         PRIMARY KEY (feature_id, sample_id)

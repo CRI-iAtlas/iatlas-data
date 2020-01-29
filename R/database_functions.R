@@ -86,7 +86,7 @@ replace_table <- function (data, table_name) {
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(
     paste0("dbWriteTable ", table_name, " (", nrow(data), " rows)"),
-    function (connection) pool::dbWriteTable(connection, table_name, data, overwrite = TRUE, copy = TRUE)
+    function (connection) RPostgres::dbWriteTable(connection, table_name, data, append = TRUE)
   )
   for (sql in sql_schema[[table_name]]$addSchema) {
     iatlas.data::db_execute(sql)
