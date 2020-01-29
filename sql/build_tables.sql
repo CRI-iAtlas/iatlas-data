@@ -28,14 +28,6 @@ CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
 CREATE INDEX patient_age_index ON patients (age);
 CREATE INDEX patient_weight_index ON patients ("weight");
 
--- samples table
-CREATE TABLE samples (
-    id SERIAL,
-    "name" VARCHAR NOT NULL,
-    tissue_id VARCHAR,
-    PRIMARY KEY (id)
-);
-CREATE UNIQUE INDEX sample_name_index ON samples ("name");
 
 -- gene_families table
 CREATE TABLE gene_families (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
@@ -202,6 +194,27 @@ CREATE TABLE mutation_codes_to_gene_types (
 );
 CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
 
+-- nodes_to_tags table
+CREATE TABLE nodes_to_tags (
+    node_id INTEGER REFERENCES nodes,
+    tag_id INTEGER REFERENCES tags,
+    PRIMARY KEY (node_id, tag_id)
+);
+CREATE INDEX nodes_to_tag_tag_id_index ON nodes_to_tags (tag_id);
+
+---------------------------------------------------------------------------------------
+-- The tables below are now defined in R/sql_schema.R for MUCH faster loading speeds.
+---------------------------------------------------------------------------------------
+
+-- samples table
+-- CREATE TABLE samples (
+--     id SERIAL,
+--     "name" VARCHAR NOT NULL,
+--     tissue_id VARCHAR,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE UNIQUE INDEX sample_name_index ON samples ("name");
+
 -- genes_to_samples table
 -- CREATE TABLE genes_to_samples (
 --     gene_id INTEGER REFERENCES genes NOT NULL,
@@ -232,11 +245,3 @@ CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene
 --     PRIMARY KEY (feature_id, sample_id)
 -- );
 -- CREATE INDEX feature_to_sample_sample_id_index ON features_to_samples (sample_id);
-
--- nodes_to_tags table
-CREATE TABLE nodes_to_tags (
-    node_id INTEGER REFERENCES nodes,
-    tag_id INTEGER REFERENCES tags,
-    PRIMARY KEY (node_id, tag_id)
-);
-CREATE INDEX nodes_to_tag_tag_id_index ON nodes_to_tags (tag_id);
