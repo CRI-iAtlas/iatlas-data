@@ -99,8 +99,8 @@ sql_schema <- list(
     create = "
       CREATE TABLE nodes (
         id SERIAL,
-        feature_id INTEGER REFERENCES features,
-        gene_id INTEGER REFERENCES genes,
+        feature_id INTEGER,
+        gene_id INTEGER,
         score NUMERIC,
         PRIMARY KEY (id)
       );",
@@ -115,8 +115,8 @@ sql_schema <- list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
-        node_1_id INTEGER REFERENCES nodes NOT NULL,
-        node_2_id INTEGER REFERENCES nodes NOT NULL,
+        node_1_id INTEGER NOT NULL,
+        node_2_id INTEGER NOT NULL,
         score NUMERIC,
         PRIMARY KEY (id)
       );",

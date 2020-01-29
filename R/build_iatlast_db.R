@@ -63,7 +63,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
   run_skippable_function(build_features_tables,       "feather_files")
-  run_skippable_function(build_tags_tables,           "feather_files/SQLite_data/groups.feather")
+  run_skippable_function(build_tags_tables,           "feather_files")
   run_skippable_function(build_genes_tables,          "feather_files")
 
   all_samples <- NULL

@@ -157,26 +157,26 @@ CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);
 CREATE INDEX driver_results_tag_id_id_index ON driver_results (tag_id);
 
 -- nodes table
-CREATE TABLE nodes (
-    id SERIAL,
-    feature_id INTEGER REFERENCES features,
-    gene_id INTEGER REFERENCES genes,
-    score NUMERIC,
-    PRIMARY KEY (id)
-);
-CREATE INDEX node_feature_id_index ON nodes (feature_id);
-CREATE INDEX node_gene_id_index ON nodes (gene_id);
+-- CREATE TABLE nodes (
+--     id SERIAL,
+--     feature_id INTEGER REFERENCES features,
+--     gene_id INTEGER REFERENCES genes,
+--     score NUMERIC,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE INDEX node_feature_id_index ON nodes (feature_id);
+-- CREATE INDEX node_gene_id_index ON nodes (gene_id);
 
 -- edges table
-CREATE TABLE edges (
-    id SERIAL,
-    node_1_id INTEGER REFERENCES nodes NOT NULL,
-    node_2_id INTEGER REFERENCES nodes NOT NULL,
-    score NUMERIC,
-    PRIMARY KEY (id)
-);
-CREATE INDEX edge_node_2_id_index ON edges (node_2_id);
-CREATE INDEX edge_nodes_id_index ON edges (node_1_id, node_2_id);
+-- CREATE TABLE edges (
+--     id SERIAL,
+--     node_1_id INTEGER REFERENCES nodes NOT NULL,
+--     node_2_id INTEGER REFERENCES nodes NOT NULL,
+--     score NUMERIC,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE INDEX edge_node_2_id_index ON edges (node_2_id);
+-- CREATE INDEX edge_nodes_id_index ON edges (node_1_id, node_2_id);
 
 -- genes_to_types table
 CREATE TABLE genes_to_types (
@@ -195,12 +195,12 @@ CREATE TABLE mutation_codes_to_gene_types (
 CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
 
 -- nodes_to_tags table
-CREATE TABLE nodes_to_tags (
-    node_id INTEGER REFERENCES nodes,
-    tag_id INTEGER REFERENCES tags,
-    PRIMARY KEY (node_id, tag_id)
-);
-CREATE INDEX nodes_to_tag_tag_id_index ON nodes_to_tags (tag_id);
+-- CREATE TABLE nodes_to_tags (
+--     node_id INTEGER REFERENCES nodes,
+--     tag_id INTEGER REFERENCES tags,
+--     PRIMARY KEY (node_id, tag_id)
+-- );
+-- CREATE INDEX nodes_to_tag_tag_id_index ON nodes_to_tags (tag_id);
 
 ---------------------------------------------------------------------------------------
 -- The tables below are now defined in R/sql_schema.R for MUCH faster loading speeds.

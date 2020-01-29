@@ -31,12 +31,8 @@ table_exists <- function(table_name)
 db_get_query <- function(query)
   with_db_pool(function(connection) pool::dbGetQuery(connection, query))
 
-read_table <- function(table_name, ...)
-  timed_with_db_pool(
-    paste0("dbReadTable: `", table_name, "`"),
-    function(connection) pool::dbReadTable(connection, table_name),
-    ...
-  )
+read_table <- function(table_name)
+  with_db_pool(function(connection) pool::dbReadTable(connection, table_name))
 
 drop_table <- function(table_name)
   db_execute(paste0("DROP TABLE IF EXISTS ", table_name))
@@ -49,7 +45,7 @@ db_execute <- function(query, ...)
   )
 
 write_table_ts <- function(df, table_name) {
-  tictoc::tic(paste0("write all records to `", table_name, "`"))
+  tictoc::tic(paste0("dbWriteTable: ", table_name, " (", nrow(data), " rows)"))
   result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
     # Disable table_name's indexes.
     connection %>% pool::dbExecute(paste0(

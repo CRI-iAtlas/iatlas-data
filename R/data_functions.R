@@ -7,7 +7,7 @@ build_references <- function(reference) {
 }
 
 read_feather_with_info <- function(file_path) {
-  cat(paste0("READ: ", file_path, "\n"))
+  cat(paste0("READ: ", file_path, " size: ", floor(file.info(file_path)$size / 1024), "k\n"))
   feather::read_feather(file_path)
 }
 

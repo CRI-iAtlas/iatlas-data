@@ -1,6 +1,6 @@
-build_tags_tables <- function(feather_file_name) {
+build_tags_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Importing feather file for tags."), fill = TRUE)
-  initial_tags <- feather::read_feather(feather_file_name) %>%
+  initial_tags <- read_iatlas_data_file(feather_file_folder, "/SQLite_data/groups.feather") %>%
     dplyr::rename(name = group, display = group_name)
   cat(crayon::blue("Imported feather file for tags."), fill = TRUE)
 
