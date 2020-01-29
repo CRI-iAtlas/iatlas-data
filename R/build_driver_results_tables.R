@@ -1,6 +1,6 @@
 build_driver_results_tables <- function(feather_file_folder) {
 
-  all_driver_results <- load_all_driver_results(feather_file_folder)
+  all_driver_results <- read_iatlas_data_file(feather_file_folder, "SQLite_data/driver_results*.feather")
 
   cat(crayon::magenta("Building driver_results data."), fill = TRUE)
   features <- iatlas.data::read_table("features") %>%

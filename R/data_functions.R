@@ -9,7 +9,7 @@ build_references <- function(reference) {
 read_feather_with_info <- function(file_path) {
   size <- file.info(file_path)$size
   if (size > 1024**2)
-    cat(paste0("READ: ", file_path, " size: ", floor(10 * size / 1024**2)/10, "m\n"))
+    cat(paste0("READ: ", file_path, " (", floor(10 * size / 1024**2)/10, " megabytes)\n"))
   feather::read_feather(file_path)
 }
 
