@@ -6,8 +6,22 @@ build_references <- function(reference) {
   ))
 }
 
-read_iatlas_data_file <- function(root_path, relative_path)
-  feather::read_feather(paste0(root_path, "/", relative_path))
+read_feather_with_info <- function(file_path) {
+  cat(paste0("feather::read_feather: ", file_path, "\n"))
+  feather::read_feather(file_path)
+}
+
+read_iatlas_data_file <- function(root_path, relative_path) {
+  file_path <- paste0(root_path, "/", relative_path)
+  if (!file.exists(file_path)) {
+    stop(paste0("read_iatlas_data_file: file does not exist: ", file_path))
+  }
+  if (file.info(file_path)$isdir) {
+    load_feather_data(file_path)
+  } else {
+    read_feather_with_info(file_path)
+  }
+}
 
 driver_results_label_to_hgnc <- function(label) {
   hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
@@ -83,7 +97,7 @@ load_feather_data <- function(folder = "data/test") {
   df <- dplyr::tibble()
 
   for (index in 1:length(files)) {
-    df <- df %>% dplyr::bind_rows(feather::read_feather(files[[index]]) %>% dplyr::as_tibble())
+    df <- df %>% dplyr::bind_rows(read_feather_with_info(files[[index]]) %>% dplyr::as_tibble())
   }
 
   return(df)

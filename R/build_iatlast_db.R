@@ -77,7 +77,7 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
 
   # run_skippable_function(build_samples_tables,        "feather_files")
   run_skippable_function(build_driver_results_tables, "feather_files")
-  # run_skippable_function(build_nodes_tables,          "feather_files")
+  run_skippable_function(build_nodes_tables,          "feather_files")
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
