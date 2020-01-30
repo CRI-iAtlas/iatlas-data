@@ -127,3 +127,32 @@ validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
   }
   return(pass_through)
 }
+
+vector_to_env <- function(vec) {
+  output <- new.env()
+  count <- 1
+  for (v in vec) {
+    output[[v]] <- count
+    count <- count + 1
+  }
+  invisible(output)
+}
+
+#' create_gene_expression_lookup
+#'
+#' @param gen_exp is the large, 1.8gigabyte TCGA feather-file loaded via feather::read_feather
+#' @return lookup(), a function that takes (gene_id, sample_id) and returns the gene-expression or NULL if no match
+create_gene_expression_lookup <- function (gene_exp) {
+  gene_exp <- tibble::as_tibble(gene_exp)
+  gene_map <- vector_to_env(purrr::map(gene_exp[[1]], function(f) strsplit(f, "\\|")[[1]][[1]]))
+  sample_map <- vector_to_env(colnames(gene_exp))
+
+  function(gene_id, sample_id) {
+    if (
+      !is.null(col_num <- sample_map[[sample_id]]) &&
+      !is.null(row_num <- gene_map[[gene_id]])
+    )
+      return(gene_exp[[col_num]][[row_num]])
+    return(NA)
+  }
+}
