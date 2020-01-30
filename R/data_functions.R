@@ -1,3 +1,16 @@
+present <- function (a) {!is.na(a) && !is.null(a)}
+
+timed <- function(v, before_message = NA, after_message = "", message = NA) {
+  if (present(message)) {
+    before_message <- paste0(message, "...\n")
+    after_message <- message
+  }
+  tictoc::tic(after_message)
+  if (present(before_message)) cat(before_message)
+  on.exit(tictoc::toc())
+  v
+}
+
 build_references <- function(reference) {
   return(ifelse(
     !identical(reference, "NA") & !is.na(reference),
@@ -9,8 +22,9 @@ build_references <- function(reference) {
 read_feather_with_info <- function(file_path) {
   size <- file.info(file_path)$size
   if (size > 1024**2)
-    cat(paste0("READ: ", file_path, " (", floor(10 * size / 1024**2)/10, " megabytes)\n"))
-  feather::read_feather(file_path)
+    timed(feather::read_feather(file_path), before_message = paste0("READ: ", file_path, " (", floor(10 * size / 1024**2)/10, " megabytes)"))
+  else
+    feather::read_feather(file_path)
 }
 
 read_iatlas_data_file <- function(root_path, relative_path) {
@@ -149,6 +163,19 @@ validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
     }
   }
   return(pass_through)
+}
+
+flatten_dupes <- function(group, field) {
+  values <- group[[field]]
+  valid_values <- get_unique_valid_values(group[[field]])
+  if (length(valid_values) > 1) {
+    print(list(group = group, field = field, valid_values = valid_values))
+    stop("DIRTY DATA! Found multiple values for ", field, ": ", paste(valid_values, collapse = ", "))
+  } else if (length(valid_values) == 0) {
+    NA
+  } else {
+    valid_values[[1]]
+  }
 }
 
 vector_to_env <- function(vec) {
