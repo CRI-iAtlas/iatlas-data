@@ -1,3 +1,30 @@
+resolve_genes_to_samples_dupes <- function(genes_to_samples) {
+  timed(
+    before_message = "resolving genes_to_sample duplicates...\n",
+    after_message = "resolved genes_to_sample duplicates",
+    {
+      timed(before_message = "  finding duplicates", duplicated_records <- genes_to_samples %>% janitor::get_dupes(sample_id, gene_id, mutation_code_id))
+
+      timed(
+        before_message = "  resolving duplicates",
+        deduplicated_records <- duplicated_records %>%
+          dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
+          dplyr::summarise(
+            status = flatten_dupes(group = .data, field = "status"),
+            rna_seq_expr = flatten_dupes(group = .data, field = "rna_seq_expr")
+          )
+      )
+
+      timed(
+        before_message = "  removing old versions",
+        clean_records <- dplyr::anti_join(genes_to_samples, deduplicated_records, by = c("sample_id" = "sample_id", "gene_id" = "gene_id", "mutation_code_id" = "mutation_code_id"))
+      )
+
+      dplyr::bind_rows(clean_records, deduplicated_records)
+    }
+  )
+}
+
 # build_samples_tables ---------------------------------------------------
 build_samples_tables <- function(feather_file_folder) {
   apply_path <- function(sub_path) {
@@ -13,16 +40,15 @@ build_samples_tables <- function(feather_file_folder) {
   iatlas.data::delete_rows("patients")
   iatlas.data::delete_rows("slides")
 
-
   # read genes db data ---------------------------------------------------
   cat(crayon::magenta("Importing data from the genes table."), fill = TRUE)
   genes <- iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc)
   cat(crayon::blue("Imported data from the genes table."), fill = TRUE)
 
   # Import RNA Seq Expr data ---------------------------------------------------
-  cat(crayon::magenta("Importing HUGE RNA Seq Expr file.\n\t(This is VERY large and will take some time to open. Please be patient.)"), fill = TRUE)
-  rna_seq_expr_matrix <- read.table(file = paste0(getwd(), "/tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = "\t", header = TRUE, check.names = TRUE) %>%
-  dplyr::as_tibble() %>%
+  cat(crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and will take some time to open. Please be patient.)"), fill = TRUE)
+  rna_seq_expr_matrix <- read_iatlas_data_file(feather_file_folder, "EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather") %>%
+    dplyr::as_tibble() %>%
   # rna_seq_expr_matrix <- feather::read_feather(apply_path("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather")) %>%
   #   dplyr::as_tibble() %>%
     tidyr::separate(gene_id, c("hugo", "entrez"), sep = "[|]") %>%
@@ -80,7 +106,7 @@ build_samples_tables <- function(feather_file_folder) {
 
   # patients data ---------------------------------------------------
   cat(crayon::magenta("Building patients data.)"), fill = TRUE)
-  fmx <- feather::read_feather(apply_path("original_data/fmx_df.feather")) %>%
+  fmx <- feather::read_feather(apply_path("fmx_df.feather")) %>%
     dplyr::distinct(
       barcode = ParticipantBarcode,
       age = age_at_initial_pathologic_diagnosis,
@@ -291,13 +317,11 @@ build_samples_tables <- function(feather_file_folder) {
   genes_to_samples <- genes_to_samples %>%
     dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
-  cat(crayon::cyan(" - Summarise status and rna_seq_expr.\n\tCrunching through a LOT of data (", nrow(genes_to_samples), " rows), this will take some time. Please be patient."), fill = TRUE)
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
-    dplyr::summarise(
-      status = iatlas.data::validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na(),
-      rna_seq_expr = iatlas.data::validate_dupes(rna_seq_expr, group = .data, fields = c("rna_seq_expr"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na() %>% as.numeric()
-    )
+
+  cat(crayon::cyan("Summarise status and rna_seq_expr.\nCrunching through a LOT of data V2 (", nrow(genes_to_samples), " rows), this will take some time. Please be patient."), fill = TRUE)
+  .GlobalEnv$genes_to_samples_before <- genes_to_samples
+  genes_to_samples <- timed(genes_to_samples %>% resolve_genes_to_samples_dupes())
+  .GlobalEnv$genes_to_samples_before <- genes_to_samples
   cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
   # genes_to_samples table ---------------------------------------------------

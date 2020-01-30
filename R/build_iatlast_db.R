@@ -9,9 +9,8 @@
 #'
 #' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
+build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
-  present <- function (a) {!is.na(a) && !is.null(a)}
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
   if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
   if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
