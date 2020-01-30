@@ -66,25 +66,27 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   run_skippable_function(build_tags_tables,           feather_file_folder)
   run_skippable_function(build_genes_tables,          feather_file_folder)
 
-  all_samples <- NULL
-  get_all_samples <- function () {
-    if (is.null(all_samples)) {
-      all_samples <<- load_all_samples(feather_file_folder)
+  if (FALSE) {
+    all_samples <- NULL
+    get_all_samples <- function () {
+      if (is.null(all_samples)) {
+        all_samples <<- load_all_samples(feather_file_folder)
+      }
+      all_samples
     }
-    all_samples
+    all_samples <- get_all_samples()
+
+    run_skippable_function(build_samples_tables,         feather_file_folder, get_all_samples)
+
+    samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
+
+    run_skippable_function(build_samples_to_tags_table,     feather_file_folder, get_all_samples, samples)
+    run_skippable_function(build_samples_to_features_table, feather_file_folder, get_all_samples, samples)
+
+    all_samples <- NULL
+  } else {
+    run_skippable_function(build_samples_tables,        feather_file_folder)
   }
-  all_samples <- get_all_samples()
-
-  run_skippable_function(build_samples_table,         feather_file_folder, get_all_samples)
-
-  samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
-
-  run_skippable_function(build_samples_to_tags_table,     feather_file_folder, get_all_samples, samples)
-  run_skippable_function(build_samples_to_features_table, feather_file_folder, get_all_samples, samples)
-
-  all_samples <- NULL
-
-  # run_skippable_function(build_samples_tables,        feather_file_folder)
   run_skippable_function(build_driver_results_tables, feather_file_folder)
   run_skippable_function(build_nodes_tables,          feather_file_folder)
 
