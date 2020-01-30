@@ -256,7 +256,10 @@ build_samples_tables <- function(feather_file_folder) {
 
   mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
   cat(crayon::cyan("Ensuring no duplicates so there is a smaller data set to work with."), fill = TRUE)
-  genes_to_samples <- all_samples %>% dplyr::distinct(sample, gene, status, rna_seq_expr, barcode, patient_id)
+  genes_to_samples <- all_samples %>%
+    dplyr::distinct(sample, gene, status, rna_seq_expr, barcode, patient_id) %>%
+    dplyr::filter(!is.na(gene)) %>%
+    dplyr::filter(!is.na(sample))
   cat(crayon::cyan("Separating the mutation code from the HUGO id."), fill = TRUE)
   genes_to_samples <- genes_to_samples %>%
     dplyr::mutate(
