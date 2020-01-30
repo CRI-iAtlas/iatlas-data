@@ -751,6 +751,13 @@
       "Repository": "CRAN",
       "Hash": "f8cc5adf4671b013434bbe127f35b28c"
     },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fb73a010ace00d6c584c2b53a21b969c"
+    },
     "tidyselect": {
       "Package": "tidyselect",
       "Version": "0.2.5",
