@@ -26,7 +26,7 @@ build_driver_results_tables <- function(feather_file_folder) {
     dplyr::select(-c("feature", "group", "hgnc", "label", "parent_group"))
   cat(crayon::blue("Built driver_results data."), fill = TRUE)
 
-  cat(crayon::magenta("Building driver_results table.\n(Please be patient, this may take a little while as there are", nrow(results), "rows to write.)"), fill = TRUE, spe = " ")
+  cat(crayon::magenta("Building driver_results table.\n\t(Please be patient, this may take a little while as there are", nrow(results), "rows to write.)"), fill = TRUE, spe = " ")
   table_written <- results %>% iatlas.data::replace_table("driver_results")
   cat(crayon::blue("Built driver_results table. (", nrow(results), "rows )"), fill = TRUE, sep = " ")
 }

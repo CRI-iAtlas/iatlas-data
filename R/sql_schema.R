@@ -45,7 +45,7 @@ sql_schema <- list(
       CREATE TABLE genes_to_samples (
         gene_id INTEGER NOT NULL,
         sample_id INTEGER NOT NULL,
-        mutation_code_id INTEGER NOT NULL,
+        mutation_code_id INTEGER,
         rna_seq_expr NUMERIC,
         status STATUS_ENUM,
         PRIMARY KEY (gene_id, sample_id, mutation_code_id)
