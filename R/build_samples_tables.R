@@ -288,7 +288,7 @@ build_samples_tables <- function(feather_file_folder) {
   genes_to_samples <- genes_to_samples %>%
     dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
-  cat(crayon::cyan("Summarise status and rna_seq_expr.\n(Crunching through a LOT of data, this will take some time. Please be patient.)"), fill = TRUE)
+  cat(crayon::cyan("Summarise status and rna_seq_expr.\nCrunching through a LOT of data (", nrow(genes_to_samples), " rows), this will take some time. Please be patient."), fill = TRUE)
   genes_2_samples <- genes_to_samples %>%
     dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
     dplyr::summarise(
