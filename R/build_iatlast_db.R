@@ -9,7 +9,7 @@
 #'
 #' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_at = NULL) {
+build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
   present <- function (a) {!is.na(a) && !is.null(a)}
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
@@ -62,31 +62,31 @@ build_iatlas_db <- function(env = "dev", reset = NULL, show_gc_info = FALSE, res
   cat(crayon::green("CREATE: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(build_features_tables,       "feather_files")
-  run_skippable_function(build_tags_tables,           "feather_files")
-  run_skippable_function(build_genes_tables,          "feather_files")
+  run_skippable_function(build_features_tables,       feather_file_folder)
+  run_skippable_function(build_tags_tables,           feather_file_folder)
+  run_skippable_function(build_genes_tables,          feather_file_folder)
 
   all_samples <- NULL
   get_all_samples <- function () {
     if (is.null(all_samples)) {
-      all_samples <<- load_all_samples("feather_files")
+      all_samples <<- load_all_samples(feather_file_folder)
     }
     all_samples
   }
   all_samples <- get_all_samples()
 
-  run_skippable_function(build_samples_table,         "feather_files", get_all_samples)
+  run_skippable_function(build_samples_table,         feather_file_folder, get_all_samples)
 
   samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
 
-  run_skippable_function(build_samples_to_tags_table,     "feather_files", get_all_samples, samples)
-  run_skippable_function(build_samples_to_features_table, "feather_files", get_all_samples, samples)
+  run_skippable_function(build_samples_to_tags_table,     feather_file_folder, get_all_samples, samples)
+  run_skippable_function(build_samples_to_features_table, feather_file_folder, get_all_samples, samples)
 
   all_samples <- NULL
 
-  # run_skippable_function(build_samples_tables,        "feather_files")
-  run_skippable_function(build_driver_results_tables, "feather_files")
-  run_skippable_function(build_nodes_tables,          "feather_files")
+  # run_skippable_function(build_samples_tables,        feather_file_folder)
+  run_skippable_function(build_driver_results_tables, feather_file_folder)
+  run_skippable_function(build_nodes_tables,          feather_file_folder)
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
