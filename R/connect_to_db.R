@@ -3,12 +3,10 @@ connect_to_db <- function(verbose = FALSE) {
   if (verbose) {
     cat(crayon::blue(paste(
       "connect_to_db:",
-      "\n  dbname: ", .GlobalEnv$DB_NAME,
-      "\n  host:   ", .GlobalEnv$DB_HOST,
-      "\n  port:   ", .GlobalEnv$DB_PORT,
-      "\n  user:   ", .GlobalEnv$DB_USER,
-      "\n"
-
+      "\n\tdbname: ", .GlobalEnv$DB_NAME,
+      "\n\thost:   ", .GlobalEnv$DB_HOST,
+      "\n\tport:   ", .GlobalEnv$DB_PORT,
+      "\n\tuser:   ", .GlobalEnv$DB_USER
     ), fill = TRUE))
   }
 
