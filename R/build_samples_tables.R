@@ -289,7 +289,7 @@ build_samples_tables <- function(feather_file_folder) {
     dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
   cat(crayon::cyan("Summarise status and rna_seq_expr.\nCrunching through a LOT of data (", nrow(genes_to_samples), " rows), this will take some time. Please be patient."), fill = TRUE)
-  genes_2_samples <- genes_to_samples %>%
+  genes_to_samples <- genes_to_samples %>%
     dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
     dplyr::summarise(
       status = iatlas.data::validate_dupes(status, group = .data, fields = c("status"), info = c("gene_id", "sample_id", "mutation_code_id")) %>% iatlas.data::filter_na(),
