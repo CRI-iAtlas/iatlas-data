@@ -11,9 +11,6 @@ build_features_tables <- function(feather_file_folder) {
   classes <- features %>%
     dplyr::distinct(class) %>%
     dplyr::rename(name = class) %>%
-    dplyr::add_row(name = "Survival Time") %>%
-    dplyr::add_row(name = "Survival Status") %>%
-    dplyr::add_row(name = "Miscellaneous") %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built classes data."), fill = TRUE)
 
