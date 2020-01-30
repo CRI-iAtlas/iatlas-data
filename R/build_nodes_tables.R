@@ -48,7 +48,7 @@ build_nodes_tables <- function(feather_file_folder) {
     dplyr::distinct(node_id, tag_id)
   cat(crayon::blue("Built the nodes_to_tags data."), fill = TRUE)
 
-  cat(crayon::magenta("Building the nodes_to_tags table.\n(There are", nrow(nodes_to_tags), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
+  cat(crayon::magenta("Building the nodes_to_tags table.\n\t(There are", nrow(nodes_to_tags), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- nodes_to_tags %>% iatlas.data::replace_table("nodes_to_tags")
   cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows )"), fill = TRUE, sep = " ")
 
@@ -69,7 +69,7 @@ build_nodes_tables <- function(feather_file_folder) {
     dplyr::arrange(node_1_id, node_2_id, score)
   cat(crayon::blue("Built the edges data."), fill = TRUE)
 
-  cat(crayon::magenta("Building the edges table.\n(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
+  cat(crayon::magenta("Building the edges table.\n\t(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- edges %>% iatlas.data::replace_table("edges")
   cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE, sep = " ")
 }

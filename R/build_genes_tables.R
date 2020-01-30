@@ -90,7 +90,7 @@ build_genes_tables <- function(feather_file_folder) {
     dplyr::distinct(gene, .keep_all = TRUE)
   cat(crayon::blue("Bound ecn, immunomodulators, and io_targets."), fill = TRUE)
 
-  cat(crayon::magenta("Building all gene data.\n(Please be patient, this may take a little while.)"), fill = TRUE)
+  cat(crayon::magenta("Building all gene data.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   all_genes <- all_genes_expr %>%
     dplyr::full_join(all_genes, by = "gene") %>%
     dplyr::rename(hgnc = gene) %>%
@@ -190,31 +190,31 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built therapy_types table. (", nrow(therapy_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building genes data."), fill = TRUE)
-  cat(crayon::cyan("Adding gene_family ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding gene_family ids."), fill = TRUE)
   genes <- all_genes %>%
     dplyr::left_join(iatlas.data::read_table("gene_families"), by = c("gene_family" = "name")) %>%
     dplyr::rename(gene_family_id = id)
-  cat(crayon::cyan("Adding gene_function ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding gene_function ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("gene_functions"), by = c("gene_function" = "name")) %>%
     dplyr::rename(gene_function_id = id)
-  cat(crayon::cyan("Adding immune_checkpoint ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding immune_checkpoint ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("immune_checkpoints"), by = c("immune_checkpoint" = "name")) %>%
     dplyr::rename(immune_checkpoint_id = id)
-  cat(crayon::cyan("Adding node_type ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding node_type ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("node_types"), by = c("node_type" = "name")) %>%
     dplyr::rename(node_type_id = id)
-  cat(crayon::cyan("Adding pathway ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding pathway ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("pathways"), by = c("pathway" = "name")) %>%
     dplyr::rename(pathway_id = id)
-  cat(crayon::cyan("Adding super_category ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding super_category ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("super_categories"), by = c("super_category" = "name")) %>%
     dplyr::rename(super_cat_id = id)
-  cat(crayon::cyan("Adding therapy_type ids."), fill = TRUE)
+  cat(crayon::cyan(" - Adding therapy_type ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename(therapy_type_id = id) %>%
