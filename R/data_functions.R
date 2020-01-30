@@ -175,7 +175,7 @@ create_gene_expression_lookup <- function (gene_exp) {
       !is.null(col_num <- sample_map[[sample_id]]) &&
       !is.null(row_num <- gene_map[[gene_id]])
     )
-      gene_exp[[col_num]][[row_num]]
-    else NULL
+      return(gene_exp[[col_num]][[row_num]])
+    return(NA)
   }
 }
