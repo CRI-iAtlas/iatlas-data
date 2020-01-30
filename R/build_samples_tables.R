@@ -9,7 +9,7 @@ build_samples_tables <- function(feather_file_folder) {
   iatlas.data::drop_table("genes_to_samples")
   iatlas.data::delete_rows("patients_to_slides")
   iatlas.data::drop_table("samples_to_tags")
-  iatlas.data::delete_rows("samples")
+  iatlas.data::drop_table("samples")
   iatlas.data::delete_rows("patients")
   iatlas.data::delete_rows("slides")
 
@@ -136,7 +136,7 @@ build_samples_tables <- function(feather_file_folder) {
 
   # sample table ---------------------------------------------------
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  table_written <- samples %>% iatlas.data::write_table_ts("samples")
+  samples %>% iatlas.data::replace_table("samples")
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
 
   # slide data ---------------------------------------------------

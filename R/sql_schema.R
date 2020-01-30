@@ -14,7 +14,7 @@ sql_schema <- list(
   ),
   samples_to_tags = list(
     create = "
-        CREATE TABLE samples_to_tags (
+      CREATE TABLE samples_to_tags (
         sample_id INTEGER,
         tag_id INTEGER,
         PRIMARY KEY (sample_id, tag_id)
@@ -28,8 +28,8 @@ sql_schema <- list(
   features_to_samples = list(
     create = "
       CREATE TABLE features_to_samples (
-        feature_id INTEGER REFERENCES features,
-        sample_id INTEGER REFERENCES samples,
+        feature_id INTEGER,
+        sample_id INTEGER,
         value NUMERIC,
         inf_value REAL,
         PRIMARY KEY (feature_id, sample_id)
@@ -57,6 +57,75 @@ sql_schema <- list(
       "ALTER TABLE genes_to_samples ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE genes_to_samples ADD FOREIGN KEY (sample_id) REFERENCES samples;",
       "ALTER TABLE genes_to_samples ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
+    )
+  ),
+  driver_results = list(
+    create = "
+      CREATE TABLE driver_results (
+        id SERIAL,
+        p_value NUMERIC,
+        fold_change NUMERIC,
+        log10_p_value NUMERIC,
+        log10_fold_change NUMERIC,
+        n_wt INTEGER,
+        n_mut INTEGER,
+        feature_id INTEGER,
+        gene_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX driver_results_feature_id_index ON driver_results (feature_id);",
+      "CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);",
+      "CREATE INDEX driver_results_tag_id_id_index ON driver_results (tag_id);",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
+  nodes_to_tags = list(
+    create = "
+      CREATE TABLE nodes_to_tags (
+        node_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (node_id, tag_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX nodes_to_tag_tag_id_index ON nodes_to_tags (tag_id);",
+      "ALTER TABLE nodes_to_tags ADD FOREIGN KEY (node_id) REFERENCES nodes;",
+      "ALTER TABLE nodes_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
+  nodes = list (
+    create = "
+      CREATE TABLE nodes (
+        id SERIAL,
+        feature_id INTEGER,
+        gene_id INTEGER,
+        score NUMERIC,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX node_feature_id_index ON nodes (feature_id);",
+      "CREATE INDEX node_gene_id_index ON nodes (gene_id);",
+      "ALTER TABLE nodes ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE nodes ADD FOREIGN KEY (gene_id) REFERENCES genes;"
+    )
+  ),
+  edges = list (
+    create = "
+      CREATE TABLE edges (
+        id SERIAL,
+        node_1_id INTEGER NOT NULL,
+        node_2_id INTEGER NOT NULL,
+        score NUMERIC,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX edge_node_2_id_index ON edges (node_2_id);",
+      "CREATE INDEX edge_nodes_id_index ON edges (node_1_id, node_2_id);",
+      "ALTER TABLE edges ADD FOREIGN KEY (node_1_id) REFERENCES nodes;",
+      "ALTER TABLE edges ADD FOREIGN KEY (node_2_id) REFERENCES nodes;"
     )
   )
 )

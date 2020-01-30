@@ -6,6 +6,29 @@ build_references <- function(reference) {
   ))
 }
 
+read_feather_with_info <- function(file_path) {
+  size <- file.info(file_path)$size
+  if (size > 1024**2)
+    cat(paste0("READ: ", file_path, " (", floor(10 * size / 1024**2)/10, " megabytes)\n"))
+  feather::read_feather(file_path)
+}
+
+read_iatlas_data_file <- function(root_path, relative_path) {
+  file_path <- paste0(root_path, "/", relative_path)
+  if (grepl("[*?]",file_path)) {
+    load_feather_files(Sys.glob(file_path))
+  } else {
+    if (!file.exists(file_path)) {
+      stop(paste0("read_iatlas_data_file: file does not exist: ", file_path))
+    }
+    if (file.info(file_path)$isdir) {
+      load_feather_data(file_path)
+    } else {
+      read_feather_with_info(file_path)
+    }
+  }
+}
+
 driver_results_label_to_hgnc <- function(label) {
   hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
   if (!identical(hgnc, "NA") & !is.na(hgnc)) {hgnc} else {NA}
@@ -72,18 +95,18 @@ link_to_references <- function(link) {
 #'
 #' @param folder the path to the folder that contains the feather files to load.
 #' @return A single data frame (as tibble) with all feather filke data bound together.
-load_feather_data <- function(folder = "data/test") {
-  # Identify all files with feather extension.
-  files <- list.files(folder, pattern = "*.feather")
-  files <- sprintf(paste0(folder, "/%s"), files)
+load_feather_data <- function(folder = "data/test")
+  load_feather_files(Sys.glob(paste0(folder, "/*.feather")))
 
+load_feather_files <- function(file_names) {
   df <- dplyr::tibble()
 
-  for (index in 1:length(files)) {
-    df <- df %>% dplyr::bind_rows(feather::read_feather(files[[index]]) %>% dplyr::as_tibble())
+  for (index in 1:length(file_names)) {
+    df <- df %>%
+      dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
   }
 
-  return(df)
+  df
 }
 
 print_dupe_info <- function(group = NA, info = c()) {

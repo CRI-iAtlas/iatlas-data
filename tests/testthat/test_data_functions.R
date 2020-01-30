@@ -130,6 +130,20 @@
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
+  test_that("read_iatlas_data_file with directory", {
+    first <- feather::read_feather("../test_data/load_feather_data_set/first.feather")
+    second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
+    results <- read_iatlas_data_file("../test_data", "load_feather_data_set")
+    expect_equal(nrow(results), nrow(first) + nrow(second))
+  })
+
+  test_that("read_iatlas_data_file with glob", {
+    first <- feather::read_feather("../test_data/load_feather_data_set/first.feather")
+    second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
+    results <- read_iatlas_data_file("../test_data", "load_feather_data_set/*.feather")
+    expect_equal(nrow(results), nrow(first) + nrow(second))
+  })
+
   test_that("rebuild_gene_relational_data returns unique, non-na values from column", {
     all_genes <- read_feather("../test_data/features.feather")
     all_genes %>%
