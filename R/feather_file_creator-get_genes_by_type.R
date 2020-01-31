@@ -90,7 +90,8 @@ get_genes_by_type <- function() {
 
     # Clean up the data set.
     genes <- genes %>%
-      dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type, references)
+      dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type, references) %>%
+      dplyr::arrange(entrez, hgnc)
 
     # Execute the query and return a tibble.
     genes <- genes %>% dplyr::as_tibble()
