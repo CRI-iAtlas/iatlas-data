@@ -6,33 +6,66 @@ get_samples_by_study <- function() {
   get_samples_by_study <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    samples <- current_pool %>%
-      dplyr::tbl("samples") %>%
-      dplyr::right_join(
-        current_pool %>%
-          dplyr::tbl("samples_to_tags"),
-        by = c("id" = "sample_id")
-      ) %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("tags") %>%
-          dplyr::select(id, name) %>%
-          dplyr::rename_at("name", ~("tag_name")),
-        by = c("tag_id" = "id")
-      ) %>%
-      dplyr::right_join(
-        current_pool %>%
-          dplyr::tbl("tags_to_tags") %>%
-          dplyr::right_join(
-            current_pool %>%
-              dplyr::tbl("tags") %>%
-              dplyr::select(id, name),
-            by = c("related_tag_id" = "id")) %>%
-          dplyr::filter(name == study),
-        by = "tag_id"
-      ) %>%
-      dplyr::select(name, tissue_id) %>%
-      dplyr::as_tibble()
+    # Get the initial values from the samples table.
+    samples <- current_pool %>% dplyr::tbl("samples")
+
+    # Get tag ids related to the samples.
+    samples <- samples %>% dplyr::right_join(
+      current_pool %>% dplyr::tbl("samples_to_tags"),
+      by = c("id" = "sample_id")
+    )
+
+    # Get the tag names for the samples by tag id.
+    samples <- samples %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags") %>%
+        dplyr::select(id, tag_name = name),
+      by = c("tag_id" = "id")
+    )
+
+    # Get tag ids related to the tags :)
+    samples <- samples %>% dplyr::right_join(
+      current_pool %>% dplyr::tbl("tags_to_tags"),
+      by = "tag_id"
+    )
+
+    # Get the related tag names for the samples by related tag id.
+    samples <- samples %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags") %>%
+        dplyr::select(id, related_tag_name = name),
+      by = c("related_tag_id" = "id")
+    )
+
+    # Filter the data set to tags related to the passed study.
+    samples <- samples %>% dplyr::filter(tag_name == study | related_tag_name == study)
+
+    # Get the patient data from the patients table.
+    samples <- samples %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("patients") %>%
+        dplyr::rename(patient_barcode = barcode),
+      by = c("patient_id" = "id")
+    )
+
+    # Get the slide ids for each patient id related to the samples.
+    samples <- samples %>% dplyr::inner_join(
+      current_pool %>% dplyr::tbl("patients_to_slides"),
+      by = "patient_id"
+    )
+
+    # Get the slide ids for each patient id related to the samples.
+    samples <- samples %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("slides") %>%
+        dplyr::rename(slide = name) %>%
+        dplyr::rename(slide_description = description),
+      by = c("slide_id" = "id")
+    )
+
+    # Clean up the data set.
+    samples <- samples %>%
+      dplyr::distinct(name, patient_barcode, age, ethnicity, gender, race, weight, slide, slide_description) %>%
+      dplyr::arrange(name)
+
+    # Execute the query and return a tibble.
+    samples <- samples %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
 
