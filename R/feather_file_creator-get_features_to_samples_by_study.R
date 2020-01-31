@@ -88,9 +88,9 @@ get_features_to_samples_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(tcga_study_features_to_samples, pos = ".GlobalEnv")
-  # rm(tcga_subtype_features_to_samples, pos = ".GlobalEnv")
-  # rm(immune_subtype_features_to_samples, pos = ".GlobalEnv")
+  rm(tcga_study_features_to_samples, pos = ".GlobalEnv")
+  rm(tcga_subtype_features_to_samples, pos = ".GlobalEnv")
+  rm(immune_subtype_features_to_samples, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
