@@ -39,7 +39,8 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 - The (very large) RNA Seq Expression file.
 
   - Download [EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather](https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0) and put it in the `/feather_files` folder
-  - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).
+  - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).\
+    The original tsv is found at: [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
 
 #### Requirements: MacOS Install instructions
 
@@ -62,7 +63,6 @@ To build the database locally:
 1. Open `iatlas-data.Rproj` in Rstudio.
 
 1. Follow the instructions.
-
 
 When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
