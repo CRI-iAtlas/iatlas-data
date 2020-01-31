@@ -108,6 +108,7 @@ validate_control_data <- function (data, table_name) {
 replace_table <- function (data, table_name) {
   validate_control_data(data, table_name)
   slow <- nrow(data) > 50000
+  # purrr::map(get_dependent_tables(table_name), ~ drop_table(.))
   drop_table(table_name)
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(

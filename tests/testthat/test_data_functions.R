@@ -1,6 +1,12 @@
 (function() {
   library("testthat")
   library('feather')
+  test_data_folder <- "../../test_data"
+
+  get_test_data_path <- function (sub_path) paste0(test_data_folder, "/", sub_path)
+
+  read_test_feather <- function (sub_path) read_feather(get_test_data_path(sub_path))
+
 
   # build_references
   test_that("build_references returns NA when no value present.", {
@@ -66,7 +72,7 @@
     #   description = c("Good description")
     # )
   test_that("get_tag_column_names returns a character vector of column names that beging with 'tag'.", {
-    data_frame <- feather::read_feather("../test_data/get_tag_column_names.feather")
+    data_frame <- read_test_feather("get_tag_column_names.feather")
     result <- get_tag_column_names(data_frame)
     expect_that(result[1], is_identical_to("tag"))
     # expect_that(result[2], is_identical_to("tag.01"))
@@ -123,29 +129,30 @@
     expect_that(driver_results_label_to_hgnc(";SKC"), is_identical_to(NA))
   })
 
+
   test_that("load_feather_data", {
-    first <- feather::read_feather("../test_data/load_feather_data_set/first.feather")
-    second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
-    results <- load_feather_data("../test_data/load_feather_data_set")
+    first <- read_test_feather("load_feather_data_set/first.feather")
+    second <- read_test_feather("load_feather_data_set/second.feather")
+    results <- load_feather_data(get_test_data_path("load_feather_data_set"))
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
   test_that("read_iatlas_data_file with directory", {
-    first <- feather::read_feather("../test_data/load_feather_data_set/first.feather")
-    second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file("../test_data", "load_feather_data_set")
+    first <- read_test_feather("load_feather_data_set/first.feather")
+    second <- read_test_feather("load_feather_data_set/second.feather")
+    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
   test_that("read_iatlas_data_file with glob", {
-    first <- feather::read_feather("../test_data/load_feather_data_set/first.feather")
-    second <- feather::read_feather("../test_data/load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file("../test_data", "load_feather_data_set/*.feather")
+    first <- read_test_feather("load_feather_data_set/first.feather")
+    second <- read_test_feather("load_feather_data_set/second.feather")
+    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set/*.feather")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
   test_that("rebuild_gene_relational_data returns unique, non-na values from column", {
-    all_genes <- read_feather("../test_data/features.feather")
+    all_genes <- read_test_feather("features.feather")
     all_genes %>%
     rebuild_gene_relational_data("class", "name") %>% nrow %>%
     expect_equal(13)
@@ -156,7 +163,7 @@
   })
 
   test_that("rebuild_gene_relational_data returns sorted results", {
-    all_genes <- read_feather("../test_data/features.feather")
+    all_genes <- read_test_feather("features.feather")
     random_order_genes <- all_genes[sample(1:nrow(all_genes)),]
 
     expect_false(isTRUE(all.equal(all_genes, random_order_genes, ignore_row_order = FALSE)))

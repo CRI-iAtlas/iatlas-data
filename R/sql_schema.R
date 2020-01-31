@@ -178,6 +178,18 @@ sql_schema <- list(
   )
 )
 
-get_dependent_tables <- function (table_name) {
+#' table_a is_dependent_table on table_b
+is_dependent_table <- function (a, b) {
+  grepl(paste0("REFERENCES ", b), sql_schema[[a]]$addSchema) %>%
+  purrr::detect(~ ., .default = FALSE)
+}
 
+get_dependent_tables_recursive <- function (table_name) {
+  purrr::map(names(sql_schema), ~ if (is_dependent_table(., table_name)) c(., get_dependent_tables_recursive(.)))
+}
+
+get_dependent_tables <- function (table_name) {
+  get_dependent_tables_recursive(table_name) %>%
+  unlist() %>%
+  purrr::compact()
 }
