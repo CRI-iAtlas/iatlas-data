@@ -242,10 +242,11 @@ build_genes_tables <- function(feather_file_folder) {
   driver_mutations <- driver_mutations %>% tibble::add_column(type_id = driver_mutation_id %>% as.integer)
   ecns <- ecns %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = ecn_id %>% as.integer)
   immunomodulator_expr <- immunomodulator_expr %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
+  immunomodulators <- immunomodulators %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
   io_target_expr <- io_target_expr %>% tibble::add_column(type_id = io_target_id %>% as.integer)
 
   genes_to_types <- driver_mutations %>%
-    dplyr::bind_rows(ecns, immunomodulator_expr, io_target_expr) %>%
+    dplyr::bind_rows(ecns,immunomodulators, immunomodulator_expr, io_target_expr) %>%
     dplyr::inner_join(genes, by = c("gene" = "hgnc")) %>%
     dplyr::rename(gene_id = id) %>%
     dplyr::distinct(gene_id, type_id) %>%
