@@ -70,6 +70,12 @@ There are many sub tables. These tables contain data that is typically related t
 
 The sub tables are:
 
+- ### [Samples](#samples) Sub Tables
+
+  - #### slides
+
+    Each row describes an individual slide.
+
 - ### [Genes](#genes) Sub Tables
 
   - #### gene_families
@@ -126,11 +132,11 @@ Much of the data has a one to many or many to many relationship. Rather than hav
 
 The relational (join) tables are:
 
-- ### sampless_to_patients
+- ### patients_to_slides
 
-  Each row describes a sample to patient relationship.
+  Each row describes a patient to slide relationship.
 
-  For example, "Sample A" may be related to "Patient 1". That would be one row. "Sample B" may also be related to "Patient 1". That would be an additional row.
+  For example, "Patient A" may be related to "Slide 1". That would be one row. "Patient B" may also be related to "Slide 1". That would be an additional row.
 
 - ### genes_to_samples
 
@@ -294,16 +300,17 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `name` - The unique name or barcode for the specific sample. (a string)
 
-  - `tissue_id` - The unique tissue id for the specific sample. This may be used to access the sample image. (a string)\
-    ie: `https://quip1.bmi.stonybrook.edu:443/camicroscope/osdCamicroscope.php?tissueId={tissue_id}`
+  - `patient_id` - The unique patient id for the specific sample. This is the patient that the sample is derived from.
 
   - `patient_id` - The unique patient id for the specific sample. Relates to the `id` field in a row in the [patients](#patients) sub table. (an integer)
 
-- [sampless_to_patients](#sampless_to_patients)
-
-  - `sample_id` - The database identifier of a specific sample. Relates to the `id` field in a row in the [samples](#samples) main table. (an integer)
+- [patients_to_slides](#patients_to_slides)
 
   - `patient_id` - The database identifier of a specific patient. Relates to the `id` field in a row in the [patients](#patients) main table. (an integer)
+
+  - `slide_id` - The unique slide id for the specific sample. This may be used to access the sample image. (a string)\
+    ie: `https://quip1.bmi.stonybrook.edu:443/camicroscope/osdCamicroscope.php?tissueId={tissue_id}`\
+    Relates to the `id` field in a row in the [slides](#slides) sub table. (an integer)
 
 - [genes_to_samples](#genes_to_samples)
 
