@@ -3,7 +3,7 @@ get_tags_by_study <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_tags_by_study <- function(study) {
+  get_tags <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     # Get initial data from the tags table.
@@ -37,15 +37,15 @@ get_tags_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_tags <- "TCGA_Study" %>%
-    get_tags_by_study %>%
+    get_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/tags/tcga_study_tags.feather"))
 
   .GlobalEnv$tcga_subtype_tags <- "TCGA_Subtype" %>%
-    get_tags_by_study %>%
+    get_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/tags/tcga_subtype_tags.feather"))
 
   .GlobalEnv$immune_subtype_tags <- "Immune_Subtype" %>%
-    get_tags_by_study %>%
+    get_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/tags/immune_subtype_tags.feather"))
 
   # Close the database connection.

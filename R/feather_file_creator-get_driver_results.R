@@ -3,7 +3,7 @@ get_driver_results <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_driver_results <- function() {
+  get_results <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     # Get the initial values from the driver_results table.
@@ -42,7 +42,7 @@ get_driver_results <- function() {
   }
 
   # Setting this to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_results <- get_driver_results() %>%
+  .GlobalEnv$driver_results <- get_results() %>%
     feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results.feather"))
 
   # Close the database connection.

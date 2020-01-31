@@ -3,7 +3,7 @@ get_samples_by_study <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_samples_by_study <- function(study) {
+  get_samples <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     # Get the initial values from the samples table.
@@ -74,15 +74,15 @@ get_samples_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_samples <- "TCGA_Study" %>%
-    get_samples_by_study %>%
+    get_samples %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples.feather"))
 
   .GlobalEnv$tcga_subtype_samples <- "TCGA_Subtype" %>%
-    get_samples_by_study %>%
+    get_samples %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples.feather"))
 
   .GlobalEnv$immune_subtype_samples <- "Immune_Subtype" %>%
-    get_samples_by_study %>%
+    get_samples %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples.feather"))
 
   # Close the database connection.

@@ -3,7 +3,7 @@ get_genes_by_type <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_genes_by_type <- function(gene_type) {
+  get_genes <- function(gene_type) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     # Get the initial values from the genes table.
@@ -114,23 +114,23 @@ get_genes_by_type <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$driver_mutation_genes <- "driver_mutation" %>%
-    get_genes_by_type %>%
+    get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/driver_mutation_genes.feather"))
 
   .GlobalEnv$extra_cellular_network_genes <- "extra_cellular_network" %>%
-    get_genes_by_type %>%
+    get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/extra_cellular_network_genes.feather"))
 
   .GlobalEnv$immunomodulator_genes <- "immunomodulator" %>%
-    get_genes_by_type %>%
+    get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/immunomodulator_genes.feather"))
 
   .GlobalEnv$io_target_genes <- "io_target" %>%
-    get_genes_by_type %>%
+    get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/io_target_genes.feather"))
 
   # .GlobalEnv$other_genes <- NA %>%
-  #   get_genes_by_type %>%
+  #   get_genes %>%
   #   feather::write_feather(paste0(getwd(), "/feather_files/genes/other_genes.feather"))
 
   # Close the database connection.

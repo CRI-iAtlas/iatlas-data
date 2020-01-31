@@ -3,7 +3,7 @@ get_features_by_study <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_features_by_study <- function(study) {
+  get_features <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     # Get the initial values from the features table.
@@ -66,15 +66,15 @@ get_features_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_features <- "TCGA_Study" %>%
-    get_features_by_study %>%
+    get_features %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_study_features.feather"))
 
   .GlobalEnv$tcga_subtype_features <- "TCGA_Subtype" %>%
-    get_features_by_study %>%
+    get_features %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_subtype_features.feather"))
 
   .GlobalEnv$immune_subtype_features <- "Immune_Subtype" %>%
-    get_features_by_study %>%
+    get_features %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/immune_subtype_features.feather"))
 
   # Close the database connection.

@@ -1,9 +1,9 @@
-get_tcga_samples_to_tags <- function() {
+get_samples_to_tags_by_study <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_tcga_samples_to_tags <- function(study) {
+  get_samples_to_tags <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     samples_to_tags <- current_pool %>%
@@ -45,15 +45,15 @@ get_tcga_samples_to_tags <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_samples_to_tags <- "TCGA_Study" %>%
-    get_tcga_samples_to_tags %>%
+    get_samples_to_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples_to_tags.feather"))
 
   .GlobalEnv$tcga_subtype_samples_to_tags <- "TCGA_Subtype" %>%
-    get_tcga_samples_to_tags %>%
+    get_samples_to_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples_to_tags.feather"))
 
   .GlobalEnv$immune_subtype_samples_to_tags <- "Immune_Subtype" %>%
-    get_tcga_samples_to_tags %>%
+    get_samples_to_tags %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples_to_tags.feather"))
 
   # Close the database connection.

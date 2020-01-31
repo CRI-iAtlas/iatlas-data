@@ -3,7 +3,7 @@ get_tcga_genes_to_samples <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_tcga_genes_to_samples <- function() {
+  get_genes_to_samples <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     genes_to_samples <- current_pool %>%
@@ -30,7 +30,7 @@ get_tcga_genes_to_samples <- function() {
   }
 
   # Setting this to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_genes_to_samples <- get_tcga_genes_to_samples() %>%
+  .GlobalEnv$tcga_genes_to_samples <- get_genes_to_samples() %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/tcga_genes_to_samples.feather"))
 
   # Close the database connection.
