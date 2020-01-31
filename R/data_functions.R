@@ -199,8 +199,10 @@ create_gene_expression_lookup <- function (gene_exp) {
 
   function(gene_id, sample_id) {
     if (
-      !is.null(col_num <- sample_map[[sample_id]]) &&
-      !is.null(row_num <- gene_map[[gene_id]])
+      present(sample_id) &&
+      present(gene_id) &&
+      present(col_num <- sample_map[[sample_id]]) &&
+      present(row_num <- gene_map[[gene_id]])
     )
       return(gene_exp[[col_num]][[row_num]])
     return(NA)

@@ -4,12 +4,13 @@ sql_schema <- list(
       CREATE TABLE samples (
         id SERIAL,
         name VARCHAR NOT NULL,
-        patient_id INTEGER REFERENCES patients NOT NULL,
+        patient_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
       "CREATE UNIQUE INDEX sample_name_index ON samples (name);",
-      "CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);"
+      "CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);",
+      "ALTER TABLE samples ADD FOREIGN KEY (patient_id) REFERENCES patients;"
     )
   ),
   samples_to_tags = list(
@@ -127,5 +128,56 @@ sql_schema <- list(
       "ALTER TABLE edges ADD FOREIGN KEY (node_1_id) REFERENCES nodes;",
       "ALTER TABLE edges ADD FOREIGN KEY (node_2_id) REFERENCES nodes;"
     )
+  ),
+  patients = list(
+    create = "
+      CREATE TABLE patients (
+        id SERIAL,
+        age INTEGER,
+        barcode VARCHAR,
+        ethnicity VARCHAR,
+        gender VARCHAR,
+        height NUMERIC,
+        race VARCHAR,
+        weight NUMERIC,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX patient_age_index ON patients (age);",
+      "CREATE INDEX patient_barcode_index ON patients (barcode);",
+      "CREATE INDEX patient_ethnicity_index ON patients (ethnicity);",
+      "CREATE INDEX patient_gender_index ON patients (gender);",
+      "CREATE INDEX patient_height_index ON patients (height);",
+      "CREATE INDEX patient_race_index ON patients (race);"
+    )
+  ),
+  patients_to_slides = list(
+    create = "
+      CREATE TABLE patients_to_slides (
+        patient_id INTEGER,
+        slide_id INTEGER,
+        PRIMARY KEY (patient_id, slide_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX patients_to_slides_slide_id_index ON patients_to_slides (slide_id);",
+      "ALTER TABLE patients_to_slides ADD FOREIGN KEY (patient_id) REFERENCES patients;",
+      "ALTER TABLE patients_to_slides ADD FOREIGN KEY (slide_id) REFERENCES slides;"
+    )
+  ),
+  slides = list(
+    create = "
+      CREATE TABLE slides (
+        id SERIAL,
+        name VARCHAR NOT NULL,
+        description VARCHAR,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE UNIQUE INDEX slide_name_index ON slides (name);"
+    )
   )
 )
+
+get_dependent_tables <- function (table_name) {
+
+}
