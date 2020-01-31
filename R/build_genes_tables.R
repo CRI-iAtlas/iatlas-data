@@ -54,7 +54,7 @@ build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
-  ecns <- feather::read_feather(apply_path("genes/ecn_genes.feather")) %>%
+  ecns <- feather::read_feather(apply_path("ecn_genes.feather")) %>%
     dplyr::rename(gene = hgnc) %>%
     dplyr::select(-c("entrez")) %>%
     dplyr::arrange(gene)
