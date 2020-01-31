@@ -9,6 +9,10 @@ get_features_to_samples_by_study <- function() {
     # Get the initial values from the features_to_samples table.
     features_to_samples <- current_pool %>% dplyr::tbl("features_to_samples")
 
+    # Merge the value field and the inf_value field into a single value field.
+    features_to_samples <- features_to_samples %>%
+      dplyr::mutate(value = ifelse(!is.na(value), value, inf_value))
+
     # Get the tag ids related to the samples.
     features_to_samples <- features_to_samples %>% dplyr::right_join(
         current_pool %>% dplyr::tbl("samples_to_tags"),
@@ -23,38 +27,41 @@ get_features_to_samples_by_study <- function() {
     )
 
     # Get tag ids related to the tags :)
-    samples <- samples %>% dplyr::right_join(
+    features_to_samples <- features_to_samples %>% dplyr::right_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
 
-    # Get the initial values from the features_to_samples table.
-    features_to_samples <- features_to_samples %>% dplyr::right_join(
-        current_pool %>% dplyr::tbl("tags_to_tags") %>%
-          dplyr::right_join(
-            current_pool %>%
-              dplyr::tbl("tags") %>%
-              dplyr::select(id, name),
-            by = c("related_tag_id" = "id")) %>%
-          dplyr::filter(name == study),
-        by = "tag_id"
-      ) %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("features") %>%
-          dplyr::select(id, name) %>%
-          dplyr::rename_at("name", ~("feature")),
+    # Get the related tag names for the samples by related tag id.
+    features_to_samples <- features_to_samples %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags") %>%
+        dplyr::select(id, related_tag_name = name),
+      by = c("related_tag_id" = "id")
+    )
+
+    # Filter the data set to tags related to the passed study.
+    features_to_samples <- features_to_samples %>%
+      dplyr::filter(tag_name == study | related_tag_name == study)
+
+    # Get the features from the features table.
+    features_to_samples <- features_to_samples %>% dplyr::left_join(
+        current_pool %>% dplyr::tbl("features") %>%
+          dplyr::select(id, feature = name),
         by = c("feature_id" = "id")
-      ) %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("samples") %>%
-          dplyr::select(id, name) %>%
-          dplyr::rename_at("name", ~("sample")),
+      )
+
+    # Get the samples from the samples table.
+    features_to_samples <- features_to_samples %>% dplyr::left_join(
+        current_pool %>% dplyr::tbl("samples") %>%
+          dplyr::select(id, sample = name),
         by = c("sample_id" = "id")
-      ) %>%
-      dplyr::distinct(feature, sample, value, inf_value) %>%
-      dplyr::as_tibble()
+      )
+
+    # Clean up the data set.
+    features_to_samples <- features_to_samples %>% dplyr::distinct(feature, sample, value)
+
+    # Execute the query and return a tibble.
+    features_to_samples <- features_to_samples %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
 
@@ -81,9 +88,9 @@ get_features_to_samples_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_features_to_samples, pos = ".GlobalEnv")
-  rm(tcga_subtype_features_to_samples, pos = ".GlobalEnv")
-  rm(immune_subtype_features_to_samples, pos = ".GlobalEnv")
+  # rm(tcga_study_features_to_samples, pos = ".GlobalEnv")
+  # rm(tcga_subtype_features_to_samples, pos = ".GlobalEnv")
+  # rm(immune_subtype_features_to_samples, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
