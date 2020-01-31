@@ -53,7 +53,7 @@ build_samples_tables <- function(feather_file_folder) {
   cat(crayon::blue("Imported data from the genes table."), fill = TRUE)
 
   # Import RNA Seq Expr data ---------------------------------------------------
-  cat(crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and may take some time to open. Please be patient.)"), fill = TRUE)
+  cat(crayon::magenta("Importing HUGE RNA Seq Expr file.\n\t(This is VERY large and may take some time to open. Please be patient.)"), fill = TRUE)
   rna_seq_expr_matrix <- read_iatlas_data_file(feather_file_folder, "EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather") %>%
     dplyr::as_tibble() %>%
     tidyr::separate(gene_id, c("hugo", "entrez"), sep = "[|]") %>%
