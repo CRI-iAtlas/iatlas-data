@@ -29,7 +29,7 @@ get_ecn_nodes_by_study <- function() {
     )
 
     cat_ecn_nodes_status("Get tag ids related to the tags :)")
-    nodes <- nodes %>% dplyr::right_join(
+    nodes <- nodes %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
@@ -60,8 +60,8 @@ get_ecn_nodes_by_study <- function() {
 
     cat_ecn_nodes_status("Clean up the data set.")
     nodes <- nodes %>%
-      dplyr::distinct(node_id, entrez, hgnc, feature, tag, score) %>%
-      dplyr::arrange(node_id, entrez, hgnc, feature, tag, score)
+      dplyr::distinct(id, entrez, hgnc, feature, tag, score) %>%
+      dplyr::arrange(id, entrez, hgnc, feature, tag, score)
 
     cat_ecn_nodes_status("Execute the query and return a tibble.")
     nodes <- nodes %>% dplyr::as_tibble()
