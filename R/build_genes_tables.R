@@ -102,13 +102,6 @@ build_genes_tables <- function(feather_file_folder) {
     )
   cat(crayon::blue("Built all gene data."), fill = TRUE)
 
-  # Clean up.
-  rm(all_genes_expr)
-  rm(io_targets)
-  rm(immunomodulators)
-  cat("Cleaned up.", fill = TRUE)
-  gc()
-
   cat(crayon::magenta("Building gene_types data."), fill = TRUE)
   gene_types <- dplyr::tibble(
     name = c("immunomodulator", "io_target", "driver_mutation", "extra_cellular_network"),
