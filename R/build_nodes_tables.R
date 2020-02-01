@@ -6,27 +6,25 @@ build_nodes_tables <- function(feather_file_folder) {
 
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
   nodes <- read_iatlas_data_file(feather_file_folder, "nodes") %>%
-    dplyr::distinct(Node, Group, Immune, UpBinRatio) %>%
-    dplyr::arrange(Node, Group, Immune, UpBinRatio)
+    dplyr::distinct(hgnc = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%
+    dplyr::arrange(hgnc, tag.01, tag.02, score)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
 
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
   nodes <- nodes %>%
-    dplyr::rename_at("Node", ~("name")) %>%
     dplyr::left_join(
       iatlas.data::read_table("genes") %>%
-        dplyr::select(id, hgnc) %>%
-        dplyr::rename_at("id", ~("gene_id")) %>%
+        dplyr::select(gene_id = id, hgnc) %>%
         dplyr::as_tibble(),
-      by = c("name" = "hgnc")
+      by = "hgnc"
     ) %>%
-    dplyr::rename_at("UpBinRatio", ~("score")) %>%
-    tibble::add_column(id = 1:nrow(nodes), .before = "name")
+    dplyr::arrange(hgnc, tag.01, tag.02, score) %>%
+    tibble::add_column(node_id = 1:nrow(nodes), .before = "hgnc")
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
 
   cat(crayon::magenta("Building the nodes table."), fill = TRUE)
   table_written <- nodes %>%
-    dplyr::select(id, gene_id, score) %>%
+    dplyr::select(id = node_id, gene_id, score) %>%
     iatlas.data::replace_table("nodes")
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
@@ -34,14 +32,18 @@ build_nodes_tables <- function(feather_file_folder) {
   tags <- iatlas.data::read_table("tags") %>% dplyr::as_tibble()
 
   node_set_group <- nodes %>%
-    dplyr::rename_at("id", ~("node_id")) %>%
-    dplyr::inner_join(tags, by = c("Group" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id"))
+    dplyr::left_join(
+      tags %>% dplyr::select(tag_id = id, tag.01 = name),
+      by = "tag.01"
+    ) %>%
+    dplyr::filter(!is.na(tag_id))
 
   node_set_immune <- nodes %>%
-    dplyr::rename_at("id", ~("node_id")) %>%
-    dplyr::inner_join(tags, by = c("Immune" = "name")) %>%
-    dplyr::rename_at("id", ~("tag_id"))
+    dplyr::left_join(
+      tags %>% dplyr::select(tag_id = id, tag.02 = name),
+      by = "tag.02"
+    ) %>%
+    dplyr::filter(!is.na(tag_id))
 
   nodes_to_tags <- node_set_group %>%
     dplyr::bind_rows(node_set_immune) %>%
@@ -54,17 +56,24 @@ build_nodes_tables <- function(feather_file_folder) {
 
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
   edges <- read_iatlas_data_file(feather_file_folder, "edges") %>%
-    dplyr::distinct(From, To, Group, Immune, ratioScore) %>%
-    dplyr::rename_at("ratioScore", ~("score")) %>%
-    dplyr::arrange(From, To, Group, Immune)
+    dplyr::distinct(From, To, tag.01 = Group, tag.02 = Immune, score = ratioScore) %>%
+    dplyr::arrange(From, To, tag.01, tag.02)
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
 
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>%
-    dplyr::inner_join(nodes, by = c("From" = "name", "Group" = "Group", "Immune" = "Immune")) %>%
-    dplyr::rename_at("id", ~("node_1_id")) %>%
-    dplyr::inner_join(nodes, by = c("To" = "name", "Group" = "Group", "Immune" = "Immune")) %>%
-    dplyr::rename_at("id", ~("node_2_id")) %>%
+    dplyr::left_join(
+      nodes %>% dplyr::select(node_1_id = node_id, hgnc, tag.01, tag.02),
+      by = c("From" = "hgnc", "tag.01" = "tag.01", "tag.02" = "tag.02")
+    )
+
+  edges <- edges %>%
+    dplyr::left_join(
+      nodes %>% dplyr::select(node_2_id = node_id, hgnc, tag.01, tag.02),
+      by = c("To" = "hgnc", "tag.01" = "tag.01", "tag.02" = "tag.02")
+    )
+
+  edges <- edges %>%
     dplyr::distinct(node_1_id, node_2_id, score) %>%
     dplyr::arrange(node_1_id, node_2_id, score)
   cat(crayon::blue("Built the edges data."), fill = TRUE)
