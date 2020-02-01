@@ -10,65 +10,65 @@ get_ecn_nodes_by_study <- function() {
   get_ecn_nodes <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get ecn nodes_to_tags by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get ecn nodes by `", study, "`")), fill = TRUE)
 
-    cat_ecn_nodes_status("Get the initial values from the nodes_to_tags table.")
-    nodes_to_tags <- current_pool %>% dplyr::tbl("nodes_to_tags")
+    cat_ecn_nodes_status("Get the initial values from the nodes table.")
+    nodes <- current_pool %>% dplyr::tbl("nodes")
+
+    cat_ecn_nodes_status("Get the tag ids for the nodes from the nodes_to_tags table.")
+    nodes <- nodes %>% dplyr::right_join(
+      current_pool %>% dplyr::tbl("nodes_to_tags"),
+      by = c("id" = "node_id")
+    )
 
     cat_ecn_nodes_status("Get the tag names for the nodes by tag id.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
+    nodes <- nodes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
         dplyr::select(id, tag = name),
       by = c("tag_id" = "id")
     )
 
     cat_ecn_nodes_status("Get tag ids related to the tags :)")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::right_join(
+    nodes <- nodes %>% dplyr::right_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
 
     cat_ecn_nodes_status("Get the related tag names for the nodes by related tag id.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
+    nodes <- nodes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
         dplyr::select(id, related_tag = name),
       by = c("related_tag_id" = "id")
     )
 
     cat_ecn_nodes_status("Filter the data set to tags related to the passed study.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::filter(tag == study | related_tag == study)
-
-    cat_ecn_nodes_status("Get the nodes.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
-        current_pool %>% dplyr::tbl("nodes"),
-        by = c("node_id" = "id")
-      )
+    nodes <- nodes %>% dplyr::filter(tag == study | related_tag == study)
 
     cat_ecn_nodes_status("Get the genes related to the nodes.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
+    nodes <- nodes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(id, entrez, hgnc),
       by = c("gene_id" = "id")
     )
 
     cat_ecn_nodes_status("Get the features related to the nodes.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
+    nodes <- nodes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("features") %>%
         dplyr::select(id, feature = name),
       by = c("feature_id" = "id")
     )
 
     cat_ecn_nodes_status("Clean up the data set.")
-    nodes_to_tags <- nodes_to_tags %>%
+    nodes <- nodes %>%
       dplyr::distinct(node_id, entrez, hgnc, feature, tag, score) %>%
       dplyr::arrange(node_id, entrez, hgnc, feature, tag, score)
 
     cat_ecn_nodes_status("Execute the query and return a tibble.")
-    nodes_to_tags <- nodes_to_tags %>% dplyr::as_tibble()
+    nodes <- nodes %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
 
-    return(nodes_to_tags)
+    return(nodes)
   }
 
   # Setting these to the GlobalEnv just for development purposes.
