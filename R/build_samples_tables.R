@@ -1,14 +1,6 @@
 # build_samples_tables ---------------------------------------------------
 build_samples_tables <- function(feather_file_folder) {
 
-  # reset tables ---------------------------------------------------
-  iatlas.data::drop_table("features_to_samples")
-  iatlas.data::drop_table("genes_to_samples")
-  iatlas.data::drop_table("patients_to_slides")
-  iatlas.data::drop_table("samples_to_tags")
-  iatlas.data::drop_table("samples")
-  iatlas.data::drop_table("patients")
-
   # read genes table, rna-sequence-expression and raw samples ---------------------------------------------------
   genes <- iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc)
   rna_seq_expr_matrix <- load_rna_seq_expr(feather_file_folder, genes)

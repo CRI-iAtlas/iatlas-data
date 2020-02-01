@@ -58,7 +58,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   run_skippable_function(create_db, env, reset)
 
   # Create a global variable to hold the pool DB connection.
-  cat(crayon::green("CREATE: DB connection..."), fill = TRUE)
+  cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
   run_skippable_function(build_features_tables,       feather_file_folder)

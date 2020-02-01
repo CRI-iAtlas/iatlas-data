@@ -120,11 +120,14 @@ validate_control_data <- function (data, table_name) {
   }
 }
 
+drop_dependent_tables <- function (table_name)
+  purrr::map(get_dependent_tables(table_name), ~ drop_table(.))
+
 # NOTE: table_name must be in the sql_schema.R data structure
 replace_table <- function (data, table_name) {
   validate_control_data(data, table_name)
   slow <- nrow(data) > 50000
-  # purrr::map(get_dependent_tables(table_name), ~ drop_table(.))
+  drop_dependent_tables(table_name)
   drop_table(table_name)
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(

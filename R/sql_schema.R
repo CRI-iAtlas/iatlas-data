@@ -185,7 +185,7 @@ is_dependent_table <- function (a, b) {
 }
 
 get_dependent_tables_recursive <- function (table_name) {
-  purrr::map(names(sql_schema), ~ if (is_dependent_table(., table_name)) c(., get_dependent_tables_recursive(.)))
+  purrr::map(names(sql_schema), ~ if (is_dependent_table(., table_name)) c(get_dependent_tables_recursive(.), .))
 }
 
 get_dependent_tables <- function (table_name) {
