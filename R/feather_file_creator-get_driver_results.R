@@ -3,33 +3,44 @@ get_driver_results <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  get_driver_results <- function() {
+  cat_results_status <- function(message) {
+    cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
+  }
+
+  get_results <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    driver_results <- current_pool %>%
-      dplyr::tbl("driver_results") %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("features") %>%
-          dplyr::select(id, name) %>%
-          dplyr::rename_at("name", ~("feature")),
-        by = c("feature_id" = "id")
-      ) %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("genes") %>%
-          dplyr::select(id, hgnc),
-        by = c("gene_id" = "id")
-      ) %>%
-      dplyr::left_join(
-        current_pool %>%
-          dplyr::tbl("tags") %>%
-          dplyr::select(id, name) %>%
-          dplyr::rename_at("name", ~("tag")),
-        by = c("tag_id" = "id")
-      ) %>%
-      dplyr::distinct(feature, hgnc, tag, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
-      dplyr::as_tibble()
+    cat(crayon::magenta(paste0("Get driver results")), fill = TRUE)
+
+    cat_results_status("Get the initial values from the driver_results table.")
+    driver_results <- current_pool %>% dplyr::tbl("driver_results")
+
+    cat_results_status("Get features related to the driver results.")
+    driver_results <- driver_results %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("features") %>%
+        dplyr::select(id, feature = name),
+      by = c("feature_id" = "id")
+    )
+
+    cat_results_status("Get genes related to the driver results.")
+    driver_results <- driver_results %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("genes") %>%
+        dplyr::select(id, hgnc),
+      by = c("gene_id" = "id")
+    )
+
+    cat_results_status("Get tags related to the driver results.")
+    driver_results <- driver_results %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags") %>%
+        dplyr::select(id, tag = name),
+      by = c("tag_id" = "id")
+    )
+
+    cat_results_status("Clean up the data set.")
+    driver_results <- driver_results %>% dplyr::distinct(feature, hgnc, tag, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
+
+    cat_results_status("Execute the query and return a tibble.")
+    driver_results <- driver_results %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
 
@@ -37,7 +48,7 @@ get_driver_results <- function() {
   }
 
   # Setting this to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_results <- get_driver_results() %>%
+  .GlobalEnv$driver_results <- get_results() %>%
     feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results.feather"))
 
   # Close the database connection.
