@@ -16,7 +16,7 @@ get_genes_to_samples_by_study <- function() {
     genes_to_samples <- current_pool %>% dplyr::tbl("genes_to_samples")
 
     cat_genes_to_samples_status("Get the tag ids related to the samples.")
-    genes_to_samples <- genes_to_samples %>% dplyr::right_join(
+    genes_to_samples <- genes_to_samples %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = "sample_id"
     )
@@ -29,7 +29,7 @@ get_genes_to_samples_by_study <- function() {
     )
 
     cat_genes_to_samples_status("Get tag ids related to the tags :)")
-    genes_to_samples <- genes_to_samples %>% dplyr::right_join(
+    genes_to_samples <- genes_to_samples %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
@@ -61,7 +61,7 @@ get_genes_to_samples_by_study <- function() {
 
     cat_genes_to_samples_status("Clean up the data set.")
     genes_to_samples <- genes_to_samples %>%
-      dplyr::distinct(entrez, hgnc, sample, rna_seq_expr, status) %>%
+      dplyr::distinct(entrez, hgnc, sample, rna_seq_expr) %>%
       dplyr::arrange(entrez, hgnc, sample)
 
     cat_genes_to_samples_status("Execute the query and return a tibble.")
