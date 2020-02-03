@@ -1,5 +1,4 @@
 build_features_tables <- function(feather_file_folder) {
-  default_class <- "Other"
 
   cat(crayon::magenta("Importing feather files for features."), fill = TRUE)
   features <- read_iatlas_data_file(feather_file_folder, "features") %>%
@@ -21,8 +20,8 @@ build_features_tables <- function(feather_file_folder) {
 
   cat(crayon::magenta("Building method_tags data."), fill = TRUE)
   method_tags <- features %>%
-    dplyr::filter(!is.na(methods_tag)) %>%
-    dplyr::distinct(name = methods_tag) %>%
+    dplyr::filter(!is.na(method_tag)) %>%
+    dplyr::distinct(name = method_tag) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built method_tags data"), fill = TRUE)
 
