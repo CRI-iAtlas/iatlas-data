@@ -78,9 +78,9 @@ get_samples_to_tags_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(tcga_study_samples_to_tags, pos = ".GlobalEnv")
-  # rm(tcga_subtype_samples_to_tags, pos = ".GlobalEnv")
-  # rm(immune_subtype_samples_to_tags, pos = ".GlobalEnv")
+  rm(tcga_study_samples_to_tags, pos = ".GlobalEnv")
+  rm(tcga_subtype_samples_to_tags, pos = ".GlobalEnv")
+  rm(immune_subtype_samples_to_tags, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
