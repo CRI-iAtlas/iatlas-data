@@ -60,15 +60,15 @@ build_genes_to_samples_table <- function() {
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
 
-  cat_genes_to_samples_status("Ensuring no duplicates.")
-  genes_to_samples <- genes_to_samples %>% dplyr::distinct(sample, gene_id, mutation_code_id, status, rna_seq_expr)
+  # cat_genes_to_samples_status("Ensuring no duplicates.")
+  genes_to_samples <- genes_to_samples %>% dplyr::select(sample, gene_id, mutation_code_id, status, rna_seq_expr)
 
   cat_genes_to_samples_status("Joining samples to get ids.")
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(samples, by = c("sample" = "name"))
 
-  cat_genes_to_samples_status("Ensuring no duplicates.")
-  genes_to_samples <- genes_to_samples %>% dplyr::distinct(id, gene_id, mutation_code_id, status, rna_seq_expr)
+  # cat_genes_to_samples_status("Ensuring no duplicates.")
+  genes_to_samples <- genes_to_samples %>% dplyr::select(id, gene_id, mutation_code_id, status, rna_seq_expr)
 
   cat_genes_to_samples_status("Rename id to sample_id and arrange.")
   genes_to_samples <- genes_to_samples %>%
