@@ -91,9 +91,9 @@ get_features_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(tcga_study_features, pos = ".GlobalEnv")
-  # rm(tcga_subtype_features, pos = ".GlobalEnv")
-  # rm(immune_subtype_features, pos = ".GlobalEnv")
+  rm(tcga_study_features, pos = ".GlobalEnv")
+  rm(tcga_subtype_features, pos = ".GlobalEnv")
+  rm(immune_subtype_features, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
