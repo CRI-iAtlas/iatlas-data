@@ -78,10 +78,18 @@ build_genes_to_samples_table <- function() {
   genes_to_samples <- genes_to_samples %>% resolve_genes_to_samples_dupes()
   cat_genes_to_samples_status("Built genes_to_samples data.")
 
-  genes_to_samples %>% validate_control_data("genes_to_samples")
+  # genes_to_samples <- feather::read_feather("./genes_to_samples.feather")
+
   # genes_to_samples table ---------------------------------------------------
-  cat(crayon::magenta("Building genes_to_samples table.\n\t(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
-  genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
+  genes_to_samples %>%
+    dplyr::distinct(sample_id, gene_id, rna_seq_expr) %>%
+    iatlas.data::replace_table("genes_to_samples")
+
+  genes_to_samples %>%
+    dplyr::filter(!is.na(mutation_code_id)) %>%
+    dplyr::distinct(sample_id, gene_id, mutation_code_id, status) %>%
+    iatlas.data::replace_table("genes_samples_mutation")
+
   cat(crayon::blue("Built genes_to_samples table."))
 
 }

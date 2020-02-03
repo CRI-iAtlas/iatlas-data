@@ -9,7 +9,9 @@ result_cached <- function (key, value) {
 }
 
 reset_results_cache <- function () {
-  rm(result_cache, pos = .GlobalEnv)
+  if (present(.GlobalEnv$result_cache)) {
+    rm(result_cache, pos = .GlobalEnv)
+  }
   gc()
 }
 
