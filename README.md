@@ -36,11 +36,12 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 - gfortran (libgfortran): usually installed with gcc
 
-- The (very large) RNA Seq Expression file.
+- Download the (very large) RNA Seq Expression file.
 
   - Download [EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather](https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0) and put it in the `/feather_files` folder
   - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).\
     The original tsv is found at: [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
+- STOP your local postgres server, if you have one running. The scripts in this repository will spin up a postgres server in a docker container. Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
 
 #### Requirements: MacOS Install instructions
 
