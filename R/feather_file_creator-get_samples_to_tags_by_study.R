@@ -23,7 +23,7 @@ get_samples_to_tags_by_study <- function() {
     )
 
     cat_samples_to_tags_status("Get tag ids related to the tags :)")
-    samples_to_tags <- samples_to_tags %>% dplyr::right_join(
+    samples_to_tags <- samples_to_tags %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )

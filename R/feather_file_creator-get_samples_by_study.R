@@ -16,7 +16,7 @@ get_samples_by_study <- function() {
     samples <- current_pool %>% dplyr::tbl("samples")
 
     cat_samples_status("Get tag ids related to the samples.")
-    samples <- samples %>% dplyr::right_join(
+    samples <- samples %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = c("id" = "sample_id")
     )
@@ -29,7 +29,7 @@ get_samples_by_study <- function() {
     )
 
     cat_samples_status("Get tag ids related to the tags :)")
-    samples <- samples %>% dplyr::right_join(
+    samples <- samples %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )

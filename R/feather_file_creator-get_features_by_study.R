@@ -16,19 +16,19 @@ get_features_by_study <- function() {
     features <- current_pool %>% dplyr::tbl("features")
 
     cat_features_status("Get all sample ids that are related to a feature.")
-    features <- features %>% dplyr::right_join(
+    features <- features %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("features_to_samples"),
       by = c("id" = "feature_id")
     )
 
     cat_features_status("Get all tag ids that the found samples are related to.")
-    features <- features %>% dplyr::right_join(
+    features <- features %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = c("id" = "sample_id")
     )
 
     cat_features_status("Then get all the tag ids those related tags are related to.")
-    features <- features %>% dplyr::right_join(
+    features <- features %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )

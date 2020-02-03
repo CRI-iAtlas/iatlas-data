@@ -10,23 +10,23 @@ get_genes_by_type <- function() {
   get_genes <- function(gene_type) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
+    cat(crayon::magenta(paste0("Get genes by `", gene_type, "`")), fill = TRUE)
+
     cat_genes_status("Get the initial values from the genes table.")
     genes <- current_pool %>% dplyr::tbl("genes")
 
     cat_genes_status("Get all the gene type ids related to the genes in the table.")
     if (!is.na(gene_type)) {
-      genes <- genes %>%
-        dplyr::right_join(
-          current_pool %>% dplyr::tbl("genes_to_types"),
-          by = c("id" = "gene_id")
-        )
+      genes <- genes %>% dplyr::full_join(
+        current_pool %>% dplyr::tbl("genes_to_types"),
+        by = c("id" = "gene_id")
+      )
     } else {
-      genes <- genes %>%
-        dplyr::left_join(
-          current_pool %>% dplyr::tbl("genes_to_types"),
-          by = c("id" = "gene_id")
-        ) %>%
-        dplyr::filter(is.na(type_id))
+      genes <- genes %>% dplyr::left_join(
+        current_pool %>% dplyr::tbl("genes_to_types"),
+        by = c("id" = "gene_id")
+      ) %>%
+      dplyr::filter(is.na(type_id))
     }
 
     cat_genes_status("Get all the related gene types from the gene_types table.")
