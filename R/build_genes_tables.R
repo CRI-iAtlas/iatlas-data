@@ -102,6 +102,12 @@ build_genes_tables <- function(feather_file_folder) {
     )
   cat(crayon::blue("Built all gene data."), fill = TRUE)
 
+  # Clean up.
+  rm(all_genes_expr)
+  rm(io_targets)
+  cat("Cleaned up.", fill = TRUE)
+  gc()
+
   cat(crayon::magenta("Building gene_types data."), fill = TRUE)
   gene_types <- dplyr::tibble(
     name = c("immunomodulator", "io_target", "driver_mutation", "extra_cellular_network"),
@@ -239,7 +245,7 @@ build_genes_tables <- function(feather_file_folder) {
   io_target_expr <- io_target_expr %>% tibble::add_column(type_id = io_target_id %>% as.integer)
 
   genes_to_types <- driver_mutations %>%
-    dplyr::bind_rows(ecns,immunomodulators, immunomodulator_expr, io_target_expr) %>%
+    dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
     dplyr::inner_join(genes, by = c("gene" = "hgnc")) %>%
     dplyr::rename(gene_id = id) %>%
     dplyr::distinct(gene_id, type_id) %>%
