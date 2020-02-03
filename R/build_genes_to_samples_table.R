@@ -79,7 +79,6 @@ build_genes_to_samples_table <- function() {
   cat_genes_to_samples_status("Built genes_to_samples data.")
 
   genes_to_samples %>% validate_control_data("genes_to_samples")
-  stop("STOPPING - SHANE SAID SO!")
   # genes_to_samples table ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples table.\n\t(There are", nrow(genes_to_samples), "rows to write, this may take a little while.)"), fill = TRUE)
   genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
