@@ -88,13 +88,29 @@ write_table_ts <- function(df, table_name) {
 validate_control_data <- function (data, table_name) {
   control_folder <- "./control_data/"
   control_file <- paste0(control_folder, table_name, ".feather")
+  if (present(.GlobalEnv$snapshot_control_data))
+    rm(snapshot_control_data, pos = .GlobalEnv)
+
   if (file.exists(control_folder)) {
     if (file.exists(control_file)) {
       cat(crayon::magenta(paste0("Validating data for ", table_name, " (", nrow(data), " rows)...\n")))
-      if (dplyr::all_equal(feather::read_feather(control_file), data) == TRUE)
+      control_data <- feather::read_feather(control_file)
+      if (dplyr::all_equal(control_data, data) == TRUE)
         cat(crayon::bold(crayon::green(paste0("PASS: control data for ", table_name, " is identical\n"))))
       else {
-        cat(crayon::bold(crayon::red(paste0("FAIL: control data for ", table_name, " is different\n"))))
+        .GlobalEnv[[paste0(table_name,"_data")]] <- data
+        .GlobalEnv[[paste0(table_name,"_control_data")]] <- control_data
+        cat(crayon::bold(crayon::red(paste0(
+          "FAIL: control data for ", table_name, " is different.\n",
+          "Both versions have been stored in the global environment:\n",
+          "  - ", table_name, "_data\n",
+          "  - ", table_name, "_control_data\n",
+          "To accept the new version, run: update_control_data_snapshot()\n"
+        ))))
+        .GlobalEnv$update_control_data_snapshot <- function() {
+          data %>% feather::write_feather(control_file)
+          cat(crayon::green(paste0("Updated control_data for ", table_name, " (", control_file, ", ", nrow(data), " rows)")))
+        }
         stop("validation failed")
       }
     } else {
@@ -104,10 +120,14 @@ validate_control_data <- function (data, table_name) {
   }
 }
 
+drop_dependent_tables <- function (table_name)
+  purrr::map(get_dependent_tables(table_name), ~ drop_table(.))
+
 # NOTE: table_name must be in the sql_schema.R data structure
 replace_table <- function (data, table_name) {
   validate_control_data(data, table_name)
   slow <- nrow(data) > 50000
+  drop_dependent_tables(table_name)
   drop_table(table_name)
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(

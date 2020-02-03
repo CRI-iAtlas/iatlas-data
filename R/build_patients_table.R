@@ -1,8 +1,8 @@
 
-build_patients_table <- function(feather_file_folder, all_samples, rna_seq_expr_matrix) {
+build_patients_table <- function() {
   cat(crayon::magenta("Building patients data.)"), fill = TRUE)
 
-  fmx <- read_iatlas_data_file(feather_file_folder, "fmx_df.feather") %>%
+  fmx <- read_iatlas_data_file(get_feather_file_folder(), "fmx_df.feather") %>%
     dplyr::distinct(
       barcode = ParticipantBarcode,
       age = age_at_initial_pathologic_diagnosis,
@@ -14,7 +14,7 @@ build_patients_table <- function(feather_file_folder, all_samples, rna_seq_expr_
     )
 
   # Capture all the barcodes (column names). Removing the fist column "hugo".
-  barcodes <- rna_seq_expr_matrix %>% names() %>% .[-1]
+  barcodes <- get_rna_seq_expr_matrix() %>% names() %>% .[-1]
 
   # Capture all the patient barcodes (first 12 characters) ie "TCGA-OR-A5J1"
   patient_barcodes <- barcodes %>% stringi::stri_sub(to = 12L)
@@ -27,7 +27,7 @@ build_patients_table <- function(feather_file_folder, all_samples, rna_seq_expr_
     dplyr::distinct(barcode, .keep_all = TRUE)
 
   patients <- patients %>%
-    dplyr::bind_rows(all_samples %>% dplyr::distinct(barcode = sample)) %>%
+    dplyr::bind_rows(get_all_samples() %>% dplyr::distinct(barcode = sample)) %>%
     dplyr::distinct(barcode, .keep_all = TRUE)
   cat(crayon::blue("Built patients data."), fill = TRUE)
 

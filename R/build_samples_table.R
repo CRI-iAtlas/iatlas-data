@@ -1,7 +1,7 @@
-build_samples_table <- function(all_samples_with_patient_ids) {
+build_samples_table <- function() {
 
   cat(crayon::magenta("Building samples data."), fill = TRUE)
-  samples <- all_samples_with_patient_ids %>%
+  samples <- get_all_samples_with_patient_ids() %>%
     dplyr::distinct(name = sample, patient_id) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built samples data."), fill = TRUE)

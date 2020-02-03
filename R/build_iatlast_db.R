@@ -17,14 +17,18 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
+  num_skippable_steps <- 12 # search this file and count for run_skippable_function calls
+  skippable_step_count <- 1
+
   tictoc::tic(paste0("Time taken to build iAtlas DB"))
 
   run_skippable_function <- function(f, ...) {
     function_name <- as.character(substitute(f))
+    on.exit(skippable_step_count <<- skippable_step_count + 1)
     if (option_equal(resume_at, function_name)) running_is_on <<- TRUE;
     if (running_is_on) {
       cat(crayon::green("\n--------------------------------------------------------------------------------"), fill = TRUE)
-      cat(crayon::green(paste0("START: ", function_name)), fill = TRUE)
+      cat(crayon::green(paste0("START: ", function_name, " (build_iatlas_db step ", skippable_step_count, "/", num_skippable_steps, ")")), fill = TRUE)
 
       tryCatch({
         .GlobalEnv$resume_at <- function_name
@@ -33,8 +37,9 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
       }, error = function(e) {
         cat(crayon::magenta(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
 
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(..., resume_at = 'auto')"))), fill = TRUE)
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(..., resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("NOTE: If you change code, you can run source('./.RProfile') and then use one of the resume-options above."))), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
@@ -58,34 +63,26 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   run_skippable_function(create_db, env, reset)
 
   # Create a global variable to hold the pool DB connection.
-  cat(crayon::green("CREATE: DB connection..."), fill = TRUE)
+  cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
   run_skippable_function(build_features_tables,       feather_file_folder)
   run_skippable_function(build_tags_tables,           feather_file_folder)
   run_skippable_function(build_genes_tables,          feather_file_folder)
 
-  if (FALSE) {
-    all_samples <- NULL
-    get_all_samples <- function () {
-      if (is.null(all_samples)) {
-        all_samples <<- load_all_samples(feather_file_folder)
-      }
-      all_samples
-    }
-    all_samples <- get_all_samples()
+  # before build-samples-tables ---------------------------------------------------
+  set_feather_file_folder(feather_file_folder)
 
-    run_skippable_function(build_samples_tables,         feather_file_folder, get_all_samples)
+  run_skippable_function(build_patients_table)
+  run_skippable_function(build_samples_table)
+  run_skippable_function(build_samples_to_tags_table)
+  run_skippable_function(build_features_to_samples_table)
+  run_skippable_function(build_genes_to_samples_table)
+  run_skippable_function(build_slides_table)
 
-    samples <- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
+  reset_results_cache()
 
-    run_skippable_function(build_samples_to_tags_table,     feather_file_folder, get_all_samples, samples)
-    run_skippable_function(build_samples_to_features_table, feather_file_folder, get_all_samples, samples)
-
-    all_samples <- NULL
-  } else {
-    run_skippable_function(build_samples_tables,        feather_file_folder)
-  }
+  # after build-samples-tables ---------------------------------------------------
   run_skippable_function(build_driver_results_tables, feather_file_folder)
   run_skippable_function(build_nodes_tables,          paste0(feather_file_folder, "/SQLite_data"))
 

@@ -1,9 +1,5 @@
 build_nodes_tables <- function(feather_file_folder) {
 
-  iatlas.data::drop_table("edges")
-  iatlas.data::drop_table("nodes_to_tags")
-  iatlas.data::drop_table("nodes")
-
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
   nodes <- read_iatlas_data_file(feather_file_folder, "nodes") %>%
     dplyr::distinct(hgnc = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%

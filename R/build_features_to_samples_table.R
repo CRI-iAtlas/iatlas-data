@@ -1,4 +1,7 @@
-build_features_to_samples_table <- function(all_samples_with_patient_ids, samples) {
+build_features_to_samples_table <- function() {
+  all_samples_with_patient_ids <- get_all_samples_with_patient_ids()
+  samples <- get_samples()
+
   cat(crayon::magenta("Building features_to_samples data."), fill = TRUE)
   features <- iatlas.data::read_table("features") %>%
     dplyr::as_tibble() %>%
