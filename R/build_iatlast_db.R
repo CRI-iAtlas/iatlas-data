@@ -37,8 +37,9 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
       }, error = function(e) {
         cat(crayon::magenta(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
 
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(..., resume_at = 'auto')"))), fill = TRUE)
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(..., resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("NOTE: If you change code, you can run source('./.RProfile') and then use one of the resume-options above."))), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
