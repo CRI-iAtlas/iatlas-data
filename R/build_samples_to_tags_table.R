@@ -1,4 +1,7 @@
-build_samples_to_tags_table <- function(all_samples_with_patient_ids, samples) {
+build_samples_to_tags_table <- function() {
+  all_samples_with_patient_ids <- get_all_samples_with_patient_ids()
+  samples <- get_samples()
+
   cat(crayon::magenta("Building samples_to_tags data."), fill = TRUE)
   tags <- iatlas.data::read_table("tags") %>%
     dplyr::as_tibble() %>%
