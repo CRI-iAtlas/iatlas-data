@@ -50,8 +50,6 @@ build_genes_to_samples_table <- function() {
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
 
-  .GlobalEnv$genes_to_sampleswith_gene_ids <- genes_to_samples
-
   cat_genes_to_samples_status("Joining mutation_code_ids.")
   mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
   genes_to_samples <- genes_to_samples %>%
