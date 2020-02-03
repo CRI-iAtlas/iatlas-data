@@ -39,7 +39,7 @@ get_tags_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(tcga_tags, pos = ".GlobalEnv")
+  rm(tcga_tags, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
