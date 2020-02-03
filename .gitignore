@@ -46,7 +46,6 @@ vignettes/*.pdf
 
 csv_files/
 docker/
-feather_files/original_data/**
-!feather_files/original_data/fmx_df.feather
 tsv_files/
 feather_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
+control_data/
