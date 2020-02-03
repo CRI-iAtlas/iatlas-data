@@ -39,9 +39,6 @@ build_genes_to_samples_table <- function() {
 
   get_rna_value_from_matrix_v <- Vectorize(get_rna_value_from_matrix, vectorize.args = c("hgnc", "barcode", "patient_id"))
 
-  .GlobalEnv$rna_seq_expr_matrix <- rna_seq_expr_matrix
-  .GlobalEnv$genes_to_samples_with_hgnc <- genes_to_samples
-
   genes_to_samples <- genes_to_samples %>%
     dplyr::mutate(rna_seq_expr = get_rna_value_from_matrix_v(hgnc, barcode, patient_id, rna_seq_expr_matrix))
 
