@@ -121,7 +121,7 @@ Input data for the Shiny-iAtlas portal was accessed from multiple remote sources
   - `immune_subtype_samples.feather`
   - `tcga_study_samples.feather`
   - `tcga_subtype_samples.feather`
-- `SQLite_data >` **<span style="color:red">!! This folder currently must be copied to this location from the shiny-iatlas app. The `data2` folder should be copied to the feather_files folder and renamed `SQLite_data`. !!</span>**
+- `SQLite_data >`
   - `driver_mutations1.feather`
   - `driver_mutations2.feather`
   - `driver_mutations3.feather`
