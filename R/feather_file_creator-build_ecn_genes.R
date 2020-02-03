@@ -18,7 +18,7 @@ build_ecn_genes <- function() {
       by = "hgnc"
     )
 
-  node_names %>% feather::write_feather(paste0(getwd(), "/feather_files/genes/ecn_genes.feather"))
+  node_names %>% feather::write_feather(paste0(getwd(), "/feather_files/ecn_genes.feather"))
 
   ### Clean up ###
   cat("Cleaned up.", fill = TRUE)
