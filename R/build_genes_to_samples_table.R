@@ -6,8 +6,6 @@ build_genes_to_samples_table <- function() {
 
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
 
-  .GlobalEnv$all_samples_with_patient_ids <- all_samples_with_patient_ids
-
   genes_to_samples <- all_samples_with_patient_ids
 
   cat_genes_to_samples_status <- function (message)
