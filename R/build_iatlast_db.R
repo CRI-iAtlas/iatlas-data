@@ -87,7 +87,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
     run_skippable_function(build_samples_tables,        feather_file_folder)
   }
   run_skippable_function(build_driver_results_tables, feather_file_folder)
-  run_skippable_function(build_nodes_tables,          paste0(feather_file_folder, "/SQLite"))
+  run_skippable_function(build_nodes_tables,          paste0(feather_file_folder, "/SQLite_data"))
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
