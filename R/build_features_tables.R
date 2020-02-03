@@ -45,6 +45,8 @@ build_features_tables <- function(feather_file_folder) {
       dplyr::select(method_tag_id = id, methods_tag = name),
     by = "methods_tag"
   )
+
+  features <- features %>% dplyr::select(name, display, class_id, method_tag_id, order, unit)
   cat(crayon::blue("Built features data"), fill = TRUE)
 
   cat(crayon::magenta("Built features table."), fill = TRUE)
