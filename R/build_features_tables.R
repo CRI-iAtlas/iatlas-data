@@ -41,8 +41,8 @@ build_features_tables <- function(feather_file_folder) {
   features <- features %>% dplyr::left_join(
     iatlas.data::read_table("method_tags") %>%
       dplyr::as_tibble() %>%
-      dplyr::select(method_tag_id = id, methods_tag = name),
-    by = "methods_tag"
+      dplyr::select(method_tag_id = id, method_tag = name),
+    by = "method_tag"
   )
 
   features <- features %>% dplyr::select(name, display, class_id, method_tag_id, order, unit)
