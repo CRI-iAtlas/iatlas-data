@@ -61,15 +61,15 @@ get_samples_to_tags_by_study <- function() {
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_samples_to_tags <- "TCGA_Study" %>%
     get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples_to_tags.feather"))
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/tcga_study_samples_to_tags.feather"))
 
   .GlobalEnv$tcga_subtype_samples_to_tags <- "TCGA_Subtype" %>%
     get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples_to_tags.feather"))
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/tcga_subtype_samples_to_tags.feather"))
 
   .GlobalEnv$immune_subtype_samples_to_tags <- "Immune_Subtype" %>%
     get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples_to_tags.feather"))
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/immune_subtype_samples_to_tags.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
