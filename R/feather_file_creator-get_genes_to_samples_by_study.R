@@ -3,62 +3,68 @@ get_genes_to_samples_by_study <- function() {
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
+  cat_genes_to_samples_status <- function(message) {
+    cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
+  }
+
   get_genes_to_samples <- function(study) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    # Get the initial values from the genes_to_samples table.
+    cat(crayon::magenta(paste0("Get genes_to_samples by `", study, "`")), fill = TRUE)
+
+    cat_genes_to_samples_status("Get the initial values from the genes_to_samples table.")
     genes_to_samples <- current_pool %>% dplyr::tbl("genes_to_samples")
 
-    # Get the tag ids related to the samples.
+    cat_genes_to_samples_status("Get the tag ids related to the samples.")
     genes_to_samples <- genes_to_samples %>% dplyr::right_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = "sample_id"
     )
 
-    # Get the tag names for the samples by tag id.
+    cat_genes_to_samples_status("Get the tag names for the samples by tag id.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
         dplyr::select(id, tag_name = name),
       by = c("tag_id" = "id")
     )
 
-    # Get tag ids related to the tags :)
+    cat_genes_to_samples_status("Get tag ids related to the tags :)")
     genes_to_samples <- genes_to_samples %>% dplyr::right_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
 
-    # Get the related tag names for the samples by related tag id.
+    cat_genes_to_samples_status("Get the related tag names for the samples by related tag id.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
         dplyr::select(id, related_tag_name = name),
       by = c("related_tag_id" = "id")
     )
 
-    # Filter the data set to tags related to the passed study.
+    cat_genes_to_samples_status("Filter the data set to tags related to the passed study.")
     genes_to_samples <- genes_to_samples %>%
       dplyr::filter(tag_name == study | related_tag_name == study)
 
-    # Get the gene entrezs and hgncs from the genes table.
+    cat_genes_to_samples_status("Get the gene entrezs and hgncs from the genes table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(id, entrez, hgnc),
       by = c("gene_id" = "id")
     )
 
-    # Get the samples from the samples table.
+    cat_genes_to_samples_status("Get the samples from the samples table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples") %>%
         dplyr::select(id, sample = name),
       by = c("sample_id" = "id")
     )
 
-    # Clean up the data set.
+    cat_genes_to_samples_status("Clean up the data set.")
     genes_to_samples <- genes_to_samples %>%
       dplyr::distinct(entrez, hgnc, sample, rna_seq_expr, status) %>%
       dplyr::arrange(entrez, hgnc, sample)
 
-    # Execute the query and return a tibble.
+    cat_genes_to_samples_status("Execute the query and return a tibble.")
     genes_to_samples <- genes_to_samples %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
