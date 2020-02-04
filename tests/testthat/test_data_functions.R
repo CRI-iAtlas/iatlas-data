@@ -6,6 +6,7 @@
   get_test_data_path <- function (sub_path) paste0(test_data_folder, "/", sub_path)
 
   read_test_feather <- function (sub_path) read_feather(get_test_data_path(sub_path))
+  read_test_csv <- function (sub_path) dplyr::as_tibble(read.csv(get_test_data_path(sub_path), header = TRUE))
 
 
   # build_references
@@ -228,8 +229,13 @@
 
 
   test_that("flatten_tags", {
-
-    expect_that(build_references(NA), is_identical_to(NA))
+    before_records <- read_test_csv("flatten_tags/before_records.csv")
+    tags_to_tags <- read_test_csv("flatten_tags/tags_to_tags.csv")
+    after_records <- read_test_csv("flatten_tags/after_records.csv")
+    expect_equal(TRUE, dplyr::all_equal(
+      after_records,
+      flatten_tags(before_records, tags_to_tags, "gene_id")
+    ))
   })
 
 })()

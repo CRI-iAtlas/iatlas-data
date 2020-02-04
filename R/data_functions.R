@@ -212,3 +212,26 @@ create_gene_expression_lookup <- function (gene_exp) {
     return(NA)
   }
 }
+
+#` returns new record_ids_to_tags with all tags flattened
+#`
+#` @param record_ids_to_tags: tibble with tag_id and related_tag_id columns
+#` @param tags_to_tags: tibble with tag_id and related_tag_id columns
+flatten_tags <- function (record_ids_to_tags, tags_to_tags, record_id_field = "id") {
+  records <- record_ids_to_tags %>% dplyr::rename(record_id = record_id_field)
+  flatten_once <- function(recs) {
+    recs %>%
+    dplyr::left_join(tags_to_tags, by="tag_id") %>%
+    dplyr::select(record_id, tag_id = related_tag_id) %>%
+    dplyr::filter(!is.na(tag_id)) %>%
+    dplyr::bind_rows(recs) %>%
+    dplyr::distinct(record_id, tag_id)
+  }
+  count_down <- 20
+  while (nrow(records) < nrow(new_recs <- flatten_once(records))) {
+    records <- new_recs
+    count_down <- count_down - 1
+    if (count_down <= 0) stop("max depth reached flattening tags - do you have circular tags in tags_to_tags?")
+  }
+  records
+}
