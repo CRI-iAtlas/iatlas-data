@@ -66,12 +66,14 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(build_features_tables,       feather_file_folder)
-  run_skippable_function(build_tags_tables,           feather_file_folder)
-  run_skippable_function(build_genes_tables,          feather_file_folder)
+  set_feather_file_folder(feather_file_folder)
+
+  run_skippable_function(build_features_tables)
+  run_skippable_function(build_tags_tables)
+  run_skippable_function(build_genes_tables)
+  run_skippable_function(build_gene_types_table)
 
   # before build-samples-tables ---------------------------------------------------
-  set_feather_file_folder(feather_file_folder)
 
   run_skippable_function(build_patients_table)
   run_skippable_function(build_samples_table)

@@ -1,7 +1,7 @@
-build_features_tables <- function(feather_file_folder) {
+build_features_tables <- function() {
 
   cat(crayon::magenta("Importing feather files for features."), fill = TRUE)
-  features <- read_iatlas_data_file(feather_file_folder, "features") %>%
+  features <- read_iatlas_data_file(get_feather_file_folder(), "features") %>%
     dplyr::distinct(class, display, method_tag, name, order, unit) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Imported feather files for features."), fill = TRUE)

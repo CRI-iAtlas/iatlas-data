@@ -1,31 +1,14 @@
-build_genes_tables <- function() {
+build_gene_types_table <- function() {
 
-  cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
-  genes <- read_iatlas_data_file(get_feather_file_folder(), "genes") %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
-    dplyr::arrange(entrez, hgnc)
-  cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
+  cat(crayon::magenta("Importing feather files for gene_types."), fill = TRUE)
+  gene_types <- read_iatlas_data_file(get_feather_file_folder(), "gene_types") %>%
+    dplyr::distinct(name, display) %>%
+    dplyr::arrange(name)
+  cat(crayon::blue("Imported feather files for gene_types."), fill = TRUE)
 
-  cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
-  genes <- genes %>%
-    dplyr::left_join(
-      feather::read_feather(apply_path("gene_ids.feather")) %>%
-        dplyr::select(hgnc, real_entrez = entrez),
-      by = "hgnc"
-    ) %>%
-    dplyr::mutate(entrez = ifelse(!is.na(real_entrez), real_entrez, entrez))
-  cat(crayon::blue("Built all gene data."), fill = TRUE)
-
-  # cat(crayon::magenta("Building gene_types data."), fill = TRUE)
-  # gene_types <- dplyr::tibble(
-  #   name = c("immunomodulator", "io_target", "driver_mutation", "extra_cellular_network"),
-  #   display = c("Immunomodulator", "IO Target", "Driver Mutation", "Extra Cellular Network")
-  # )
-  # cat(crayon::blue("Built gene_types data."), fill = TRUE)
-  #
-  # cat(crayon::magenta("Building gene_types table."), fill = TRUE)
-  # table_written <- gene_types %>% iatlas.data::write_table_ts("gene_types")
-  # cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
+  cat(crayon::magenta("Building gene_types table."), fill = TRUE)
+  table_written <- gene_types %>% iatlas.data::write_table_ts("gene_types")
+  cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
   # cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
   # mutation_codes_to_gene_types <- iatlas.data::read_table("mutation_codes") %>%

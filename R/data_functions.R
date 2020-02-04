@@ -135,10 +135,8 @@ print_dupe_info <- function(group = NA, info = c()) {
 
 rebuild_gene_relational_data <- function(all_genes, ref_name, field_name = "name") {
   relational_data <- all_genes %>%
-    dplyr::select(ref_name) %>%
-    dplyr::distinct() %>%
-    dplyr::filter(!is.na(!!rlang::sym(ref_name))) %>%
-    dplyr::rename_at(ref_name, ~(field_name)) %>%
+    dplyr::distinct(!!rlang::sym(field_name) = ref_name) %>%
+    dplyr::filter(!is.na(!!rlang::sym(field_name))) %>%
     dplyr::arrange(!!rlang::sym(field_name))
   return(relational_data)
 }
