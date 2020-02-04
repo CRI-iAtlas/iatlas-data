@@ -7,7 +7,7 @@ get_samples_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_samples <- function(study) {
+  get_samples <- function(study, exclude01, exclude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get samples by `", study, "`")), fill = TRUE)
@@ -42,7 +42,11 @@ get_samples_by_study <- function() {
     )
 
     cat_samples_status("Filter the data set to tags related to the passed study.")
-    samples <- samples %>% dplyr::filter(tag_name == study | related_tag_name == study)
+    samples <- samples %>% dplyr::filter(
+      tag_name == study | related_tag_name == study |
+        (tag_name != exclude01 & related_tag_name == exclude01 &
+           tag_name != exclude02 & related_tag_name == exclude02)
+    )
 
     cat_samples_status("Get the patient data from the patients table.")
     samples <- samples %>% dplyr::left_join(
@@ -80,15 +84,15 @@ get_samples_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_samples <- "TCGA_Study" %>%
-    get_samples %>%
+    get_samples("TCGA_Subtype", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples.feather"))
 
   .GlobalEnv$tcga_subtype_samples <- "TCGA_Subtype" %>%
-    get_samples %>%
+    get_samples("TCGA_Study", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples.feather"))
 
   .GlobalEnv$immune_subtype_samples <- "Immune_Subtype" %>%
-    get_samples %>%
+    get_samples("TCGA_Study", "TCGA_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples.feather"))
 
   # Close the database connection.

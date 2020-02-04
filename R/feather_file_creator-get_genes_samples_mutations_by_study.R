@@ -7,7 +7,7 @@ get_genes_samples_mutation_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_genes_samples_mutation <- function(study) {
+  get_genes_samples_mutation <- function(study, exclude01, exclude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get genes_samples_mutation by `", study, "`")), fill = TRUE)
@@ -43,7 +43,11 @@ get_genes_samples_mutation_by_study <- function() {
 
     cat_genes_samples_mutation_status("Filter the data set to tags related to the passed study.")
     genes_samples_mutation <- genes_samples_mutation %>%
-      dplyr::filter(tag_name == study | related_tag_name == study)
+      dplyr::filter(
+        tag_name == study | related_tag_name == study |
+          (tag_name != exclude01 & related_tag_name == exclude01 &
+             tag_name != exclude02 & related_tag_name == exclude02)
+      )
 
     cat_genes_samples_mutation_status("Get the gene entrezs and hgncs from the genes table.")
     genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
@@ -81,15 +85,15 @@ get_genes_samples_mutation_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_genes_samples_mutation <- "TCGA_Study" %>%
-    get_genes_samples_mutation %>%
+    get_genes_samples_mutation("TCGA_Subtype", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/tcga_study_genes_samples_mutation.feather"))
 
   .GlobalEnv$tcga_subtype_genes_samples_mutation <- "TCGA_Subtype" %>%
-    get_genes_samples_mutation %>%
+    get_genes_samples_mutation("TCGA_Study", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/tcga_subtype_genes_samples_mutation.feather"))
 
   .GlobalEnv$immune_subtype_genes_samples_mutation <- "Immune_Subtype" %>%
-    get_genes_samples_mutation %>%
+    get_genes_samples_mutation("TCGA_Study", "TCGA_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/immune_subtype_genes_samples_mutation.feather"))
 
   # Close the database connection.

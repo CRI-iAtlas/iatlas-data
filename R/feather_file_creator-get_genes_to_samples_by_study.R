@@ -7,7 +7,7 @@ get_genes_to_samples_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_genes_to_samples <- function(study) {
+  get_genes_to_samples <- function(study, exclude01, exclude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get genes_to_samples by `", study, "`")), fill = TRUE)
@@ -43,7 +43,11 @@ get_genes_to_samples_by_study <- function() {
 
     cat_genes_to_samples_status("Filter the data set to tags related to the passed study.")
     genes_to_samples <- genes_to_samples %>%
-      dplyr::filter(tag_name == study | related_tag_name == study)
+      dplyr::filter(
+        tag_name == study | related_tag_name == study |
+          (tag_name != exclude01 & related_tag_name == exclude01 &
+             tag_name != exclude02 & related_tag_name == exclude02)
+      )
 
     cat_genes_to_samples_status("Get the gene entrezs and hgncs from the genes table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
@@ -74,15 +78,15 @@ get_genes_to_samples_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_genes_to_samples <- "TCGA_Study" %>%
-    get_genes_to_samples %>%
+    get_genes_to_samples("TCGA_Subtype", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/tcga_study_genes_to_samples.feather"))
 
   .GlobalEnv$tcga_subtype_genes_to_samples <- "TCGA_Subtype" %>%
-    get_genes_to_samples %>%
+    get_genes_to_samples("TCGA_Study", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/tcga_subtype_genes_to_samples.feather"))
 
   .GlobalEnv$immune_subtype_genes_to_samples <- "Immune_Subtype" %>%
-    get_genes_to_samples %>%
+    get_genes_to_samples("TCGA_Study", "TCGA_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/immune_subtype_genes_to_samples.feather"))
 
   # Close the database connection.

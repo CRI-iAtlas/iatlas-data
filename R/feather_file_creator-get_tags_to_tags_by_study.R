@@ -7,7 +7,7 @@ get_tags_to_tags_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_tags_to_tags <- function(study, exlude_study_01, exlude_study_02) {
+  get_tags_to_tags <- function(study, exlude01, exlude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get tags_to_tags by `", study, "`")), fill = TRUE)
@@ -32,7 +32,7 @@ get_tags_to_tags_by_study <- function() {
     cat_tags_to_tags_status("Filter the data set to tags related to the passed study.")
     tags_to_tags <- tags_to_tags %>%
       dplyr::filter(
-        tag != exlude_study_01 & related_tag != exlude_study_01 & tag != exlude_study_02 & related_tag != exlude_study_02
+        tag != exlude01 & related_tag != exlude01 & tag != exlude02 & related_tag != exlude02
       )
 
     cat_tags_to_tags_status("Clean up the data set.")
