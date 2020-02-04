@@ -217,6 +217,8 @@ create_gene_expression_lookup <- function (gene_exp) {
 #`
 #` @param record_ids_to_tags: tibble with tag_id and related_tag_id columns
 #` @param tags_to_tags: tibble with tag_id and related_tag_id columns
+#`
+#` @return same format as record_ids_to_tags, only flattened
 flatten_tags <- function (record_ids_to_tags, tags_to_tags, record_id_field = "id") {
   records <- record_ids_to_tags %>% dplyr::rename(record_id = record_id_field)
   flatten_once <- function(recs) {
