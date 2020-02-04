@@ -1,5 +1,6 @@
 build_samples_table <- function() {
 
+  # sample data ---------------------------------------------------
   cat(crayon::magenta("Building samples data."), fill = TRUE)
   samples <- get_all_samples() %>%
     dplyr::distinct(name = sample, barcode = patient_barcode)
