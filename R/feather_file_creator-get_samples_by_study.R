@@ -55,23 +55,9 @@ get_samples_by_study <- function() {
       by = c("patient_id" = "id")
     )
 
-    cat_samples_status("Get the slide ids for each patient id related to the samples.")
-    samples <- samples %>% dplyr::inner_join(
-      current_pool %>% dplyr::tbl("patients_to_slides"),
-      by = "patient_id"
-    )
-
-    cat_samples_status("Get the slide ids for each patient id related to the samples.")
-    samples <- samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("slides") %>%
-        dplyr::rename(slide = name) %>%
-        dplyr::rename(slide_description = description),
-      by = c("slide_id" = "id")
-    )
-
     cat_samples_status("Clean up the data set.")
     samples <- samples %>%
-      dplyr::distinct(name, patient_barcode, age, ethnicity, gender, race, weight, slide, slide_description) %>%
+      dplyr::distinct(name, patient_barcode) %>%
       dplyr::arrange(name)
 
     cat_samples_status("Execute the query and return a tibble.")
