@@ -233,5 +233,5 @@ flatten_tags <- function (record_ids_to_tags, tags_to_tags, record_id_field = "i
     count_down <- count_down - 1
     if (count_down <= 0) stop("max depth reached flattening tags - do you have circular tags in tags_to_tags?")
   }
-  records
+  records %>% dplyr::rename(!!record_id_field := record_id)
 }

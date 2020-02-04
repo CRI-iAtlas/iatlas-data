@@ -227,7 +227,6 @@
     expect_error(validate_dupes(1,values,c("a","b"),c("c")))
   })
 
-
   test_that("flatten_tags", {
     before_records <- read_test_csv("flatten_tags/before_records.csv")
     tags_to_tags <- read_test_csv("flatten_tags/tags_to_tags.csv")
