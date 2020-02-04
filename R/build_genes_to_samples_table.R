@@ -6,8 +6,6 @@ build_genes_to_samples_table <- function() {
 
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
 
-  .GlobalEnv$all_samples_with_patient_ids <- all_samples_with_patient_ids
-
   genes_to_samples <- all_samples_with_patient_ids
 
   cat_genes_to_samples_status <- function (message)
@@ -39,9 +37,6 @@ build_genes_to_samples_table <- function() {
 
   get_rna_value_from_matrix_v <- Vectorize(get_rna_value_from_matrix, vectorize.args = c("hgnc", "barcode", "patient_id"))
 
-  .GlobalEnv$rna_seq_expr_matrix <- rna_seq_expr_matrix
-  .GlobalEnv$genes_to_samples_with_hgnc <- genes_to_samples
-
   genes_to_samples <- genes_to_samples %>%
     dplyr::mutate(rna_seq_expr = get_rna_value_from_matrix_v(hgnc, barcode, patient_id, rna_seq_expr_matrix))
 
@@ -52,8 +47,6 @@ build_genes_to_samples_table <- function() {
   cat_genes_to_samples_status("Joining gene_ids.")
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
-
-  .GlobalEnv$genes_to_sampleswith_gene_ids <- genes_to_samples
 
   cat_genes_to_samples_status("Joining mutation_code_ids.")
   mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
