@@ -14,31 +14,6 @@ build_genes_tables <- function() {
       by = "hgnc"
     ) %>%
     dplyr::mutate(entrez = ifelse(!is.na(real_entrez), real_entrez, entrez))
-  cat(crayon::blue("Built all gene data."), fill = TRUE)
-
-  # cat(crayon::magenta("Building gene_types data."), fill = TRUE)
-  # gene_types <- dplyr::tibble(
-  #   name = c("immunomodulator", "io_target", "driver_mutation", "extra_cellular_network"),
-  #   display = c("Immunomodulator", "IO Target", "Driver Mutation", "Extra Cellular Network")
-  # )
-  # cat(crayon::blue("Built gene_types data."), fill = TRUE)
-  #
-  # cat(crayon::magenta("Building gene_types table."), fill = TRUE)
-  # table_written <- gene_types %>% iatlas.data::write_table_ts("gene_types")
-  # cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
-
-  # cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
-  # mutation_codes_to_gene_types <- iatlas.data::read_table("mutation_codes") %>%
-  #   dplyr::rename(mutation_code_id = id) %>%
-  #   tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
-  #   dplyr::left_join(iatlas.data::read_table("gene_types"), by = c("type" = "name")) %>%
-  #   dplyr::rename(type_id = id) %>%
-  #   dplyr::distinct(mutation_code_id, type_id)
-  # cat(crayon::blue("Built mutation_codes_to_gene_types data (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
-  #
-  # cat(crayon::magenta("Building mutation_codes_to_gene_types table."), fill = TRUE)
-  # table_written <- mutation_codes_to_gene_types %>% iatlas.data::write_table_ts("mutation_codes_to_gene_types")
-  # cat(crayon::blue("Built mutation_codes_to_gene_types table. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building gene_families data."), fill = TRUE)
   gene_families <- genes %>% iatlas.data::rebuild_gene_relational_data("gene_family")
@@ -132,35 +107,4 @@ build_genes_tables <- function() {
   table_written <- genes %>% iatlas.data::write_table_ts("genes")
   cat(crayon::blue("Built genes table. (", nrow(genes), "rows )"), fill = TRUE, sep = " ")
 
-  # Clean up.
-  cat("Cleaned up.", fill = TRUE)
-  gc()
-
-  # cat(crayon::magenta("Building genes_to_types data."), fill = TRUE)
-  # genes <- iatlas.data::read_table("genes") %>% dplyr::select(id, hgnc)
-  # gene_types <- iatlas.data::read_table("gene_types")
-  #
-  # # Collect the ids of the 3 gene_types.
-  # driver_mutation_id <- gene_types %>% dplyr::filter(name == "driver_mutation") %>% .[["id"]]
-  # immunomodulator_id <- gene_types %>% dplyr::filter(name == "immunomodulator") %>% .[["id"]]
-  # io_target_id <- gene_types %>% dplyr::filter(name == "io_target") %>% .[["id"]]
-  # ecn_id <- gene_types %>% dplyr::filter(name == "extra_cellular_network") %>% .[["id"]]
-  #
-  # driver_mutations <- driver_mutations %>% tibble::add_column(type_id = driver_mutation_id %>% as.integer)
-  # ecns <- ecns %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = ecn_id %>% as.integer)
-  # immunomodulator_expr <- immunomodulator_expr %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
-  # immunomodulators <- immunomodulators %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
-  # io_target_expr <- io_target_expr %>% tibble::add_column(type_id = io_target_id %>% as.integer)
-  #
-  # genes_to_types <- driver_mutations %>%
-  #   dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
-  #   dplyr::inner_join(genes, by = c("gene" = "hgnc")) %>%
-  #   dplyr::rename(gene_id = id) %>%
-  #   dplyr::distinct(gene_id, type_id) %>%
-  #   dplyr::arrange(gene_id, type_id)
-  # cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
-  #
-  # cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
-  # table_written <- genes_to_types %>% iatlas.data::write_table_ts("genes_to_types")
-  # cat(crayon::blue("Built genes_to_types table. (", nrow(genes_to_types), "rows )"), fill = TRUE, sep = " ")
 }
