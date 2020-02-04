@@ -3,8 +3,9 @@ build_patients_table <- function() {
   cat(crayon::magenta("Building patients data.)"), fill = TRUE)
 
   # Import feather files for samples.
-  patients <- get_all_samples() %>%
+  patients <- read_iatlas_data_file(get_feather_file_folder(), "patients") %>%
     dplyr::distinct(barcode = patient_barcode, age, ethnicity, gender, race) %>%
+    dplyr::filter(!is.na(barcode)) %>%
     dplyr::arrange(barcode)
 
   # patients table ---------------------------------------------------
