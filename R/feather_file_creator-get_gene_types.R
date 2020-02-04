@@ -56,10 +56,10 @@ get_gene_types <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(driver_mutation, pos = ".GlobalEnv")
-  # rm(ecn, pos = ".GlobalEnv")
-  # rm(immunomodulator, pos = ".GlobalEnv")
-  # rm(io_target, pos = ".GlobalEnv")
+  rm(driver_mutation, pos = ".GlobalEnv")
+  rm(ecn, pos = ".GlobalEnv")
+  rm(immunomodulator, pos = ".GlobalEnv")
+  rm(io_target, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
