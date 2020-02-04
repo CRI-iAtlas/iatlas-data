@@ -16,18 +16,10 @@ get_genes_by_type <- function() {
     genes <- current_pool %>% dplyr::tbl("genes")
 
     cat_genes_status("Get all the gene type ids related to the genes in the table.")
-    if (!is.na(gene_type)) {
-      genes <- genes %>% dplyr::full_join(
-        current_pool %>% dplyr::tbl("genes_to_types"),
-        by = c("id" = "gene_id")
-      )
-    } else {
-      genes <- genes %>% dplyr::left_join(
-        current_pool %>% dplyr::tbl("genes_to_types"),
-        by = c("id" = "gene_id")
-      ) %>%
-      dplyr::filter(is.na(type_id))
-    }
+    genes <- genes %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("genes_to_types"),
+      by = c("id" = "gene_id")
+    )
 
     cat_genes_status("Get all the related gene types from the gene_types table.")
     genes <- genes %>% dplyr::left_join(
@@ -37,11 +29,7 @@ get_genes_by_type <- function() {
     )
 
     cat_genes_status("Filter the genese down to genes with only the passed gene type.")
-    if (!is.na(gene_type)) {
-      genes <- genes %>% dplyr::filter(type == gene_type)
-    } else {
-      genes <- genes %>% dplyr::filter(is.na(type))
-    }
+    genes <- genes %>% dplyr::filter(type == gene_type)
 
     cat_genes_status("Get all the related gene families from the gene_families table.")
     genes <- genes %>% dplyr::left_join(
@@ -126,10 +114,6 @@ get_genes_by_type <- function() {
     get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/io_target_genes.feather"))
 
-  # .GlobalEnv$other_genes <- NA %>%
-  #   get_genes %>%
-  #   feather::write_feather(paste0(getwd(), "/feather_files/genes/other_genes.feather"))
-
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
   cat(crayon::green("Closed DB connection."), fill = TRUE)
@@ -141,7 +125,6 @@ get_genes_by_type <- function() {
   rm(extra_cellular_network_genes, pos = ".GlobalEnv")
   rm(immunomodulator_genes, pos = ".GlobalEnv")
   rm(io_target_genes, pos = ".GlobalEnv")
-  # rm(other_genes, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

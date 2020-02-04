@@ -94,9 +94,9 @@ get_slides_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(tcga_study_slides, pos = ".GlobalEnv")
-  # rm(tcga_subtype_slides, pos = ".GlobalEnv")
-  # rm(immune_subtype_slides, pos = ".GlobalEnv")
+  rm(tcga_study_slides, pos = ".GlobalEnv")
+  rm(tcga_subtype_slides, pos = ".GlobalEnv")
+  rm(immune_subtype_slides, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

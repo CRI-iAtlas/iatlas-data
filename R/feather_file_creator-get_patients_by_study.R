@@ -16,14 +16,14 @@ get_patients_by_study <- function() {
     patients <- current_pool %>% dplyr::tbl("patients")
 
     cat_patients_status("Get sample ids related to the patients.")
-    patients <- patients %>% dplyr::full_join(
+    patients <- patients %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples") %>%
         dplyr::select(sample_id = id, patient_id),
       by = c("id" = "patient_id")
     )
 
     cat_patients_status("Get tag ids related to the samples.")
-    patients <- patients %>% dplyr::full_join(
+    patients <- patients %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = c("id" = "sample_id")
     )
@@ -36,7 +36,7 @@ get_patients_by_study <- function() {
     )
 
     cat_patients_status("Get tag ids related to the tags :)")
-    patients <- patients %>% dplyr::full_join(
+    patients <- patients %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
