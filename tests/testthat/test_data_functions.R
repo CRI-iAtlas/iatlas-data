@@ -1,7 +1,7 @@
 (function() {
   library("testthat")
   library('feather')
-  test_data_folder <- "../../test_data"
+  test_data_folder <- "../test_data"
 
   get_test_data_path <- function (sub_path) paste0(test_data_folder, "/", sub_path)
 
@@ -224,6 +224,12 @@
   test_that("test validate dupes when values in group have conflicts", {
     values <- list("a" = c(2,2), "b" = c(1,3), "c" = c(NA,4))
     expect_error(validate_dupes(1,values,c("a","b"),c("c")))
+  })
+
+
+  test_that("flatten_tags", {
+
+    expect_that(build_references(NA), is_identical_to(NA))
   })
 
 })()
