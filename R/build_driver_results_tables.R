@@ -7,10 +7,7 @@ build_driver_results_tables <- function(feather_file_folder) {
     dplyr::as_tibble() %>%
     dplyr::select(id, name) %>%
     dplyr::rename_at("id", ~("feature_id"))
-  genes <- iatlas.data::read_table("genes") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(id, hgnc) %>%
-    dplyr::rename_at("id", ~("gene_id"))
+  genes <- get_genes()
   tags <- iatlas.data::read_table("tags") %>%
     dplyr::as_tibble() %>%
     dplyr::select(id, name) %>%

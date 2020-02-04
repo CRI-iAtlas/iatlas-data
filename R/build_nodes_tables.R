@@ -7,13 +7,9 @@ build_nodes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
 
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
+  # This should be use the entrez instead of the hgnc.
   nodes <- nodes %>%
-    dplyr::left_join(
-      iatlas.data::read_table("genes") %>%
-        dplyr::select(gene_id = id, hgnc) %>%
-        dplyr::as_tibble(),
-      by = "hgnc"
-    ) %>%
+    dplyr::left_join(get_genes(), by = "hgnc") %>%
     dplyr::arrange(hgnc, tag.01, tag.02, score) %>%
     tibble::add_column(node_id = 1:nrow(nodes), .before = "hgnc")
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
