@@ -72,15 +72,13 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   run_skippable_function(build_tags_tables)
   run_skippable_function(build_genes_tables)
   run_skippable_function(build_gene_types_table)
-
-  # before build-samples-tables ---------------------------------------------------
-
   run_skippable_function(build_patients_table)
   run_skippable_function(build_samples_table)
   run_skippable_function(build_samples_to_tags_table)
   run_skippable_function(build_features_to_samples_table)
   run_skippable_function(build_genes_to_samples_table)
   run_skippable_function(build_slides_table)
+  run_skippable_function(build_patients_to_slides_table)
 
   reset_results_cache()
 

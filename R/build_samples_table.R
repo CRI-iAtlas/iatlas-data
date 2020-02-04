@@ -1,9 +1,12 @@
 build_samples_table <- function() {
 
   cat(crayon::magenta("Building samples data."), fill = TRUE)
-  samples <- get_all_samples_with_patient_ids() %>%
-    dplyr::distinct(name = sample, patient_id) %>%
-    dplyr::arrange(name)
+  samples <- get_all_samples() %>%
+    dplyr::distinct(name = sample, barcode = patient_barcode)
+
+  samples <- samples %>%
+    dplyr::left_join(get_patients(), by = "barcode") %>%
+    dply::select(name, patient_id)
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   # sample table ---------------------------------------------------
