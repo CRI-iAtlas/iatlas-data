@@ -16,7 +16,7 @@ get_genes_samples_mutation_by_study <- function() {
     genes_samples_mutation <- current_pool %>% dplyr::tbl("genes_samples_mutation")
 
     cat_genes_samples_mutation_status("Get the tag ids related to the samples.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::full_join(
+    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = "sample_id"
     )
@@ -29,7 +29,7 @@ get_genes_samples_mutation_by_study <- function() {
     )
 
     cat_genes_samples_mutation_status("Get tag ids related to the tags :)")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::full_join(
+    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )

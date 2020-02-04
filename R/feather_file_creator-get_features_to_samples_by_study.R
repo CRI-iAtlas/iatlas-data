@@ -20,7 +20,7 @@ get_features_to_samples_by_study <- function() {
       dplyr::mutate(value = ifelse(!is.na(value), value, inf_value))
 
     cat_features_to_samples_status("Get the tag ids related to the samples.")
-    features_to_samples <- features_to_samples %>% dplyr::full_join(
+    features_to_samples <- features_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples_to_tags"),
       by = "sample_id"
     )
@@ -33,7 +33,7 @@ get_features_to_samples_by_study <- function() {
     )
 
     cat_features_to_samples_status("Get tag ids related to the tags :)")
-    features_to_samples <- features_to_samples %>% dplyr::full_join(
+    features_to_samples <- features_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
