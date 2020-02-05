@@ -1,12 +1,7 @@
 (function() {
   library("testthat")
   library('feather')
-  test_data_folder <- "../../test_data"
-
-  get_test_data_path <- function (sub_path) paste0(test_data_folder, "/", sub_path)
-
-  read_test_feather <- function (sub_path) read_feather(get_test_data_path(sub_path))
-
+  source('./lib_test_data.R')
 
   # build_references
   test_that("build_references returns NA when no value present.", {
@@ -224,6 +219,16 @@
   test_that("test validate dupes when values in group have conflicts", {
     values <- list("a" = c(2,2), "b" = c(1,3), "c" = c(NA,4))
     expect_error(validate_dupes(1,values,c("a","b"),c("c")))
+  })
+
+  test_that("flatten_tags", {
+    before_records <- read_test_csv("flatten_tags/before_records.csv")
+    tags_to_tags <- read_test_csv("flatten_tags/tags_to_tags.csv")
+    after_records <- read_test_csv("flatten_tags/after_records.csv")
+    expect_equal(TRUE, dplyr::all_equal(
+      after_records,
+      flatten_tags(before_records, tags_to_tags, "gene_id")
+    ))
   })
 
 })()

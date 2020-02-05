@@ -10,11 +10,12 @@
   test_that("get_dependent_tables when many with patients", {
     result <- get_dependent_tables("patients")
     expect_equal(present(result), TRUE)
-    expect_equal(result, c(
-      "samples",
+    expect_equal(!!result, c(
       "samples_to_tags",
       "features_to_samples",
       "genes_to_samples",
+      "genes_samples_mutation",
+      "samples",
       "patients_to_slides"
     ))
   })

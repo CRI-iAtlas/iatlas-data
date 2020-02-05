@@ -1,6 +1,9 @@
 
-get_result_cache <- function ()
-  if (present(.GlobalEnv$result_cache)) .GlobalEnv$result_cache else .GlobalEnv$result_cache <- list()
+get_result_cache <- function () {
+  if (!present(.GlobalEnv$result_cache))
+    .GlobalEnv$result_cache <- new.env()
+  .GlobalEnv$result_cache
+}
 
 result_cached <- function (key, value) {
   result_cache <- get_result_cache()

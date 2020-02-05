@@ -1,6 +1,7 @@
 (function() {
   library("testthat")
   library('feather')
+  source('./lib_test_data.R')
 
   copyEnv <- function(from, to, names=ls(from, all.names=TRUE)) {
     mapply(
@@ -33,30 +34,7 @@
     )
   }
 
-  # test_that("build_iatlas_db", {
-  #   build_iatlas_db(env = "test", reset = "reset", feather_file_folder = "../../feather_files")
-  #   expect_equal(table_exists("samples"), TRUE)
-  # })
-  # build_iatlas_db
-
-#   # system("find ../../ > /Users/shanebdavis/temp/iatlas.data.cover.files.txt")
-
-#   # stop(crayon::yellow(paste(
-#   #   "\n====================================================================",
-#   #   exists("../test_data"),
-#   #   exists("../test_data/integrations"),
-#   #   exists("../test_data/integrations/features.feather"),
-#   #   # "getwd: ",
-#   #   # getwd(),
-#   #   # "find_root: ",
-#   #   # rprojroot::find_root("DESCRIPTION"),
-#   #   # exists("../../iatlas.data-feather_files"),
-#   #   # exists("../feather_files"),
-#   #   "====================================================================",
-#   #   sep = "\n"
-#   # )))
-
-  feather_file_folder <- "../../feather_files"
+  feather_file_folder <- get_test_data_path("feather_files")
 
   test_that("create_db", {
     iatlas.data::create_db("test", "reset")
@@ -69,7 +47,7 @@
     expect_equal(.GlobalEnv$DB_NAME, "iatlas_shiny_test")
   })
 
-  test_that("build_features_tables", {
+  test_that("build_features_tables V2", {
     iatlas.data::build_features_tables(feather_file_folder)
     expect_equal("todo","todo")
   })
@@ -79,39 +57,39 @@
     expect_equal("todo","todo")
   })
 
-  test_that("build_genes_tables", {
-    iatlas.data::build_genes_tables(feather_file_folder)
-    expect_equal("todo","todo")
-  })
+  # test_that("build_genes_tables", {
+  #   iatlas.data::build_genes_tables(feather_file_folder)
+  #   expect_equal("todo","todo")
+  # })
 
-  all_samples <- NULL
-  get_all_samples <- function() {all_samples}
+  # all_samples <- NULL
+  # get_all_samples <- function() {all_samples}
 
-  test_that("get_all_samples", {
-    all_samples <<- load_all_samples(feather_file_folder)
-    expect_equal("todo","todo")
-  })
+  # test_that("get_all_samples", {
+  #   all_samples <<- load_all_samples(feather_file_folder)
+  #   expect_equal("todo","todo")
+  # })
 
-  test_that("build_genes_tables", {
-    iatlas.data::build_samples_table(feather_file_folder, get_all_samples)
-    expect_equal("todo","todo")
-  })
+  # test_that("build_genes_tables", {
+  #   iatlas.data::build_samples_table(feather_file_folder, get_all_samples)
+  #   expect_equal("todo","todo")
+  # })
 
-  samples <- NULL
+  # samples <- NULL
 
-  test_that("load-back samples", {
-    samples <<- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
-    expect_equal("todo","todo")
-  })
+  # test_that("load-back samples", {
+  #   samples <<- iatlas.data::read_table("samples") %>% dplyr::as_tibble()
+  #   expect_equal("todo","todo")
+  # })
 
-  test_that("build_samples_to_tags_table", {
-    iatlas.data::build_samples_to_tags_table(feather_file_folder, get_all_samples, samples)
-    expect_equal("todo","todo")
-  })
-  test_that("build_samples_to_features_table", {
-    iatlas.data::build_samples_to_features_table(feather_file_folder, get_all_samples, samples)
-    expect_equal("todo","todo")
-  })
+  # test_that("build_samples_to_tags_table", {
+  #   iatlas.data::build_samples_to_tags_table(feather_file_folder, get_all_samples, samples)
+  #   expect_equal("todo","todo")
+  # })
+  # test_that("build_samples_to_features_table", {
+  #   iatlas.data::build_samples_to_features_table(feather_file_folder, get_all_samples, samples)
+  #   expect_equal("todo","todo")
+  # })
 
   all_samples <- NULL
   samples <- NULL
