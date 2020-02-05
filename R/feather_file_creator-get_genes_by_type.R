@@ -90,8 +90,8 @@ get_genes_by_type <- function() {
     cat_genes_status("Add the entrez to the genes.")
     genes <- genes %>%
       dplyr::left_join(gene_ids, by = "hgnc") %>%
-      tibble::add_column(entrez = NA %>% as.character, .before = "hgnc") %>%
-      dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x)) %>%
+      tibble::add_column(entrez = NA %>% as.numeric, .before = "hgnc") %>%
+      dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x) %>% as.numeric) %>%
       dplyr::select(-c(entrez.x, entrez.y))
 
     return(genes)
