@@ -12,7 +12,7 @@ build_ecn_genes <- function() {
   node_names <- node_names %>%
     dplyr::rename(node_type = Type) %>%
     dplyr::rename(hgnc = Obj) %>%
-    dplyr::rename_at(display = FriendlyName) %>%
+    dplyr::rename(display = FriendlyName) %>%
     tibble::add_column(type = "extra_cellular_network")
 
   node_names <- node_names %>%
