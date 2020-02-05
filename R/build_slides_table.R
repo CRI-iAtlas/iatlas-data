@@ -2,8 +2,16 @@ build_slides_table <- function() {
 
   # slides import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for slides."), fill = TRUE)
-  slides <- get_all_samples() %>%
-    dplyr::select(name = slide, description = slide_description) %>%
+  slides <- read_iatlas_data_file(get_feather_file_folder(), "slides")
+  cat(crayon::blue("Imported feather files for slides."), fill = TRUE)
+
+  # slides correct columns ---------------------------------------------------
+  cat(crayon::magenta("Ensuring slides have all the correct columns."), fill = TRUE)
+  slides <- slides %>%
+    dplyr::bind_rows(dplyr::tibble(
+      name = character(),
+      description = character()
+    )) %>%
     dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Imported feather files for slides."), fill = TRUE)
