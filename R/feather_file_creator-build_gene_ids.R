@@ -1,5 +1,5 @@
 build_gene_ids <- function() {
-  all_gene_ids <- read.table(paste0(getwd(), "tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv")), sep = '\t', header = TRUE)
+  all_gene_ids <- read.table(paste0(getwd(), "tsv_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv"), sep = '\t', header = TRUE)
   gene_ids <- all_gene_ids %>%
     dplyr::as_tibble() %>%
     dplyr::select(gene_id) %>%
