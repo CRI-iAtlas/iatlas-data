@@ -3,7 +3,7 @@ build_samples_table <- function() {
   # sample data ---------------------------------------------------
   cat(crayon::magenta("Building samples data."), fill = TRUE)
   samples <- get_all_samples() %>%
-    dplyr::distinct(name = sample, barcode = patient_barcode) %>%
+    dplyr::distinct(name, barcode = patient_barcode) %>%
     dplyr::filter(!is.na(name) & !is.na(barcode)) %>%
     dplyr::arrange(name)
 
