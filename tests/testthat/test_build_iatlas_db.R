@@ -2,6 +2,9 @@
   library("testthat")
   library('feather')
   source('./lib_test_data.R')
+  library('logging')
+  iatlas.data::route_logs_to_file()
+  log_info("test_build_iatlast_db")
 
   copyEnv <- function(from, to, names=ls(from, all.names=TRUE)) {
     mapply(
@@ -37,25 +40,32 @@
   feather_file_folder <- get_test_data_path("feather_files")
 
   test_that("create_db", {
-    iatlas.data::create_db("test", "reset")
+    log_info("create_db start")
+    iatlas.data::create_db("test", "reset", '../scripts')
+    log_info("create_db done")
     expect_equal("fun", "fun")
   })
 
   test_that("connect_db", {
+    log_info("connect_db start")
     cat(crayon::bold(paste0("connect to db: ", .GlobalEnv$DB_NAME)), fill=)
     .GlobalEnv$pool <- connect_to_db()
+    log_info("connect_db done")
+    log_info(paste0("connect_db - have connection: ", present(.GlobalEnv$pool)))
     expect_equal(.GlobalEnv$DB_NAME, "iatlas_shiny_test")
   })
 
   test_that("build_features_tables V2", {
+    log_info(paste0("build_features_tables - have connection: ", present(.GlobalEnv$pool)))
     iatlas.data::build_features_tables(feather_file_folder)
+    log_info("build_features_tables - done")
     expect_equal("todo","todo")
   })
 
-  test_that("build_tags_tables", {
-    iatlas.data::build_tags_tables(feather_file_folder)
-    expect_equal("todo","todo")
-  })
+  # test_that("build_tags_tables", {
+  #   iatlas.data::build_tags_tables(feather_file_folder)
+  #   expect_equal("todo","todo")
+  # })
 
   # test_that("build_genes_tables", {
   #   iatlas.data::build_genes_tables(feather_file_folder)
@@ -93,6 +103,8 @@
 
   all_samples <- NULL
   samples <- NULL
+
+  teardown(log_info("test_build_iatlast_db TEARDOWN"))
 
   teardown(pool::poolClose(.GlobalEnv$pool))
   teardown(rm(pool, pos = ".GlobalEnv"))
