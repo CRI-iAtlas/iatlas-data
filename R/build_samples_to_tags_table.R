@@ -30,7 +30,7 @@ build_samples_to_tags_table <- function() {
 
   # samples_to_tags table ---------------------------------------------------
   cat(crayon::magenta("Building samples_to_tags table."), fill = TRUE)
-  samples_to_tags %>% iatlas.data::replace_table("samples_to_tags")
+  table_written <- samples_to_tags %>% iatlas.data::replace_table("samples_to_tags")
   cat(crayon::blue("Built samples_to_tags table. (", nrow(samples_to_tags), "rows )"), fill = TRUE, sep = " ")
 
 }

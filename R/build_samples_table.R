@@ -14,7 +14,7 @@ build_samples_table <- function() {
 
   # sample table ---------------------------------------------------
   cat(crayon::magenta("Building the samples table."), fill = TRUE)
-  samples %>% iatlas.data::replace_table("samples")
+  table_written <- samples %>% iatlas.data::replace_table("samples")
   cat(crayon::blue("Built the samples table. (", nrow(samples), "rows )"), fill = TRUE, sep = " ")
 
 }

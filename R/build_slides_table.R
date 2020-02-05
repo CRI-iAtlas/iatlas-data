@@ -10,7 +10,7 @@ build_slides_table <- function() {
 
   # slides table ---------------------------------------------------
   cat(crayon::magenta("Building slides table."), fill = TRUE)
-  slides %>% iatlas.data::replace_table("slides")
+  table_written <- slides %>% iatlas.data::replace_table("slides")
   cat(crayon::blue("Built the slides tables. (", nrow(slides), "rows )"), fill = TRUE, sep = " ")
 
 }

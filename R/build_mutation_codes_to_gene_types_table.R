@@ -30,7 +30,7 @@ build_mutation_codes_to_gene_types_table <- function() {
 
   # mutation_codes_to_gene_types table ---------------------------------------------------
   cat(crayon::magenta("Building mutation_codes_to_gene_types table."), fill = TRUE)
-  table_written <- mutation_codes_to_gene_types %>% iatlas.data::write_table_ts("mutation_codes_to_gene_types")
+  table_written <- mutation_codes_to_gene_types %>% iatlas.data::replace_table("mutation_codes_to_gene_types")
   cat(crayon::blue("Built mutation_codes_to_gene_types table. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
 }

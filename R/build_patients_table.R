@@ -11,6 +11,6 @@ build_patients_table <- function() {
 
   # patients table ---------------------------------------------------
   cat(crayon::magenta("Building patients table."), fill = TRUE, sep = " ")
-  patients %>% iatlas.data::replace_table("patients")
+  table_written <- patients %>% iatlas.data::replace_table("patients")
   cat(crayon::blue("Built patients table. (", nrow(patients), "rows )"), fill = TRUE, sep = " ")
 }

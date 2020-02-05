@@ -9,7 +9,7 @@ build_gene_types_table <- function() {
 
   # gene_types table ---------------------------------------------------
   cat(crayon::magenta("Building gene_types table."), fill = TRUE)
-  table_written <- gene_types %>% iatlas.data::write_table_ts("gene_types")
+  table_written <- gene_types %>% iatlas.data::replace_table("gene_types")
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
 }

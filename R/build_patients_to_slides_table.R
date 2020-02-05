@@ -25,7 +25,7 @@ build_patients_to_slides_table <- function() {
 
   # patients_to_slides table ---------------------------------------------------
   cat(crayon::magenta("Building patients_to_slides table."), fill = TRUE)
-  patients_to_slides %>% iatlas.data::replace_table("patients_to_slides")
+  table_written <- patients_to_slides %>% iatlas.data::replace_table("patients_to_slides")
   cat(crayon::blue("Built the patients_to_slides tables. (", nrow(patients_to_slides), " rows)"), fill = TRUE, sep = " ")
 
 }

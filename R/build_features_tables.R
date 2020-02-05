@@ -17,7 +17,7 @@ build_features_tables <- function() {
 
   # classes table ---------------------------------------------------
   cat(crayon::magenta("Building classes table."), fill = TRUE)
-  table_written <- classes %>% iatlas.data::write_table_ts("classes")
+  table_written <- classes %>% iatlas.data::replace_table("classes")
   cat(crayon::blue("Built classes table. (", nrow(classes), "rows )"), fill = TRUE, sep = " ")
 
   # method_tags data ---------------------------------------------------
@@ -30,7 +30,7 @@ build_features_tables <- function() {
 
   # method_tags table ---------------------------------------------------
   cat(crayon::magenta("Building method_tags table."), fill = TRUE)
-  table_written <- method_tags %>% iatlas.data::write_table_ts("method_tags")
+  table_written <- method_tags %>% iatlas.data::replace_table("method_tags")
   cat(crayon::blue("Built method_tags table. (", nrow(method_tags), "rows )"), fill = TRUE, sep = " ")
 
   # features data ---------------------------------------------------
@@ -54,6 +54,6 @@ build_features_tables <- function() {
 
   # features table ---------------------------------------------------
   cat(crayon::magenta("Built features table."), fill = TRUE)
-  table_written <- features %>% iatlas.data::write_table_ts("features")
+  table_written <- features %>% iatlas.data::replace_table("features")
   cat(crayon::blue("Built features table. (", nrow(features), "rows )"), fill = TRUE, sep = " ")
 }

@@ -30,6 +30,6 @@ build_features_to_samples_table <- function() {
 
   # features_to_samples table ---------------------------------------------------
   cat(crayon::magenta("Building features_to_samples table.\n\t(Please be patient, this may take a little while as there are", nrow(features_to_samples), "rows to write.)"), fill = TRUE, sep = " ")
-  features_to_samples %>% iatlas.data::replace_table("features_to_samples")
+  table_written <- features_to_samples %>% iatlas.data::replace_table("features_to_samples")
   cat(crayon::blue("Built features_to_samples table. (", nrow(features_to_samples), "rows )"), fill = TRUE, sep = " ")
 }

@@ -27,7 +27,7 @@ build_genes_to_types_table <- function() {
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
-  table_written <- genes_to_types %>% iatlas.data::write_table_ts("genes_to_types")
+  table_written <- genes_to_types %>% iatlas.data::replace_table("genes_to_types")
   cat(crayon::blue("Built genes_to_types table. (", nrow(genes_to_types), "rows )"), fill = TRUE, sep = " ")
 
 }

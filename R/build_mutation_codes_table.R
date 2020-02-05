@@ -9,7 +9,7 @@ build_mutation_codes_table <- function() {
 
   # mutation_codes table ---------------------------------------------------
   cat(crayon::magenta("Building mutation_codes table."), fill = TRUE)
-  table_written <- mutation_codes %>% iatlas.data::write_table_ts("mutation_codes")
+  table_written <- mutation_codes %>% iatlas.data::replace_table("mutation_codes")
   cat(crayon::blue("Built mutation_codes table. (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
 }

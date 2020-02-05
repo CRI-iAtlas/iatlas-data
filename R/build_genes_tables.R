@@ -24,7 +24,7 @@ build_genes_tables <- function() {
 
   # gene_families table ---------------------------------------------------
   cat(crayon::magenta("Building gene_families table."), fill = TRUE)
-  table_written <- gene_families %>% iatlas.data::write_table_ts("gene_families")
+  table_written <- gene_families %>% iatlas.data::replace_table("gene_families")
   cat(crayon::blue("Built gene_families table. (", nrow(gene_families), "rows )"), fill = TRUE, sep = " ")
 
   # gene_functions data ---------------------------------------------------
@@ -34,7 +34,7 @@ build_genes_tables <- function() {
 
   # gene_functions table ---------------------------------------------------
   cat(crayon::magenta("Building gene_functions table."), fill = TRUE)
-  table_written <- gene_functions %>% iatlas.data::write_table_ts("gene_functions")
+  table_written <- gene_functions %>% iatlas.data::replace_table("gene_functions")
   cat(crayon::blue("Built gene_functions table. (", nrow(gene_functions), "rows )"), fill = TRUE, sep = " ")
 
   # immune_checkpoints data ---------------------------------------------------
@@ -44,7 +44,7 @@ build_genes_tables <- function() {
 
   # immune_checkpoints table ---------------------------------------------------
   cat(crayon::magenta("Building immune_checkpoints table."), fill = TRUE)
-  table_written <- immune_checkpoints %>% iatlas.data::write_table_ts("immune_checkpoints")
+  table_written <- immune_checkpoints %>% iatlas.data::replace_table("immune_checkpoints")
   cat(crayon::blue("Built immune_checkpoints table. (", nrow(immune_checkpoints), "rows )"), fill = TRUE, sep = " ")
 
   # node_types data ---------------------------------------------------
@@ -54,7 +54,7 @@ build_genes_tables <- function() {
 
   # node_types table ---------------------------------------------------
   cat(crayon::magenta("Building node_types table."), fill = TRUE)
-  table_written <- node_types %>% iatlas.data::write_table_ts("node_types")
+  table_written <- node_types %>% iatlas.data::replace_table("node_types")
   cat(crayon::blue("Built node_types table. (", nrow(node_types), "rows )"), fill = TRUE, sep = " ")
 
   # pathways data ---------------------------------------------------
@@ -64,7 +64,7 @@ build_genes_tables <- function() {
 
   # pathways table ---------------------------------------------------
   cat(crayon::magenta("Built pathways table."), fill = TRUE)
-  table_written <- pathways %>% iatlas.data::write_table_ts("pathways")
+  table_written <- pathways %>% iatlas.data::replace_table("pathways")
   cat(crayon::blue("Built pathways table. (", nrow(pathways), "rows )"), fill = TRUE, sep = " ")
 
   # super_categories data ---------------------------------------------------
@@ -74,7 +74,7 @@ build_genes_tables <- function() {
 
   # super_categories table ---------------------------------------------------
   cat(crayon::magenta("Building super_categories table."), fill = TRUE)
-  table_written <- super_categories %>% iatlas.data::write_table_ts("super_categories")
+  table_written <- super_categories %>% iatlas.data::replace_table("super_categories")
   cat(crayon::blue("Built super_categories table. (", nrow(super_categories), "rows )"), fill = TRUE, sep = " ")
 
   # therapy_types data ---------------------------------------------------
@@ -84,7 +84,7 @@ build_genes_tables <- function() {
 
   # therapy_types table ---------------------------------------------------
   cat(crayon::magenta("Built therapy_types table."), fill = TRUE)
-  table_written <- therapy_types %>% iatlas.data::write_table_ts("therapy_types")
+  table_written <- therapy_types %>% iatlas.data::replace_table("therapy_types")
   cat(crayon::blue("Built therapy_types table. (", nrow(therapy_types), "rows )"), fill = TRUE, sep = " ")
 
   # genes data ---------------------------------------------------
@@ -122,7 +122,7 @@ build_genes_tables <- function() {
 
   # genes table ---------------------------------------------------
   cat(crayon::magenta("Building genes table."), fill = TRUE)
-  table_written <- genes %>% iatlas.data::write_table_ts("genes")
+  table_written <- genes %>% iatlas.data::replace_table("genes")
   cat(crayon::blue("Built genes table. (", nrow(genes), "rows )"), fill = TRUE, sep = " ")
 
 }
