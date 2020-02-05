@@ -6,6 +6,7 @@ build_patients_table <- function() {
   patients <- read_iatlas_data_file(get_feather_file_folder(), "patients")
   cat(crayon::blue("Imported feather files for patients."), fill = TRUE)
 
+  # patients correct columns ---------------------------------------------------
   cat(crayon::magenta("Ensuring patients have all the correct columns."), fill = TRUE)
   patients <- patients %>%
     dplyr::bind_rows(dplyr::tibble(
