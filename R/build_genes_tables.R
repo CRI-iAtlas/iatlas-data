@@ -2,10 +2,32 @@ build_genes_tables <- function() {
 
   # genes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
-  genes <- read_iatlas_data_file(get_feather_file_folder(), "genes") %>%
+  genes <- read_iatlas_data_file(get_feather_file_folder(), "genes")
+  cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
+
+  # genes column fix ---------------------------------------------------
+  cat(crayon::magenta("Ensuring genes have all the correct columns."), fill = TRUE)
+  genes <- genes %>%
+    dplyr::bind_rows(dplyr::tibble(
+      entrez = numeric(),
+      hgnc = character(),
+      description = character(),
+      friendly_name = character(),
+      io_landscape_name = character(),
+      gene_family = character(),
+      gene_function = character(),
+      immune_checkpoint = character(),
+      node_type = character(),
+      pathway = character(),
+      references = character(),
+      super_category = character(),
+      therapy_type = character()
+    )) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::arrange(entrez, hgnc)
-  cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
+  cat(crayon::blue("Ensured genes have all the correct columns."), fill = TRUE)
+
+  .GlobalEnv$all_genes <- cbind(genes)
 
   # entrez fix ---------------------------------------------------
   cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
