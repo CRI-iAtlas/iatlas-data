@@ -17,15 +17,18 @@ build_mutation_codes_to_gene_types_table <- function() {
     iatlas.data::read_table("gene_types") %>%
       dplyr::as_tibble() %>%
       dplyr::select(type_id = id, gene_type = name),
-    by = "type_id"
+    by = "gene_type"
   )
 
   mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>% dplyr::left_join(
     iatlas.data::read_table("mutation_codes") %>%
       dplyr::as_tibble() %>%
       dplyr::select(mutation_code_id = id, code),
-    by = "mutation_code_id"
+    by = "code"
   )
+
+  mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>%
+    dplyr::select(mutation_code_id, type_id)
   cat(crayon::blue("Built mutation_codes_to_gene_types data. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
   # mutation_codes_to_gene_types table ---------------------------------------------------

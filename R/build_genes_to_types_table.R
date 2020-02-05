@@ -3,7 +3,7 @@ build_genes_to_types_table <- function() {
   cat(crayon::magenta("Importing feather files for genes_to_types."), fill = TRUE)
   genes_to_types <- read_iatlas_data_file(
     get_feather_file_folder(),
-    "realtionships/genes_to_types"
+    "relationships/genes_to_types"
   ) %>%
     dplyr::distinct(entrez, hgnc, gene_type) %>%
     dplyr::filter((!is.na(entrez) | !is.na(hgnc)) & !is.na(gene_type)) %>%
@@ -23,7 +23,7 @@ build_genes_to_types_table <- function() {
 
   genes_to_types <- genes_to_types %>%
     dplyr::distinct(gene_id, type_id) %>%
-    arrange(gene_id, type_id)
+    dplyr::arrange(gene_id, type_id)
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
