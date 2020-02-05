@@ -72,19 +72,20 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   run_skippable_function(build_tags_tables)
   run_skippable_function(build_genes_tables)
   run_skippable_function(build_gene_types_table)
+  run_skippable_function(build_genes_to_types_table)
+  run_skippable_function(build_mutation_codes_table)
+  run_skippable_function(build_mutation_codes_to_gene_types_table)
   run_skippable_function(build_patients_table)
+  run_skippable_function(build_slides_table)
+  run_skippable_function(build_patients_to_slides_table)
   run_skippable_function(build_samples_table)
   run_skippable_function(build_samples_to_tags_table)
   run_skippable_function(build_features_to_samples_table)
   run_skippable_function(build_genes_to_samples_table)
-  run_skippable_function(build_slides_table)
-  run_skippable_function(build_patients_to_slides_table)
+  run_skippable_function(build_driver_results_table)
+  run_skippable_function(build_nodes_tables)
 
   reset_results_cache()
-
-  # after build-samples-tables ---------------------------------------------------
-  run_skippable_function(build_driver_results_tables, feather_file_folder)
-  run_skippable_function(build_nodes_tables,          paste0(feather_file_folder, "/SQLite_data"))
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
