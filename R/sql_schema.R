@@ -3,11 +3,11 @@ sql_schema <- list(
     create = "
       CREATE TABLE classes (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX class_name_index ON classes (name);"
+      "CREATE UNIQUE INDEX class_name_index ON classes (\"name\");"
     )
   ),
   driver_results = list(
@@ -54,16 +54,16 @@ sql_schema <- list(
     create = "
       CREATE TABLE features (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         display VARCHAR,
-        order INTEGER,
+        \"order\" INTEGER,
         unit UNIT_ENUM,
         class_id INTEGER REFERENCES classes NOT NULL,
         method_tag_id INTEGER REFERENCES method_tags,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX feature_name_index ON features (name);",
+      "CREATE UNIQUE INDEX feature_name_index ON features (\"name\");",
       "CREATE INDEX feature_class_id_index ON features (class_id);",
       "CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);"
     )
@@ -73,7 +73,7 @@ sql_schema <- list(
       CREATE TABLE features_to_samples (
         feature_id INTEGER,
         sample_id INTEGER,
-        value NUMERIC,
+        \"value\" NUMERIC,
         inf_value REAL,
         PRIMARY KEY (feature_id, sample_id)
       );",
@@ -89,7 +89,7 @@ sql_schema <- list(
         id SERIAL,
         entrez INTEGER,
         hgnc VARCHAR NOT NULL,
-        description VARCHAR,
+        \"description\" VARCHAR,
         friendly_name VARCHAR,
         io_landscape_name VARCHAR,
         gene_family_id INTEGER REFERENCES gene_families,
@@ -97,7 +97,7 @@ sql_schema <- list(
         immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
         node_type_id INTEGER REFERENCES node_types,
         pathway_id INTEGER REFERENCES pathways,
-        references TEXT[],
+        \"references\" TEXT[],
         super_cat_id INTEGER REFERENCES super_categories,
         therapy_type_id INTEGER REFERENCES therapy_types,
         PRIMARY KEY (id)
@@ -118,22 +118,22 @@ sql_schema <- list(
     create = "
       CREATE TABLE gene_families (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX gene_family_name_index ON gene_families (name);"
+      "CREATE UNIQUE INDEX gene_family_name_index ON gene_families (\"name\");"
     )
   ),
   gene_functions = list(
     create = "
       CREATE TABLE gene_functions (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX gene_function_name_index ON gene_functions (name);"
+      "CREATE UNIQUE INDEX gene_function_name_index ON gene_functions (\"name\");"
     )
   ),
   genes_samples_mutation = list(
@@ -142,7 +142,7 @@ sql_schema <- list(
         gene_id INTEGER NOT NULL,
         sample_id INTEGER NOT NULL,
         mutation_code_id INTEGER NOT NULL,
-        status STATUS_ENUM,
+        \"status\" STATUS_ENUM,
         PRIMARY KEY (gene_id, sample_id, mutation_code_id)
       );",
     addSchema = c(
@@ -156,12 +156,12 @@ sql_schema <- list(
     create = "
       CREATE TABLE gene_types (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         display VARCHAR,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX gene_type_name_index ON gene_types (name);"
+      "CREATE UNIQUE INDEX gene_type_name_index ON gene_types (\"name\");"
     )
   ),
   genes_to_samples = list(
@@ -182,33 +182,33 @@ sql_schema <- list(
     create = "
       CREATE TABLE genes_to_types (
         gene_id INTEGER REFERENCES genes,
-        type_id INTEGER REFERENCES gene_types,
-        PRIMARY KEY (gene_id, type_id)
+        \"type_id\" INTEGER REFERENCES gene_types,
+        PRIMARY KEY (gene_id, \"type_id\")
       );",
     addSchema = c(
-      "CREATE INDEX gene_to_type_type_id_index ON genes_to_types (type_id);"
+      "CREATE INDEX gene_to_type_type_id_index ON genes_to_types (\"type_id\");"
     )
   ),
   immune_checkpoints = list(
     create = "
       CREATE TABLE immune_checkpoints (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints (name);"
+      "CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints (\"name\");"
     )
   ),
   method_tags = list(
     create = "
       CREATE TABLE method_tags (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX method_tag_name_index ON method_tags (name);"
+      "CREATE UNIQUE INDEX method_tag_name_index ON method_tags (\"name\");"
     )
   ),
   mutation_codes = list (
@@ -223,22 +223,22 @@ sql_schema <- list(
     create = "
       CREATE TABLE mutation_codes_to_gene_types (
         mutation_code_id INTEGER REFERENCES mutation_codes,
-        type_id INTEGER REFERENCES gene_types,
-        PRIMARY KEY (mutation_code_id, type_id)
+        \"type_id\" INTEGER REFERENCES gene_types,
+        PRIMARY KEY (mutation_code_id, \"type_id\")
       );",
     addSchema = c(
-      "CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types (type_id);"
+      "CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types (\"type_id\");"
     )
   ),
   node_types = list(
     create = "
       CREATE TABLE node_types (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX node_type_name_index ON node_types (name);"
+      "CREATE UNIQUE INDEX node_type_name_index ON node_types (\"name\");"
     )
   ),
   nodes = list (
@@ -274,11 +274,11 @@ sql_schema <- list(
     create = "
       CREATE TABLE pathways (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX pathway_name_index ON pathways (name);"
+      "CREATE UNIQUE INDEX pathway_name_index ON pathways (\"name\");"
     )
   ),
   patients = list(
@@ -291,7 +291,7 @@ sql_schema <- list(
         gender VARCHAR,
         height NUMERIC,
         race VARCHAR,
-        weight NUMERIC,
+        \"weight\" NUMERIC,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -301,7 +301,7 @@ sql_schema <- list(
       "CREATE INDEX patient_gender_index ON patients (gender);",
       "CREATE INDEX patient_height_index ON patients (height);",
       "CREATE INDEX patient_race_index ON patients (race);",
-      "CREATE INDEX patient_weight_index ON patients (weight);"
+      "CREATE INDEX patient_weight_index ON patients (\"weight\");"
     )
   ),
   patients_to_slides = list(
@@ -321,12 +321,12 @@ sql_schema <- list(
     create = "
       CREATE TABLE samples (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         patient_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX sample_name_index ON samples (name);",
+      "CREATE UNIQUE INDEX sample_name_index ON samples (\"name\");",
       "CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);",
       "ALTER TABLE samples ADD FOREIGN KEY (patient_id) REFERENCES patients;"
     )
@@ -348,37 +348,37 @@ sql_schema <- list(
     create = "
       CREATE TABLE slides (
         id SERIAL,
-        name VARCHAR NOT NULL,
-        description VARCHAR,
+        \"name\" VARCHAR NOT NULL,
+        \"description\" VARCHAR,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX slide_name_index ON slides (name);"
+      "CREATE UNIQUE INDEX slide_name_index ON slides (\"name\");"
     )
   ),
   super_categories = list(
     create = "
       CREATE TABLE super_categories (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX super_category_name_index ON super_categories (name);"
+      "CREATE UNIQUE INDEX super_category_name_index ON super_categories (\"name\");"
     )
   ),
   tags = list(
     create = "
       CREATE TABLE tags (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         characteristics VARCHAR,
         display VARCHAR,
         color VARCHAR,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX tag_name_index ON tags (name);"
+      "CREATE UNIQUE INDEX tag_name_index ON tags (\"name\");"
     )
   ),
   tags_to_tags = list(
@@ -396,11 +396,11 @@ sql_schema <- list(
     create = "
       CREATE TABLE therapy_types (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX therapy_type_name_index ON therapy_types (name);"
+      "CREATE UNIQUE INDEX therapy_type_name_index ON therapy_types (\"name\");"
     )
   )
 )
