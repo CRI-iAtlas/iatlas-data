@@ -11,7 +11,7 @@ build_genes_tables <- function() {
   cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(
-      feather::read_feather(apply_path("gene_ids.feather")) %>%
+      read_iatlas_data_file(get_feather_file_folder(), "gene_ids.feather") %>%
         dplyr::select(hgnc, real_entrez = entrez),
       by = "hgnc"
     ) %>%
