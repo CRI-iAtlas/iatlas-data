@@ -41,7 +41,7 @@ new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
 
         cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
         cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
-        cat(paste0("NOTEs:\n  * If you change code, you can run ", crayon::bold("source('./.RProfile')")," and then use one of the resume-options above.\n  * The error's stack trace is available at: ", crayon::bold("GlobalEnv$iatlas_stack_trace")), fill = TRUE)
+        cat(paste0("NOTEs:\n  * If you change code, you can run ", crayon::bold("source('./.RProfile')")," and then use one of the resume-options above.\n  * The error's stack trace is available at: ", crayon::bold("iatlas_stack_trace")), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
@@ -104,3 +104,5 @@ new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   gcinfo(FALSE)
   invisible(NULL);
 }
+
+build_iatlas_db <- new_build_iatlas_db
