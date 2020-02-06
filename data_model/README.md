@@ -158,7 +158,10 @@ The relational (join) tables are:
 
 - ### tags_to_tags
 
-  Each row describes a tag to tag relationship.
+  Each row describes a tag to tag relationship. This table is for adding semantic information to tags. It can be used to group tags. It is useful to think of it in this way:
+
+  * `related_tag` *has-a* `tag`
+  * e.g. `TGCA` has-a `
 
   For example, "Good Tag" may be related to "Parent Tag". That would be one row. "Great Tag" may also be related to "Parent Tag". That would be an additional row. "Good Tag" may also be related to "Sub Tag". That would be yet again another row, and so on.
 
