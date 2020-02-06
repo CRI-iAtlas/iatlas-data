@@ -69,7 +69,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built mutation_codes data."), fill = TRUE)
 
   cat(crayon::magenta("Building mutation_codes table."), fill = TRUE)
-  table_written <- mutation_codes %>% iatlas.data::write_table_ts("mutation_codes")
+  table_written <- mutation_codes %>% iatlas.data::replace_table("mutation_codes")
   cat(crayon::blue("Built mutation_codes table. (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Binding gene expr data."), fill = TRUE)
@@ -116,7 +116,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built gene_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building gene_types table."), fill = TRUE)
-  table_written <- gene_types %>% iatlas.data::write_table_ts("gene_types")
+  table_written <- gene_types %>% iatlas.data::replace_table("gene_types")
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
@@ -129,7 +129,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built mutation_codes_to_gene_types data (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types table."), fill = TRUE)
-  table_written <- mutation_codes_to_gene_types %>% iatlas.data::write_table_ts("mutation_codes_to_gene_types")
+  table_written <- mutation_codes_to_gene_types %>% iatlas.data::replace_table("mutation_codes_to_gene_types")
   cat(crayon::blue("Built mutation_codes_to_gene_types table. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building gene_families data."), fill = TRUE)
@@ -137,7 +137,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built gene_families data."), fill = TRUE)
 
   cat(crayon::magenta("Building gene_families table."), fill = TRUE)
-  table_written <- gene_families %>% iatlas.data::write_table_ts("gene_families")
+  table_written <- gene_families %>% iatlas.data::replace_table("gene_families")
   cat(crayon::blue("Built gene_families table. (", nrow(gene_families), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building gene_functions data."), fill = TRUE)
@@ -145,7 +145,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built gene_functions data."), fill = TRUE)
 
   cat(crayon::magenta("Building gene_functions table."), fill = TRUE)
-  table_written <- gene_functions %>% iatlas.data::write_table_ts("gene_functions")
+  table_written <- gene_functions %>% iatlas.data::replace_table("gene_functions")
   cat(crayon::blue("Built gene_functions table. (", nrow(gene_functions), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building immune_checkpoints data."), fill = TRUE)
@@ -153,7 +153,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built immune_checkpoints data."), fill = TRUE)
 
   cat(crayon::magenta("Building immune_checkpoints table."), fill = TRUE)
-  table_written <- immune_checkpoints %>% iatlas.data::write_table_ts("immune_checkpoints")
+  table_written <- immune_checkpoints %>% iatlas.data::replace_table("immune_checkpoints")
   cat(crayon::blue("Built immune_checkpoints table. (", nrow(immune_checkpoints), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building node_types data."), fill = TRUE)
@@ -161,7 +161,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built node_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building node_types table."), fill = TRUE)
-  table_written <- node_types %>% iatlas.data::write_table_ts("node_types")
+  table_written <- node_types %>% iatlas.data::replace_table("node_types")
   cat(crayon::blue("Built node_types table. (", nrow(node_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Built pathways data."), fill = TRUE)
@@ -169,7 +169,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built pathways data."), fill = TRUE)
 
   cat(crayon::magenta("Built pathways table."), fill = TRUE)
-  table_written <- pathways %>% iatlas.data::write_table_ts("pathways")
+  table_written <- pathways %>% iatlas.data::replace_table("pathways")
   cat(crayon::blue("Built pathways table. (", nrow(pathways), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building super_categories data."), fill = TRUE)
@@ -177,7 +177,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built super_categories data."), fill = TRUE)
 
   cat(crayon::magenta("Building super_categories table."), fill = TRUE)
-  table_written <- super_categories %>% iatlas.data::write_table_ts("super_categories")
+  table_written <- super_categories %>% iatlas.data::replace_table("super_categories")
   cat(crayon::blue("Built super_categories table. (", nrow(super_categories), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Built therapy_types data."), fill = TRUE)
@@ -185,7 +185,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built therapy_types data."), fill = TRUE)
 
   cat(crayon::magenta("Built therapy_types table."), fill = TRUE)
-  table_written <- therapy_types %>% iatlas.data::write_table_ts("therapy_types")
+  table_written <- therapy_types %>% iatlas.data::replace_table("therapy_types")
   cat(crayon::blue("Built therapy_types table. (", nrow(therapy_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building genes data."), fill = TRUE)
@@ -221,7 +221,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built genes data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes table."), fill = TRUE)
-  table_written <- genes %>% iatlas.data::write_table_ts("genes")
+  table_written <- genes %>% iatlas.data::replace_table("genes")
   cat(crayon::blue("Built genes table. (", nrow(genes), "rows )"), fill = TRUE, sep = " ")
 
   # Clean up.
@@ -253,6 +253,6 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
-  table_written <- genes_to_types %>% iatlas.data::write_table_ts("genes_to_types")
+  table_written <- genes_to_types %>% iatlas.data::replace_table("genes_to_types")
   cat(crayon::blue("Built genes_to_types table. (", nrow(genes_to_types), "rows )"), fill = TRUE, sep = " ")
 }

@@ -28,7 +28,7 @@ old_build_tags_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building tags table."), fill = TRUE)
   table_written <- tags %>%
     dplyr::select(-c("parent_group", "parent_group_display", "subtype_group", "subtype_group_display")) %>%
-    iatlas.data::write_table_ts("tags")
+    iatlas.data::replace_table("tags")
   cat(crayon::blue("Built tags table. (", nrow(tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building tags_to_tags data."), fill = TRUE)
@@ -55,6 +55,6 @@ old_build_tags_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Built tags_to_tags data."), fill = TRUE)
 
   cat(crayon::magenta("Building tags_to_tags table."), fill = TRUE)
-  table_written <- tags_to_tags %>% iatlas.data::write_table_ts("tags_to_tags")
+  table_written <- tags_to_tags %>% iatlas.data::replace_table("tags_to_tags")
   cat(crayon::magenta("Built tags_to_tags table. (", nrow(tags_to_tags), "rows )"), fill = TRUE, sep = " ")
 }
