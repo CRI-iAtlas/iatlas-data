@@ -7,59 +7,26 @@ get_features_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_features <- function(study, exclude01, exclude02) {
+  get_features <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get features by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get features")), fill = TRUE)
 
     cat_features_status("Get the initial values from the features table.")
     features <- current_pool %>% dplyr::tbl("features")
 
-    cat_features_status("Get all sample ids that are related to a feature.")
-    features <- features %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("features_to_samples"),
-      by = c("id" = "feature_id")
-    )
-
-    cat_features_status("Get all tag ids that the found samples are related to.")
-    features <- features %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = c("id" = "sample_id")
-    )
-
-    # cat_features_status("Then get all the tag ids those related tags are related to.")
-    # features <- features %>% dplyr::left_join(
-    #   current_pool %>% dplyr::tbl("tags_to_tags"),
-    #   by = "tag_id"
-    # )
-
-    cat_features_status("Get all the related tags that the found samples are related to.")
-    features <- features %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(tag_id = id, study_name = name),
-      by = "tag_id"
-    )
-
-    # cat_features_status("Limit to only the features that have samples tagged to the passed study.")
-    # features <- features %>% dplyr::filter(
-    #   study_name != exclude01 & study_name != exclude02
-    # )
-
-    cat_features_status("Limit to only the features that have samples tagged to the passed study.")
-    features <- features %>% dplyr::filter(study_name == study)
-
     cat_features_status("Get all the classes related to the features.")
     features <- features %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("classes") %>%
-        dplyr::select(id, class = name),
-      by = c("class_id" = "id")
+        dplyr::select(class_id = id, class = name),
+      by = "class_id"
     )
 
     cat_features_status("Get all the method tags that are related to the features.")
     features <- features %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("method_tags") %>%
-        dplyr::select(id, method_tag = name),
-      by = c("method_tag_id" = "id")
+        dplyr::select(method_tag_id = id, method_tag = name),
+      by = "method_tag_id"
     )
 
     cat_features_status("Clean up the data set.")
@@ -76,18 +43,18 @@ get_features_by_study <- function() {
     return(features)
   }
 
+  all_features <- get_features()
+  all_features <- all_features %>% split(rep(1:3, each = ceiling(length(all_features)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_features <- "TCGA_Study" %>%
-    get_features("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_study_features.feather"))
+  .GlobalEnv$features_01 <- all_features %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/features/features_01.feather"))
 
-  .GlobalEnv$tcga_subtype_features <- "TCGA_Subtype" %>%
-    get_features("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_subtype_features.feather"))
+  .GlobalEnv$features_02 <- all_features %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/features/features_02.feather"))
 
-  .GlobalEnv$immune_subtype_features <- "Immune_Subtype" %>%
-    get_features("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/features/immune_subtype_features.feather"))
+  .GlobalEnv$features_03 <- all_features %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/features/features_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -96,9 +63,9 @@ get_features_by_study <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_features, pos = ".GlobalEnv")
-  rm(tcga_subtype_features, pos = ".GlobalEnv")
-  rm(immune_subtype_features, pos = ".GlobalEnv")
+  rm(features_01, pos = ".GlobalEnv")
+  rm(features_02, pos = ".GlobalEnv")
+  rm(features_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
