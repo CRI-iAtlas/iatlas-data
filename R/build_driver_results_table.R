@@ -17,6 +17,13 @@ build_driver_results_table <- function() {
     by = "feature"
   )
 
+  driver_results <- driver_results %>% dplyr::left_join(
+    iatlas.data::read_table("tags") %>%
+      dplyr::as_tibble() %>%
+      dplyr::select(tag_id = id, tag = name),
+    by = "tag"
+  )
+
   # This should be joined by entrez.
   driver_results <- driver_results %>% dplyr::left_join(get_genes(), by = "hgnc")
 
