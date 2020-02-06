@@ -10,7 +10,7 @@ variables:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: docker
   R_VERSION: "3.6.2"
-  ENV: prod
+  CI: "1"
 
 stages:
   - test_data
