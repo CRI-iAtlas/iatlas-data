@@ -1,72 +1,70 @@
-build_nodes_tables <- function(feather_file_folder) {
+build_nodes_tables <- function() {
 
+  # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  nodes <- read_iatlas_data_file(feather_file_folder, "nodes") %>%
-    dplyr::distinct(hgnc = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%
-    dplyr::arrange(hgnc, tag.01, tag.02, score)
+  nodes <- read_iatlas_data_file(get_feather_file_folder(), "nodes") %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(entrez, hgnc)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
 
+  # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
+  # This should be use the entrez instead of the hgnc.
   nodes <- nodes %>%
-    dplyr::left_join(
-      iatlas.data::read_table("genes") %>%
-        dplyr::select(gene_id = id, hgnc) %>%
-        dplyr::as_tibble(),
-      by = "hgnc"
-    ) %>%
-    dplyr::arrange(hgnc, tag.01, tag.02, score) %>%
+    dplyr::left_join(get_genes(), by = "hgnc") %>%
     tibble::add_column(node_id = 1:nrow(nodes), .before = "hgnc")
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
 
+  # nodes table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes table."), fill = TRUE)
   table_written <- nodes %>%
     dplyr::select(id = node_id, gene_id, score) %>%
     iatlas.data::replace_table("nodes")
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
+  # nodes_to_tags data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags data."), fill = TRUE)
   tags <- iatlas.data::read_table("tags") %>% dplyr::as_tibble()
+  node_tag_column_names <- .GlobalEnv$get_tag_column_names(nodes)
 
-  node_set_group <- nodes %>%
-    dplyr::left_join(
-      tags %>% dplyr::select(tag_id = id, tag.01 = name),
-      by = "tag.01"
-    ) %>%
-    dplyr::filter(!is.na(tag_id))
+  nodes <- nodes %>%
+    tidyr::pivot_longer(node_tag_column_names, names_to = "delete", values_to = "tag") %>%
+    dply::select(-c("delete"))
 
-  node_set_immune <- nodes %>%
+  nodes <- nodes %>%
     dplyr::left_join(
-      tags %>% dplyr::select(tag_id = id, tag.02 = name),
-      by = "tag.02"
-    ) %>%
-    dplyr::filter(!is.na(tag_id))
+      tags %>% dplyr::select(tag_id = id, tag = name),
+      by = "tag"
+    )
 
   nodes_to_tags <- node_set_group %>%
-    dplyr::bind_rows(node_set_immune) %>%
-    dplyr::distinct(node_id, tag_id)
+    dplyr::distinct(node_id, tag_id) %>%
+    dplyr::filter(!is.na(tag_id))
   cat(crayon::blue("Built the nodes_to_tags data."), fill = TRUE)
 
+  # nodes_to_tags table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags table.\n\t(There are", nrow(nodes_to_tags), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- nodes_to_tags %>% iatlas.data::replace_table("nodes_to_tags")
   cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows )"), fill = TRUE, sep = " ")
 
+  # edges import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
   edges <- read_iatlas_data_file(feather_file_folder, "edges") %>%
-    dplyr::distinct(From, To, tag.01 = Group, tag.02 = Immune, score = ratioScore) %>%
-    dplyr::arrange(From, To, tag.01, tag.02)
+    dplyr::distinct() %>%
+    dplyr::arrange(from, to)
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
 
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>%
     dplyr::left_join(
-      nodes %>% dplyr::select(node_1_id = node_id, hgnc, tag.01, tag.02),
-      by = c("From" = "hgnc", "tag.01" = "tag.01", "tag.02" = "tag.02")
+      nodes %>% dplyr::rename(node_1_id = node_id),
+      by = c("from" = "hgnc", node_tag_column_names)
     )
 
   edges <- edges %>%
     dplyr::left_join(
-      nodes %>% dplyr::select(node_2_id = node_id, hgnc, tag.01, tag.02),
-      by = c("To" = "hgnc", "tag.01" = "tag.01", "tag.02" = "tag.02")
+      nodes %>% dplyr::rename(node_2_id = node_id),
+      by = c("to" = "hgnc", node_tag_column_names)
     )
 
   edges <- edges %>%

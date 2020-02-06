@@ -13,157 +13,158 @@ EXCEPTION
 END $$;
 
 -- patients table
-CREATE TABLE patients (
-    id SERIAL,
-    age INTEGER,
-    barcode VARCHAR,
-    ethnicity VARCHAR,
-    gender VARCHAR,
-    height NUMERIC,
-    race VARCHAR,
-    "weight" NUMERIC,
-    PRIMARY KEY (id)
-);
-CREATE INDEX patient_age_index ON patients (age);
-CREATE INDEX patient_barcode_index ON patients (barcode);
-CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
-CREATE INDEX patient_gender_index ON patients (gender);
-CREATE INDEX patient_height_index ON patients (height);
-CREATE INDEX patient_race_index ON patients (race);
+-- CREATE TABLE patients (
+--     id SERIAL,
+--     age INTEGER,
+--     barcode VARCHAR,
+--     ethnicity VARCHAR,
+--     gender VARCHAR,
+--     height NUMERIC,
+--     race VARCHAR,
+--     "weight" NUMERIC,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE INDEX patient_age_index ON patients (age);
+-- CREATE INDEX patient_barcode_index ON patients (barcode);
+-- CREATE INDEX patient_ethnicity_index ON patients (ethnicity);
+-- CREATE INDEX patient_gender_index ON patients (gender);
+-- CREATE INDEX patient_height_index ON patients (height);
+-- CREATE INDEX patient_race_index ON patients (race);
+-- CREATE INDEX patient_weight_index ON patients ("weight");
 
 -- slides table
-CREATE TABLE slides (
-    id SERIAL,
-    "name" VARCHAR NOT NULL,
-    "description" VARCHAR,
-    PRIMARY KEY (id)
-);
-CREATE UNIQUE INDEX slide_name_index ON slides ("name");
+-- CREATE TABLE slides (
+--     id SERIAL,
+--     "name" VARCHAR NOT NULL,
+--     "description" VARCHAR,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE UNIQUE INDEX slide_name_index ON slides ("name");
 
 -- gene_families table
-CREATE TABLE gene_families (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX gene_family_name_index ON gene_families ("name");
+-- CREATE TABLE gene_families (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX gene_family_name_index ON gene_families ("name");
 
 -- gene_functions table
-CREATE TABLE gene_functions (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX gene_function_name_index ON gene_functions ("name");
+-- CREATE TABLE gene_functions (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX gene_function_name_index ON gene_functions ("name");
 
 -- gene_types table
-CREATE TABLE gene_types (id SERIAL, "name" VARCHAR NOT NULL, display VARCHAR, PRIMARY KEY (id));
-CREATE UNIQUE INDEX gene_type_name_index ON gene_types ("name");
+-- CREATE TABLE gene_types (id SERIAL, "name" VARCHAR NOT NULL, display VARCHAR, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX gene_type_name_index ON gene_types ("name");
 
 -- immune_checkpoints table
-CREATE TABLE immune_checkpoints (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints ("name");
+-- CREATE TABLE immune_checkpoints (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX immune_checkpoint_name_index ON immune_checkpoints ("name");
 
 -- node_types table
-CREATE TABLE node_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX node_type_name_index ON node_types ("name");
+-- CREATE TABLE node_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX node_type_name_index ON node_types ("name");
 
 -- pathways table
-CREATE TABLE pathways (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX pathway_name_index ON pathways ("name");
+-- CREATE TABLE pathways (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX pathway_name_index ON pathways ("name");
 
 -- super_categories table
-CREATE TABLE super_categories (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX super_categorie_name_index ON super_categories ("name");
+-- CREATE TABLE super_categories (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX super_categorie_name_index ON super_categories ("name");
 
 -- therapy_types table
-CREATE TABLE therapy_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX therapy_type_name_index ON therapy_types ("name");
+-- CREATE TABLE therapy_types (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX therapy_type_name_index ON therapy_types ("name");
 
 -- classes table
-CREATE TABLE classes (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX class_name_index ON classes ("name");
+-- CREATE TABLE classes (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX class_name_index ON classes ("name");
 
 -- method_tags table
-CREATE TABLE method_tags (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
-CREATE UNIQUE INDEX method_tag_name_index ON method_tags ("name");
+-- CREATE TABLE method_tags (id SERIAL, "name" VARCHAR NOT NULL, PRIMARY KEY (id));
+-- CREATE UNIQUE INDEX method_tag_name_index ON method_tags ("name");
 
 -- tags table
-CREATE TABLE tags (
-    id SERIAL,
-    "name" VARCHAR NOT NULL,
-    characteristics VARCHAR,
-    display VARCHAR,
-    color VARCHAR,
-    PRIMARY KEY (id)
-);
-CREATE UNIQUE INDEX tag_name_index ON tags ("name");
+-- CREATE TABLE tags (
+--     id SERIAL,
+--     "name" VARCHAR NOT NULL,
+--     characteristics VARCHAR,
+--     display VARCHAR,
+--     color VARCHAR,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE UNIQUE INDEX tag_name_index ON tags ("name");
 
 -- tags_to_tags table
-CREATE TABLE tags_to_tags (
-    tag_id INTEGER REFERENCES tags NOT NULL,
-    related_tag_id INTEGER REFERENCES tags NOT NULL,
-    PRIMARY KEY (tag_id, related_tag_id)
-);
-CREATE INDEX tag_to_tag_related_tag_id_index ON tags_to_tags (related_tag_id);
+-- CREATE TABLE tags_to_tags (
+--     tag_id INTEGER REFERENCES tags NOT NULL,
+--     related_tag_id INTEGER REFERENCES tags NOT NULL,
+--     PRIMARY KEY (tag_id, related_tag_id)
+-- );
+-- CREATE INDEX tag_to_tag_related_tag_id_index ON tags_to_tags (related_tag_id);
 
 -- features table
-CREATE TABLE features (
-    id SERIAL,
-    "name" VARCHAR NOT NULL,
-    display VARCHAR,
-    "order" INTEGER,
-    unit UNIT_ENUM,
-    class_id INTEGER REFERENCES classes NOT NULL,
-    method_tag_id INTEGER REFERENCES method_tags,
-    PRIMARY KEY (id)
-);
-CREATE UNIQUE INDEX feature_name_index ON features ("name");
-CREATE INDEX feature_class_id_index ON features (class_id);
-CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);
+-- CREATE TABLE features (
+--     id SERIAL,
+--     "name" VARCHAR NOT NULL,
+--     display VARCHAR,
+--     "order" INTEGER,
+--     unit UNIT_ENUM,
+--     class_id INTEGER REFERENCES classes NOT NULL,
+--     method_tag_id INTEGER REFERENCES method_tags,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE UNIQUE INDEX feature_name_index ON features ("name");
+-- CREATE INDEX feature_class_id_index ON features (class_id);
+-- CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);
 
 -- genes table
-CREATE TABLE genes (
-    id SERIAL,
-    entrez INTEGER,
-    hgnc VARCHAR NOT NULL,
-    "description" VARCHAR,
-    "friendly_name" VARCHAR,
-    "io_landscape_name" VARCHAR,
-    gene_family_id INTEGER REFERENCES gene_families,
-    gene_function_id INTEGER REFERENCES gene_functions,
-    immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
-    node_type_id INTEGER REFERENCES node_types,
-    pathway_id INTEGER REFERENCES pathways,
-    "references" TEXT[],
-    super_cat_id INTEGER REFERENCES super_categories,
-    therapy_type_id INTEGER REFERENCES therapy_types,
-    PRIMARY KEY (id)
-);
-CREATE UNIQUE INDEX gene_entrez_index ON genes (entrez);
-CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);
-CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);
-CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);
-CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);
-CREATE INDEX gene_node_type_id_index ON genes (node_type_id);
-CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
-CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
-CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
+-- CREATE TABLE genes (
+--     id SERIAL,
+--     entrez INTEGER,
+--     hgnc VARCHAR NOT NULL,
+--     "description" VARCHAR,
+--     "friendly_name" VARCHAR,
+--     "io_landscape_name" VARCHAR,
+--     gene_family_id INTEGER REFERENCES gene_families,
+--     gene_function_id INTEGER REFERENCES gene_functions,
+--     immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
+--     node_type_id INTEGER REFERENCES node_types,
+--     pathway_id INTEGER REFERENCES pathways,
+--     "references" TEXT[],
+--     super_cat_id INTEGER REFERENCES super_categories,
+--     therapy_type_id INTEGER REFERENCES therapy_types,
+--     PRIMARY KEY (id)
+-- );
+-- CREATE UNIQUE INDEX gene_entrez_index ON genes (entrez);
+-- CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);
+-- CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);
+-- CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);
+-- CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);
+-- CREATE INDEX gene_node_type_id_index ON genes (node_type_id);
+-- CREATE INDEX gene_pathway_id_index ON genes (pathway_id);
+-- CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);
+-- CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);
 
 -- mutation_codes table
-CREATE TABLE mutation_codes (
-    id SERIAL,
-    code VARCHAR NOT NULL,
-    PRIMARY KEY (id)
-);
+-- CREATE TABLE mutation_codes (
+--     id SERIAL,
+--     code VARCHAR NOT NULL,
+--     PRIMARY KEY (id)
+-- );
 
 -- genes_to_types table
-CREATE TABLE genes_to_types (
-    gene_id INTEGER REFERENCES genes,
-    "type_id" INTEGER REFERENCES gene_types,
-    PRIMARY KEY (gene_id, "type_id")
-);
-CREATE INDEX gene_to_type_type_id_index ON genes_to_types ("type_id");
+-- CREATE TABLE genes_to_types (
+--     gene_id INTEGER REFERENCES genes,
+--     "type_id" INTEGER REFERENCES gene_types,
+--     PRIMARY KEY (gene_id, "type_id")
+-- );
+-- CREATE INDEX gene_to_type_type_id_index ON genes_to_types ("type_id");
 
 -- mutation_codes_to_gene_types table
-CREATE TABLE mutation_codes_to_gene_types (
-    mutation_code_id INTEGER REFERENCES mutation_codes,
-    "type_id" INTEGER REFERENCES gene_types,
-    PRIMARY KEY (mutation_code_id, "type_id")
-);
-CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
+-- CREATE TABLE mutation_codes_to_gene_types (
+--     mutation_code_id INTEGER REFERENCES mutation_codes,
+--     "type_id" INTEGER REFERENCES gene_types,
+--     PRIMARY KEY (mutation_code_id, "type_id")
+-- );
+-- CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types ("type_id");
 
 -- nodes_to_tags table
 -- CREATE TABLE nodes_to_tags (
