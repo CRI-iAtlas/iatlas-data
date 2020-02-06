@@ -1,8 +1,31 @@
 # Database helper functions.
 
+create_global_db_pool <- function() {
+  if (!present(.GlobalEnv$pool)) {
+    .GlobalEnv$pool <- iatlas.data::connect_to_db()
+  } else {
+    cat(crayon::yellow("WARNING-create_global_db_pool: global db pool already created\n"))
+    .GlobalEnv$pool
+  }
+}
+
+release_global_db_pool <- function() {
+  if (present(.GlobalEnv$pool)) {
+    pool::poolClose(.GlobalEnv$pool)
+    rm(pool, pos = ".GlobalEnv")
+  } else {
+    cat(crayon::yellow("WARNING-release_global_db_pool: Nothing to do. Global db pool does not exist. \n"))
+  }
+}
+
 with_db_pool <- function(f) {
+  if (cleanup_pool <- !present(.GlobalEnv$pool)) create_global_db_pool()
   connection <- pool::poolCheckout(.GlobalEnv$pool)
-  on.exit(pool::poolReturn(connection))
+  on.exit({
+    pool::poolReturn(connection)
+    if (cleanup_pool) release_global_db_pool()
+  })
+
   f(connection)
 }
 
