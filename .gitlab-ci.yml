@@ -42,7 +42,12 @@ Build Database:
     paths:
       - /tmp/*.pgdata
   variables:
+    DB_NAME: ${POSTGRES_DB}
     DB_HOST: postgres
+    DB_PORT: 5432
+    DB_USER: ${POSTGRES_USER}
+    DB_PW: ${POSTGRES_PASSWORD}
+
   script:
     # Update the Apt cache
     - sudo apt-get -y update
