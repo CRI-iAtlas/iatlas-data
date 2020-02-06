@@ -13,7 +13,6 @@ build_genes_to_samples_table <- function() {
 
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
 
-
   # genes_to_samples data ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
   # This should be joined by entrez.
@@ -26,7 +25,6 @@ build_genes_to_samples_table <- function() {
 
   genes_to_samples <- genes_to_samples %>% dplyr::select(gene_id, sample_id, rna_seq_expr)
   cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
-  cat_genes_to_samples_status("Built genes_to_samples data.")
 
   # genes_to_samples table ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples table."), fill = TRUE)
