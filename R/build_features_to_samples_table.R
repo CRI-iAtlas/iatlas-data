@@ -6,9 +6,9 @@ build_features_to_samples_table <- function() {
     get_feather_file_folder(),
     "relationships/features_to_samples"
   ) %>%
-    dplyr::distinct(feature_id, sample_id) %>%
-    dplyr::filter(!is.na(feature_id) & !is.na(sample_id)) %>%
-    dplyr::arrange(feature_id, sample_id)
+    dplyr::distinct(feature, sample, .keep_all = TRUE) %>%
+    dplyr::filter(!is.na(feature) & !is.na(sample)) %>%
+    dplyr::arrange(feature, sample)
   cat(crayon::blue("Imported feather files for features_to_samples."), fill = TRUE)
 
   # features_to_samples data ---------------------------------------------------
@@ -26,6 +26,10 @@ build_features_to_samples_table <- function() {
       dplyr::select(sample_id = id, sample = name),
     by = "sample"
   )
+
+  features_to_samples <- features_to_samples %>%
+    dplyr::select(feature_id, sample_id, value) %>%
+    dplyr::mutate(inf_value = ifelse(is.infinite(value), value, NA), value = ifelse(is.finite(value), value, NA))
   cat(crayon::blue("Built features_to_samples data."), fill = TRUE)
 
   # features_to_samples table ---------------------------------------------------

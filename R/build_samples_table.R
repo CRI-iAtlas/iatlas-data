@@ -9,7 +9,7 @@ build_samples_table <- function() {
 
   samples <- samples %>%
     dplyr::left_join(get_patients(), by = "barcode") %>%
-    dply::select(name, patient_id)
+    dplyr::select(name, patient_id)
   cat(crayon::blue("Built samples data."), fill = TRUE)
 
   # sample table ---------------------------------------------------

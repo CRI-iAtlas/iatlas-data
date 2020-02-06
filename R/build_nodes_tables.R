@@ -29,7 +29,7 @@ build_nodes_tables <- function() {
 
   nodes <- nodes %>%
     tidyr::pivot_longer(node_tag_column_names, names_to = "delete", values_to = "tag") %>%
-    dply::select(-c("delete"))
+    dplyr::select(-c("delete"))
 
   nodes <- nodes %>%
     dplyr::left_join(

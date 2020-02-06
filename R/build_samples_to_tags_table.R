@@ -6,9 +6,9 @@ build_samples_to_tags_table <- function() {
     get_feather_file_folder(),
     "relationships/samples_to_tags"
   ) %>%
-    dplyr::distinct(sample_id, tag_id) %>%
-    dplyr::filter(!is.na(sample_id) & !is.na(tag_id)) %>%
-    dplyr::arrange(sample_id, tag_id)
+    dplyr::distinct(sample, tag) %>%
+    dplyr::filter(!is.na(sample) & !is.na(tag)) %>%
+    dplyr::arrange(sample, tag)
   cat(crayon::blue("Imported feather files for samples_to_tags."), fill = TRUE)
 
   # samples_to_tags data ---------------------------------------------------
@@ -26,6 +26,8 @@ build_samples_to_tags_table <- function() {
       dplyr::select(sample_id = id, sample = name),
     by = "sample"
   )
+
+  samples_to_tags <- samples_to_tags %>% dplyr::select(sample_id, tag_id)
   cat(crayon::blue("Built samples_to_tags data."), fill = TRUE)
 
   # samples_to_tags table ---------------------------------------------------
