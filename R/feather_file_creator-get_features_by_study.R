@@ -27,23 +27,26 @@ get_features_by_study <- function() {
       by = c("id" = "sample_id")
     )
 
-    cat_features_status("Then get all the tag ids those related tags are related to.")
-    features <- features %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
+    # cat_features_status("Then get all the tag ids those related tags are related to.")
+    # features <- features %>% dplyr::left_join(
+    #   current_pool %>% dplyr::tbl("tags_to_tags"),
+    #   by = "tag_id"
+    # )
 
     cat_features_status("Get all the related tags that the found samples are related to.")
     features <- features %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, study_name = name),
-      by = c("related_tag_id" = "id")
+        dplyr::select(tag_id = id, study_name = name),
+      by = "tag_id"
     )
 
+    # cat_features_status("Limit to only the features that have samples tagged to the passed study.")
+    # features <- features %>% dplyr::filter(
+    #   study_name != exclude01 & study_name != exclude02
+    # )
+
     cat_features_status("Limit to only the features that have samples tagged to the passed study.")
-    features <- features %>% dplyr::filter(
-      study_name != exclude01 & study_name != exclude02
-    )
+    features <- features %>% dplyr::filter(study_name == study)
 
     cat_features_status("Get all the classes related to the features.")
     features <- features %>% dplyr::left_join(
