@@ -7,7 +7,7 @@ get_samples_to_tags_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_samples_to_tags <- function(study) {
+  get_samples_to_tags <- function(study, exclude01, exclude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get samples_to_tags by `", study, "`")), fill = TRUE)
@@ -23,7 +23,7 @@ get_samples_to_tags_by_study <- function() {
     )
 
     cat_samples_to_tags_status("Get tag ids related to the tags :)")
-    samples_to_tags <- samples_to_tags %>% dplyr::right_join(
+    samples_to_tags <- samples_to_tags %>% dplyr::full_join(
       current_pool %>% dplyr::tbl("tags_to_tags"),
       by = "tag_id"
     )
@@ -36,7 +36,11 @@ get_samples_to_tags_by_study <- function() {
     )
 
     cat_samples_to_tags_status("Filter the data set to tags related to the passed study.")
-    samples_to_tags <- samples_to_tags %>% dplyr::filter(tag == study | related_tag == study)
+    samples_to_tags <- samples_to_tags %>% dplyr::filter(
+      tag == study | related_tag == study |
+        (tag != exclude01 & related_tag == exclude01 &
+           tag != exclude02 & related_tag == exclude02)
+    )
 
     cat_samples_to_tags_status("Get the sample names.")
     samples_to_tags <- samples_to_tags %>% dplyr::left_join(
@@ -60,16 +64,16 @@ get_samples_to_tags_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_samples_to_tags <- "TCGA_Study" %>%
-    get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples_to_tags.feather"))
+    get_samples_to_tags("TCGA_Subtype", "Immune_Subtype") %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/tcga_study_samples_to_tags.feather"))
 
   .GlobalEnv$tcga_subtype_samples_to_tags <- "TCGA_Subtype" %>%
-    get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples_to_tags.feather"))
+    get_samples_to_tags("TCGA_Study", "Immune_Subtype") %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/tcga_subtype_samples_to_tags.feather"))
 
   .GlobalEnv$immune_subtype_samples_to_tags <- "Immune_Subtype" %>%
-    get_samples_to_tags %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples_to_tags.feather"))
+    get_samples_to_tags("TCGA_Study", "TCGA_Subtype") %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/immune_subtype_samples_to_tags.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)

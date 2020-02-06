@@ -19,6 +19,7 @@ get_ecn_nodes_by_study <- function() {
     dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(entrez, hgnc) %>%
+        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
         dplyr::as_tibble(),
       by = "hgnc"
     )
@@ -29,6 +30,7 @@ get_ecn_nodes_by_study <- function() {
     dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(entrez, hgnc) %>%
+        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
         dplyr::as_tibble(),
       by = "hgnc"
     )
@@ -39,6 +41,7 @@ get_ecn_nodes_by_study <- function() {
     dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(entrez, hgnc) %>%
+        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
         dplyr::as_tibble(),
       by = "hgnc"
     )
@@ -49,6 +52,7 @@ get_ecn_nodes_by_study <- function() {
     dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(entrez, hgnc) %>%
+        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
         dplyr::as_tibble(),
       by = "hgnc"
     )

@@ -7,7 +7,7 @@ get_features_by_study <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_features <- function(study) {
+  get_features <- function(study, exclude01, exclude02) {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
     cat(crayon::magenta(paste0("Get features by `", study, "`")), fill = TRUE)
@@ -16,27 +16,33 @@ get_features_by_study <- function() {
     features <- current_pool %>% dplyr::tbl("features")
 
     cat_features_status("Get all sample ids that are related to a feature.")
-    features <- features %>% dplyr::right_join(
+    features <- features %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("features_to_samples"),
       by = c("id" = "feature_id")
     )
 
-    cat_features_status(paste0("Get all tag ids that the found samples are related to.\n",
-    "    - Then get all the tags those related tags are related to.\n",
-    "    - Finally, filter down to only the features that have samples tagged to the passed study."))
-    features <- features %>% dplyr::right_join(
-      current_pool %>% dplyr::tbl("samples_to_tags") %>%
-        dplyr::right_join(
-          current_pool %>% dplyr::tbl("tags_to_tags") %>%
-            dplyr::right_join(
-              current_pool %>% dplyr::tbl("tags") %>%
-                dplyr::select(id, study_name = name),
-              by = c("related_tag_id" = "id")
-            ) %>%
-            dplyr::filter(study_name == study),
-          by = "tag_id"
-        ),
+    cat_features_status("Get all tag ids that the found samples are related to.")
+    features <- features %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("samples_to_tags"),
       by = c("id" = "sample_id")
+    )
+
+    cat_features_status("Then get all the tag ids those related tags are related to.")
+    features <- features %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags_to_tags"),
+      by = "tag_id"
+    )
+
+    cat_features_status("Get all the related tags that the found samples are related to.")
+    features <- features %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("tags") %>%
+        dplyr::select(id, study_name = name),
+      by = c("related_tag_id" = "id")
+    )
+
+    cat_features_status("Limit to only the features that have samples tagged to the passed study.")
+    features <- features %>% dplyr::filter(
+      study_name != exclude01 & study_name != exclude02
     )
 
     cat_features_status("Get all the classes related to the features.")
@@ -55,8 +61,9 @@ get_features_by_study <- function() {
 
     cat_features_status("Clean up the data set.")
     features <- features %>%
-      dplyr::distinct(class, display, method_tag, name, order, unit) %>%
-      dplyr::filter(!is.na(name))
+      dplyr::distinct(name, display, class, method_tag, order, unit) %>%
+      dplyr::filter(!is.na(name)) %>%
+      dplyr::arrange(name)
 
     cat_features_status("Execute the query and return a tibble.")
     features <- features %>% dplyr::as_tibble()
@@ -68,15 +75,15 @@ get_features_by_study <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$tcga_study_features <- "TCGA_Study" %>%
-    get_features %>%
+    get_features("TCGA_Subtype", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_study_features.feather"))
 
   .GlobalEnv$tcga_subtype_features <- "TCGA_Subtype" %>%
-    get_features %>%
+    get_features("TCGA_Study", "Immune_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/tcga_subtype_features.feather"))
 
   .GlobalEnv$immune_subtype_features <- "Immune_Subtype" %>%
-    get_features %>%
+    get_features("TCGA_Study", "TCGA_Subtype") %>%
     feather::write_feather(paste0(getwd(), "/feather_files/features/immune_subtype_features.feather"))
 
   # Close the database connection.
