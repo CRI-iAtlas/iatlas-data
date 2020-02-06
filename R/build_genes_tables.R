@@ -2,7 +2,7 @@ build_genes_tables <- function() {
 
   # genes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
-  genes <- read_iatlas_data_file(get_feather_file_folder(), "genes")
+  genes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "genes")
   cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
 
   # genes column fix ---------------------------------------------------
@@ -33,7 +33,7 @@ build_genes_tables <- function() {
   cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(
-      read_iatlas_data_file(get_feather_file_folder(), "gene_ids.feather") %>%
+      iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "gene_ids.feather") %>%
         dplyr::select(hgnc, real_entrez = entrez),
       by = "hgnc"
     ) %>%

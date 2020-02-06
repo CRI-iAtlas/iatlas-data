@@ -2,7 +2,7 @@ build_samples_to_tags_table <- function() {
 
   # samples_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_tags."), fill = TRUE)
-  samples_to_tags <- read_iatlas_data_file(
+  samples_to_tags <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/samples_to_tags"
   ) %>%

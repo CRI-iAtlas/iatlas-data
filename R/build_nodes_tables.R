@@ -2,7 +2,7 @@ build_nodes_tables <- function() {
 
   # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  nodes <- read_iatlas_data_file(get_feather_file_folder(), "nodes") %>%
+  nodes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "nodes") %>%
     dplyr::distinct() %>%
     dplyr::arrange(entrez, hgnc)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
@@ -24,20 +24,20 @@ build_nodes_tables <- function() {
 
   # nodes_to_tags data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags data."), fill = TRUE)
-  tags <- iatlas.data::read_table("tags") %>% dplyr::as_tibble()
-  node_tag_column_names <- .GlobalEnv$get_tag_column_names(nodes)
+  node_tag_column_names <- iatlas.data::get_tag_column_names(nodes)
 
-  nodes <- nodes %>%
+  nodes_to_tags <- nodes %>%
     tidyr::pivot_longer(node_tag_column_names, names_to = "delete", values_to = "tag") %>%
     dplyr::select(-c("delete"))
 
-  nodes <- nodes %>%
-    dplyr::left_join(
-      tags %>% dplyr::select(tag_id = id, tag = name),
-      by = "tag"
-    )
+  nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
+    iatlas.data::read_table("tags") %>%
+      dplyr::as_tibble() %>%
+      dplyr::select(tag_id = id, tag = name),
+    by = "tag"
+  )
 
-  nodes_to_tags <- node_set_group %>%
+  nodes_to_tags <- nodes_to_tags %>%
     dplyr::distinct(node_id, tag_id) %>%
     dplyr::filter(!is.na(tag_id))
   cat(crayon::blue("Built the nodes_to_tags data."), fill = TRUE)
@@ -49,7 +49,7 @@ build_nodes_tables <- function() {
 
   # edges import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
-  edges <- read_iatlas_data_file(feather_file_folder, "edges") %>%
+  edges <- iatlas.data::read_iatlas_data_file(feather_file_folder, "edges") %>%
     dplyr::distinct() %>%
     dplyr::arrange(from, to)
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)

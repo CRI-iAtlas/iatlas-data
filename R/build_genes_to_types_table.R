@@ -1,7 +1,7 @@
 build_genes_to_types_table <- function() {
 
   cat(crayon::magenta("Importing feather files for genes_to_types."), fill = TRUE)
-  genes_to_types <- read_iatlas_data_file(
+  genes_to_types <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/genes_to_types"
   ) %>%
