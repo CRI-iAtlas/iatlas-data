@@ -22,40 +22,40 @@
       expect_equal(.GlobalEnv$DB_NAME, "iatlas_shiny_test")
     })
 
-    test_that("build_features_tables", {
-      iatlas.data::build_features_tables(feather_file_folder)
+    test_that("old_build_features_tables", {
+      iatlas.data::old_build_features_tables(feather_file_folder)
       expect_equal("todo","todo")
     })
 
-    test_that("build_tags_tables", {
-      iatlas.data::build_tags_tables(feather_file_folder)
+    test_that("old_build_tags_tables", {
+      iatlas.data::old_build_tags_tables(feather_file_folder)
       expect_equal("todo","todo")
     })
 
-    test_that("build_genes_tables", {
-      iatlas.data::build_genes_tables(feather_file_folder)
+    test_that("old_build_genes_tables", {
+      iatlas.data::old_build_genes_tables(feather_file_folder)
       expect_equal("todo","todo")
     })
 
     test_that("run rest", {
       set_feather_file_folder(feather_file_folder)
 
-      build_patients_table()
-      build_samples_table()
-      build_samples_to_tags_table()
-      build_features_to_samples_table()
-      build_genes_to_samples_table()
-      build_slides_table()
+      old_build_patients_table()
+      old_build_samples_table()
+      old_build_samples_to_tags_table()
+      old_build_features_to_samples_table()
+      old_build_genes_to_samples_table()
+      old_build_slides_table()
 
       reset_results_cache()
 
       # after build-samples-tables ---------------------------------------------------
-      build_driver_results_tables(feather_file_folder)
-      build_nodes_tables(paste0(feather_file_folder, "/SQLite_data"))
+      old_build_driver_results_tables(feather_file_folder)
+      old_build_nodes_tables(paste0(feather_file_folder, "/SQLite_data"))
       expect_equal("todo","todo")
     })
 
-    teardown(log_info("test_build_iatlast_db TEARDOWN"))
+    teardown(log_info("test_old_build_iatlast_db TEARDOWN"))
 
     teardown(pool::poolClose(.GlobalEnv$pool))
     teardown(rm(pool, pos = ".GlobalEnv"))
