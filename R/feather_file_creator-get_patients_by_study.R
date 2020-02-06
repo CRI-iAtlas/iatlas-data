@@ -22,42 +22,42 @@ get_patients_by_study <- function() {
       by = c("id" = "patient_id")
     )
 
-    cat_patients_status("Get tag ids related to the samples.")
-    patients <- patients %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = c("id" = "sample_id")
-    )
-
-    cat_patients_status("Get the tag names for the samples by tag id.")
-    patients <- patients %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_patients_status("Get tag ids related to the tags :)")
-    patients <- patients %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_patients_status("Get the related tag names for the samples by related tag id.")
-    patients <- patients %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_patients_status("Filter the data set to tags related to the passed study.")
-    patients <- patients %>% dplyr::filter(
-      tag_name == study | related_tag_name == study |
-        (tag_name != exclude01 & related_tag_name == exclude01 &
-           tag_name != exclude02 & related_tag_name == exclude02)
-    )
+    # cat_patients_status("Get tag ids related to the samples.")
+    # patients <- patients %>% dplyr::left_join(
+    #   current_pool %>% dplyr::tbl("samples_to_tags"),
+    #   by = c("id" = "sample_id")
+    # )
+    #
+    # cat_patients_status("Get the tag names for the samples by tag id.")
+    # patients <- patients %>% dplyr::left_join(
+    #   current_pool %>% dplyr::tbl("tags") %>%
+    #     dplyr::select(id, tag_name = name),
+    #   by = c("tag_id" = "id")
+    # )
+    #
+    # cat_patients_status("Get tag ids related to the tags :)")
+    # patients <- patients %>% dplyr::left_join(
+    #   current_pool %>% dplyr::tbl("tags_to_tags"),
+    #   by = "tag_id"
+    # )
+    #
+    # cat_patients_status("Get the related tag names for the samples by related tag id.")
+    # patients <- patients %>% dplyr::left_join(
+    #   current_pool %>% dplyr::tbl("tags") %>%
+    #     dplyr::select(id, related_tag_name = name),
+    #   by = c("related_tag_id" = "id")
+    # )
+    #
+    # cat_patients_status("Filter the data set to tags related to the passed study.")
+    # patients <- patients %>% dplyr::filter(
+    #   tag_name == study | related_tag_name == study |
+    #     (tag_name != exclude01 & related_tag_name == exclude01 &
+    #        tag_name != exclude02 & related_tag_name == exclude02)
+    # )
 
     cat_patients_status("Clean up the data set.")
     patients <- patients %>%
-      dplyr::distinct(barcode, age, ethnicity, gender, race, weight) %>%
+      dplyr::distinct(barcode, age, ethnicity, gender, height, race, weight) %>%
       dplyr::arrange(barcode)
 
     cat_patients_status("Execute the query and return a tibble.")
