@@ -57,7 +57,7 @@ Build Database:
 Deploy To Staging:
   stage: deploy_to_staging
   only:
-    - staging
+    - feature/feather_file_structure
   image: postgres:11.5
   variables:
     # Don't pull the repo into this stage, it's not needed
