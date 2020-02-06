@@ -135,14 +135,14 @@
   test_that("read_iatlas_data_file with directory", {
     first <- read_test_feather("load_feather_data_set/first.feather")
     second <- read_test_feather("load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set")
+    results <- iatlas.data::read_iatlas_data_file(test_data_folder, "load_feather_data_set")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
   test_that("read_iatlas_data_file with glob", {
     first <- read_test_feather("load_feather_data_set/first.feather")
     second <- read_test_feather("load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set/*.feather")
+    results <- iatlas.data::read_iatlas_data_file(test_data_folder, "load_feather_data_set/*.feather")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
