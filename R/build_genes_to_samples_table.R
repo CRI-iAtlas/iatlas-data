@@ -2,7 +2,7 @@ build_genes_to_samples_table <- function() {
 
   # genes_to_samples import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes_to_samples."), fill = TRUE)
-  genes_to_samples <- read_iatlas_data_file(
+  genes_to_samples <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/genes_to_samples"
   ) %>%

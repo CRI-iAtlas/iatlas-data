@@ -1,7 +1,7 @@
 old_build_patients_table <- function() {
   cat(crayon::magenta("Building patients data.)"), fill = TRUE)
 
-  fmx <- read_iatlas_data_file(old_get_feather_file_folder(), "fmx_df.feather") %>%
+  fmx <- iatlas.data::read_iatlas_data_file(old_get_feather_file_folder(), "fmx_df.feather") %>%
     dplyr::distinct(
       barcode = ParticipantBarcode,
       age = age_at_initial_pathologic_diagnosis,

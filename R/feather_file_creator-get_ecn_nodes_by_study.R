@@ -59,7 +59,7 @@ get_ecn_nodes_by_study <- function() {
 
   pool::poolReturn(current_pool)
 
-  # nodes <- read_iatlas_data_file("feather_files", "nodes") %>%
+  # nodes <- iatlas.data::read_iatlas_data_file("feather_files", "nodes") %>%
   #   dplyr::distinct(hgnc = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%
   #   dplyr::arrange(hgnc, tag.01, tag.02, score)
   #

@@ -2,7 +2,7 @@ build_driver_results_table <- function() {
 
   # driver_results import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for driver_results."), fill = TRUE)
-  driver_results <- read_iatlas_data_file(get_feather_file_folder(), "driver_results") %>%
+  driver_results <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "driver_results") %>%
     dplyr::distinct(hgnc, tag, feature, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
     dplyr::filter(!is.na(hgnc)) %>%
     dplyr::arrange(hgnc, tag, feature)

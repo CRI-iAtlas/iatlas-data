@@ -2,7 +2,7 @@ old_build_features_tables <- function(feather_file_folder) {
   default_class <- "Other"
 
   cat(crayon::magenta("Importing feather file for features."), fill = TRUE)
-  features <- read_iatlas_data_file(feather_file_folder, "/SQLite_data/features.feather") %>%
+  features <- iatlas.data::read_iatlas_data_file(feather_file_folder, "/SQLite_data/features.feather") %>%
     dplyr::rename(name = feature) %>%
     dplyr::mutate(class = ifelse(is.na(class), default_class, class))
   cat(crayon::blue("Imported feather file for features."), fill = TRUE)

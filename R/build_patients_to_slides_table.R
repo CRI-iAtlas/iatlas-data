@@ -3,7 +3,7 @@ build_patients_to_slides_table <- function() {
 
   # patients_to_slides import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for patients_to_slides."), fill = TRUE)
-  patients_to_slides <- read_iatlas_data_file(
+  patients_to_slides <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/patients_to_slides"
   ) %>%

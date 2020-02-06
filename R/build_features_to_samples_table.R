@@ -2,7 +2,7 @@ build_features_to_samples_table <- function() {
 
   # features_to_samples import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for features_to_samples."), fill = TRUE)
-  features_to_samples <- read_iatlas_data_file(
+  features_to_samples <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/features_to_samples"
   ) %>%

@@ -2,7 +2,7 @@ build_slides_table <- function() {
 
   # slides import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for slides."), fill = TRUE)
-  slides <- read_iatlas_data_file(get_feather_file_folder(), "slides")
+  slides <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "slides")
   cat(crayon::blue("Imported feather files for slides."), fill = TRUE)
 
   # slides correct columns ---------------------------------------------------
