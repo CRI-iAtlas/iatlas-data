@@ -123,13 +123,13 @@ validate_control_data <- function (data, table_name) {
       else {
         .GlobalEnv[[paste0(table_name,"_data")]] <- data
         .GlobalEnv[[paste0(table_name,"_control_data")]] <- control_data
-        cat(crayon::bold(crayon::red(paste0(
-          "FAIL: control data for ", table_name, " is different.\n",
+        cat(paste0(
+          crayon::bold(crayon::red("FAIL: control data for", table_name, "is different.\n")),
           "Both versions have been stored in the global environment:\n",
           "  - ", table_name, "_data\n",
           "  - ", table_name, "_control_data\n",
-          "To accept the new version, run: update_control_data_snapshot()\n"
-        ))))
+          "To accept the new version, run: ", crayon::bold("update_control_data_snapshot()\n")
+        ))
         .GlobalEnv$update_control_data_snapshot <- function() {
           data %>% feather::write_feather(control_file)
           cat(crayon::green(paste0("Updated control_data for ", table_name, " (", control_file, ", ", nrow(data), " rows)")))
