@@ -2,7 +2,7 @@ build_genes_tables <- function() {
 
   # genes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
-  genes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "genes")
+  genes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "genes", join = TRUE)
   cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
 
   # genes column fix ---------------------------------------------------

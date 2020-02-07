@@ -2,7 +2,7 @@ build_tags_tables <- function() {
 
   # tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags."), fill = TRUE)
-  tags <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "tags") %>%
+  tags <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "tags", join = TRUE) %>%
     dplyr::distinct(name, characteristics, display, color) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Imported feather files for tags."), fill = TRUE)

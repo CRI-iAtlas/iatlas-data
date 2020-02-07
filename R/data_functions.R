@@ -27,16 +27,16 @@ read_feather_with_info <- function(file_path) {
     feather::read_feather(file_path)
 }
 
-read_iatlas_data_file <- function(root_path, relative_path) {
+read_iatlas_data_file <- function(root_path, relative_path, join = FALSE) {
   file_path <- paste0(root_path, "/", relative_path)
   if (grepl("[*?]", file_path)) {
-    load_feather_files(Sys.glob(file_path))
+    load_feather_files(Sys.glob(file_path), join)
   } else {
     if (!file.exists(file_path)) {
       stop(paste0("read_iatlas_data_file: file does not exist: ", file_path))
     }
     if (file.info(file_path)$isdir) {
-      load_feather_data(file_path)
+      load_feather_data(file_path, join)
     } else {
       read_feather_with_info(file_path)
     }
@@ -113,20 +113,19 @@ link_to_references <- function(link) {
 #'
 #' @param folder the path to the folder that contains the feather files to load.
 #' @return A single data frame (as tibble) with all feather filke data bound together.
-load_feather_data <- function(folder = "data/test")
-  load_feather_files(Sys.glob(paste0(folder, "/*.feather")))
+load_feather_data <- function(folder = "data/test", join = FALSE)
+  load_feather_files(Sys.glob(paste0(folder, "/*.feather")), join)
 
-load_feather_files <- function(file_names) {
+load_feather_files <- function(file_names, join = FALSE) {
   df <- dplyr::tibble()
 
   for (index in 1:length(file_names)) {
-    if (is_df_empty(df)) {
+    if (isFALSE(join) | is_df_empty(df)) {
       df <- df %>% dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
     } else {
       file <- read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble()
       df <- df %>% dplyr::full_join(file)
     }
-
   }
   return(df)
 }
