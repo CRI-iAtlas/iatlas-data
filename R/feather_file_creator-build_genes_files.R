@@ -52,6 +52,13 @@ build_genes_files <- function() {
       by = c("immune_checkpoint_id" = "id")
     )
 
+    cat_genes_status("Get all the related node types from the node_types table.")
+    genes <- genes %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("node_types") %>%
+        dplyr::rename(node_type = name),
+      by = c("node_type_id" = "id")
+    )
+
     cat_genes_status("Get all the related pathways from the pathways table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("pathways") %>%
