@@ -19,9 +19,6 @@ old_load_all_samples <- function(feather_file_folder) {
     )
 }
 
-old_set_feather_file_folder <- function(feather_file_folder) .GlobalEnv$feather_file_folder <- feather_file_folder
-old_get_feather_file_folder <- function() .GlobalEnv$feather_file_folder
-
 old_get_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(id, hgnc))
 old_get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", load_rna_seq_expr(.GlobalEnv$feather_file_folder, old_get_genes()))
 old_get_all_samples <- function() result_cached("all_samples", old_load_all_samples(.GlobalEnv$feather_file_folder))

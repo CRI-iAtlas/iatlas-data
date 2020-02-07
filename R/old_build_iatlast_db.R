@@ -75,7 +75,7 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   run_skippable_function(old_build_genes_tables,          feather_file_folder)
 
   # before build-samples-tables ---------------------------------------------------
-  old_set_feather_file_folder(feather_file_folder)
+  feather_file_folder(feather_file_folder)
 
   run_skippable_function(old_build_patients_table)
   run_skippable_function(old_build_samples_table)

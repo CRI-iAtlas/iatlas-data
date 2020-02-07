@@ -1,6 +1,3 @@
-set_feather_file_folder <- function(feather_file_folder) .GlobalEnv$feather_file_folder <- feather_file_folder
-get_feather_file_folder <- function() .GlobalEnv$feather_file_folder
-
 get_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(gene_id = id, entrez, hgnc))
 get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", load_rna_seq_expr(.GlobalEnv$feather_file_folder, get_genes()))
 get_all_samples <- function() result_cached("all_samples", load_all_samples())
