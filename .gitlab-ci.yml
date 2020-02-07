@@ -54,7 +54,9 @@ Build Database:
     # Install the Postgres 11 client
     - sudo apt-get -y install postgresql-client-11
     # Build the database structure
-    - cd ${CI_PROJECT_DIR}/sql; psql -a "postgres://postgres:docker@postgres/postgres" create_dev_db.sql
+    - cd ${CI_PROJECT_DIR}/sql
+    - cat create_dev_db.sql
+    - psql -a "postgres://postgres:docker@postgres/postgres" create_dev_db.sql
     # Build the data
     - cd ${CI_PROJECT_DIR}; R -e "build_iatlas_db(env=\"prod\")"
     # Do a binary dump of the database
