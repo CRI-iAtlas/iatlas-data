@@ -1,4 +1,4 @@
-get_tags_to_tags_by_study <- function() {
+build_tags_to_tags_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
