@@ -7,10 +7,10 @@ build_tags_to_tags_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_tags_to_tags <- function(study, exlude01, exlude02) {
+  get_tags_to_tags <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get tags_to_tags by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get tags_to_tags.")), fill = TRUE)
 
     cat_tags_to_tags_status("Get the initial values from the tags_to_tags table.")
     tags_to_tags <- current_pool %>% dplyr::tbl("tags_to_tags")
@@ -29,12 +29,6 @@ build_tags_to_tags_files <- function() {
       by = c("related_tag_id" = "id")
     )
 
-    cat_tags_to_tags_status("Filter the data set to tags related to the passed study.")
-    tags_to_tags <- tags_to_tags %>%
-      dplyr::filter(
-        tag != exlude01 & related_tag != exlude01 & tag != exlude02 & related_tag != exlude02
-      )
-
     cat_tags_to_tags_status("Clean up the data set.")
     tags_to_tags <- tags_to_tags %>%
       dplyr::distinct(tag, related_tag) %>%
@@ -48,18 +42,18 @@ build_tags_to_tags_files <- function() {
     return(tags_to_tags)
   }
 
+  all_tags_to_tags <- get_tags_to_tags()
+  all_tags_to_tags <- all_tags_to_tags %>% split(rep(1:3, each = ceiling(length(all_tags_to_tags)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_tags_to_tags <- "TCGA_Study" %>%
-    get_tags_to_tags("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/tcga_study_tags_to_tags.feather"))
+  .GlobalEnv$tags_to_tags_01 <- all_tags_to_tags %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/tags_to_tags_01.feather"))
 
-  .GlobalEnv$tcga_subtype_tags_to_tags <- "TCGA_Subtype" %>%
-    get_tags_to_tags("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/tcga_subtype_tags_to_tags.feather"))
+  .GlobalEnv$tags_to_tags_02 <- all_tags_to_tags %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/tags_to_tags_02.feather"))
 
-  .GlobalEnv$immune_subtype_tags_to_tags <- "Immune_Subtype" %>%
-    get_tags_to_tags("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/immune_subtype_tags_to_tags.feather"))
+  .GlobalEnv$tags_to_tags_03 <- all_tags_to_tags %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/tags_to_tags_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -68,9 +62,9 @@ build_tags_to_tags_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_tags_to_tags, pos = ".GlobalEnv")
-  rm(tcga_subtype_tags_to_tags, pos = ".GlobalEnv")
-  rm(immune_subtype_tags_to_tags, pos = ".GlobalEnv")
+  rm(tags_to_tags_01, pos = ".GlobalEnv")
+  rm(tags_to_tags_02, pos = ".GlobalEnv")
+  rm(tags_to_tags_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

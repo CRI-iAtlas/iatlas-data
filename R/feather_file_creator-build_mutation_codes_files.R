@@ -29,9 +29,19 @@ build_mutation_codes_files <- function() {
     return(mutation_codes)
   }
 
+  all_mutation_codes <- get_codes()
+  all_mutation_codes <- all_mutation_codes %>%
+    split(rep(1:3, each = ceiling(length(all_mutation_codes)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$mutation_codes <- get_codes() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/mutation_codes/tcga_mutation_codes.feather"))
+  .GlobalEnv$mutation_codes_01 <- all_mutation_codes %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/mutation_codes/mutation_codes_01.feather"))
+
+  .GlobalEnv$mutation_codes_02 <- all_mutation_codes %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/mutation_codes/mutation_codes_02.feather"))
+
+  .GlobalEnv$mutation_codes_03 <- all_mutation_codes %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/mutation_codes/mutation_codes_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -40,7 +50,9 @@ build_mutation_codes_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(mutation_codes, pos = ".GlobalEnv")
+  rm(mutation_codes_01, pos = ".GlobalEnv")
+  rm(mutation_codes_02, pos = ".GlobalEnv")
+  rm(mutation_codes_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

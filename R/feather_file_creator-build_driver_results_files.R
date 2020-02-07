@@ -47,9 +47,19 @@ build_driver_results_files <- function() {
     return(driver_results)
   }
 
-  # Setting this to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_results <- get_results() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results.feather"))
+  all_driver_results <- get_results()
+  all_driver_results <- all_driver_results %>%
+    split(rep(1:3, each = ceiling(length(all_driver_results)/2.5)))
+
+  # Setting these to the GlobalEnv just for development purposes.
+  .GlobalEnv$driver_results_01 <- all_driver_results %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_01.feather"))
+
+  .GlobalEnv$driver_results_02 <- all_driver_results %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_02.feather"))
+
+  .GlobalEnv$driver_results_03 <- all_driver_results %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -58,7 +68,9 @@ build_driver_results_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(driver_results, pos = ".GlobalEnv")
+  rm(driver_results_01, pos = ".GlobalEnv")
+  rm(driver_results_02, pos = ".GlobalEnv")
+  rm(driver_results_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
