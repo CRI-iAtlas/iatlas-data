@@ -29,7 +29,7 @@ read_feather_with_info <- function(file_path) {
 
 read_iatlas_data_file <- function(root_path, relative_path) {
   file_path <- paste0(root_path, "/", relative_path)
-  if (grepl("[*?]",file_path)) {
+  if (grepl("[*?]", file_path)) {
     load_feather_files(Sys.glob(file_path))
   } else {
     if (!file.exists(file_path)) {
@@ -120,11 +120,15 @@ load_feather_files <- function(file_names) {
   df <- dplyr::tibble()
 
   for (index in 1:length(file_names)) {
-    df <- df %>%
-      dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
-  }
+    if (is_df_empty(df)) {
+      df <- df %>% dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
+    } else {
+      file <- read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble()
+      df <- df %>% dplyr::full_join(file)
+    }
 
-  df
+  }
+  return(df)
 }
 
 print_dupe_info <- function(group = NA, info = c()) {
