@@ -56,7 +56,7 @@ Build Database:
     # Build the database structure
     - cd ${CI_PROJECT_DIR}/sql
     - cat create_dev_db.sql
-    - psql -a "postgres://postgres:docker@postgres/postgres" create_dev_db.sql
+    - psql -a "postgres://postgres:docker@postgres/postgres" -f create_dev_db.sql
     # Build the data
     - cd ${CI_PROJECT_DIR}; R -e "build_iatlas_db(env=\"prod\")"
     # Do a binary dump of the database
