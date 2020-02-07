@@ -27,8 +27,6 @@ build_genes_tables <- function() {
     dplyr::arrange(entrez, hgnc)
   cat(crayon::blue("Ensured genes have all the correct columns."), fill = TRUE)
 
-  .GlobalEnv$all_genes <- cbind(genes)
-
   # entrez fix ---------------------------------------------------
   cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   genes <- genes %>%
