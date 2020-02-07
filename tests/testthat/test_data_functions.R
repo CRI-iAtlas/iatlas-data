@@ -5,6 +5,8 @@
 
   test_that("present(vector()) is true", {expect_true(present(vector()))})
 
+  test_that("present('abc') is true", {expect_true(present('abc'))})
+  test_that("present('') is true", {expect_true(present(''))})
   test_that("present(list()) is true", {expect_true(present(list()))})
   test_that("present(FALSE) is true", {expect_true(present(FALSE))})
   test_that("present(NA) is false", {expect_false(present(NA))})
