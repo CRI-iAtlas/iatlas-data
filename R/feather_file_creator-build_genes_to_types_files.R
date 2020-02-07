@@ -1,4 +1,4 @@
-get_genes_to_types <- function() {
+build_genes_to_types_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
