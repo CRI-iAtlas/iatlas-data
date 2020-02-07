@@ -84,7 +84,7 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   run_skippable_function(old_build_genes_to_samples_table)
   run_skippable_function(old_build_slides_table)
 
-  old_reset_results_cache()
+  reset_results_cache()
 
   # after build-samples-tables ---------------------------------------------------
   run_skippable_function(old_build_driver_results_tables, feather_file_folder)
