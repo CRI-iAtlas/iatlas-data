@@ -52,11 +52,11 @@ Build Database:
     # Update the Apt cache
     - sudo apt-get -y update
     # Install the Postgres 11 client
-    - sudo apt-get -y install postgresql-client-11
+    - sudo apt-get -y install postgresql-client-11 wget
+    # TEMPORARY: Pull the data file
+    - cd ${CI_PROJECT_DIR}/feather_files; wget https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0
     # Build the database structure
-    - cd ${CI_PROJECT_DIR}/sql
-    - cat create_dev_db.sql
-    - psql -a "postgres://postgres:docker@postgres/postgres" -f create_dev_db.sql
+    - cd ${CI_PROJECT_DIR}/sql; psql -a "postgres://postgres:docker@postgres/postgres" -f create_dev_db.sql
     # Build the data
     - cd ${CI_PROJECT_DIR}; R -e "build_iatlas_db(env=\"prod\")"
     # Do a binary dump of the database
