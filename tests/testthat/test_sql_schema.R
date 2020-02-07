@@ -14,7 +14,7 @@
       "samples_to_tags",
       "features_to_samples",
       "genes_to_samples",
-      "genes_samples_mutation",
+      "genes_samples_mutations",
       "samples",
       "patients_to_slides"
     ))

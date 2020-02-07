@@ -136,9 +136,9 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX gene_function_name_index ON gene_functions (\"name\");"
     )
   ),
-  genes_samples_mutation = list(
+  genes_samples_mutations = list(
     create = "
-      CREATE TABLE genes_samples_mutation (
+      CREATE TABLE genes_samples_mutations (
         gene_id INTEGER NOT NULL,
         sample_id INTEGER NOT NULL,
         mutation_code_id INTEGER NOT NULL,
@@ -146,10 +146,10 @@ sql_schema <- list(
         PRIMARY KEY (gene_id, sample_id, mutation_code_id)
       );",
     addSchema = c(
-      "CREATE INDEX gene_sample_mutation_sample_id_index ON genes_samples_mutation (sample_id, gene_id);",
-      "ALTER TABLE genes_samples_mutation ADD FOREIGN KEY (gene_id) REFERENCES genes;",
-      "ALTER TABLE genes_samples_mutation ADD FOREIGN KEY (sample_id) REFERENCES samples;",
-      "ALTER TABLE genes_samples_mutation ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
+      "CREATE INDEX gene_sample_mutation_sample_id_index ON genes_samples_mutations (sample_id, gene_id);",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (sample_id) REFERENCES samples;",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
     )
   ),
   gene_types = list(
