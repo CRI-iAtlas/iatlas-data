@@ -7,10 +7,10 @@ build_features_to_samples_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_features_to_samples <- function(study, exclude01, exclude02) {
+  get_features_to_samples <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get features_to_samples by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get features_to_samples")), fill = TRUE)
 
     cat_features_to_samples_status("Get the initial values from the features_to_samples table.")
     features_to_samples <- current_pool %>% dplyr::tbl("features_to_samples")
@@ -18,40 +18,6 @@ build_features_to_samples_files <- function() {
     cat_features_to_samples_status("Merge the value field and the inf_value field into a single value field.")
     features_to_samples <- features_to_samples %>%
       dplyr::mutate(value = ifelse(!is.na(value), value, inf_value))
-
-    cat_features_to_samples_status("Get the tag ids related to the samples.")
-    features_to_samples <- features_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = "sample_id"
-    )
-
-    cat_features_to_samples_status("Get the tag names for the samples by tag id.")
-    features_to_samples <- features_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_features_to_samples_status("Get tag ids related to the tags :)")
-    features_to_samples <- features_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_features_to_samples_status("Get the related tag names for the samples by related tag id.")
-    features_to_samples <- features_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_features_to_samples_status("Filter the data set to tags related to the passed study.")
-    features_to_samples <- features_to_samples %>%
-      dplyr::filter(
-        tag_name == study | related_tag_name == study |
-        (tag_name != exclude01 & related_tag_name == exclude01 &
-          tag_name != exclude02 & related_tag_name == exclude02)
-      )
 
     cat_features_to_samples_status("Get the features from the features table.")
     features_to_samples <- features_to_samples %>% dplyr::left_join(
@@ -80,18 +46,18 @@ build_features_to_samples_files <- function() {
     return(features_to_samples)
   }
 
+  all_features_to_samples <- get_features_to_samples()
+  all_features_to_samples <- all_features_to_samples %>% split(rep(1:3, each = ceiling(length(all_features_to_samples)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_features_to_samples <- "TCGA_Study" %>%
-    get_features_to_samples("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/tcga_study_features_to_samples.feather"))
+  .GlobalEnv$features_to_samples_01 <- all_features_to_samples %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/features_to_samples_01.feather"))
 
-  .GlobalEnv$tcga_subtype_features_to_samples <- "TCGA_Subtype" %>%
-    get_features_to_samples("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/tcga_subtype_features_to_samples.feather"))
+  .GlobalEnv$features_to_samples_02 <- all_features_to_samples %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/features_to_samples_02.feather"))
 
-  .GlobalEnv$immune_subtype_features_to_samples <- "Immune_Subtype" %>%
-    get_features_to_samples("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/immune_subtype_features_to_samples.feather"))
+  .GlobalEnv$features_to_samples_03 <- all_features_to_samples %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/features_to_samples_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -100,9 +66,9 @@ build_features_to_samples_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_features_to_samples, pos = ".GlobalEnv")
-  rm(tcga_subtype_features_to_samples, pos = ".GlobalEnv")
-  rm(immune_subtype_features_to_samples, pos = ".GlobalEnv")
+  rm(features_to_samples_01, pos = ".GlobalEnv")
+  rm(features_to_samples_02, pos = ".GlobalEnv")
+  rm(features_to_samples_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
