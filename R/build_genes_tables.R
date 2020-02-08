@@ -2,11 +2,11 @@ build_genes_tables <- function() {
 
   # genes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
-  genes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "genes", join = TRUE)
+  genes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "genes")
   cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
 
   # genes column fix ---------------------------------------------------
-  cat(crayon::magenta("Ensuring genes have all the correct columns."), fill = TRUE)
+  cat(crayon::magenta("Ensuring genes have all the correct columns and no dupes."), fill = TRUE)
   genes <- genes %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
@@ -24,8 +24,11 @@ build_genes_tables <- function() {
       therapy_type = character()
     )) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
-    dplyr::arrange(entrez, hgnc)
-  cat(crayon::blue("Ensured genes have all the correct columns."), fill = TRUE)
+    dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
+    iatlas.data::resolve_df_dupes(keys = c("hgnc")) %>%
+    dplyr::select(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::arrange(entrez)
+  cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
   # entrez fix ---------------------------------------------------
   cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)

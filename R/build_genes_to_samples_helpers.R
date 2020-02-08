@@ -8,7 +8,7 @@ get_result_cache <- function () {
 result_cached <- function (key, value) {
   result_cache <- get_result_cache()
   if (present(result_cache[[key]])) result_cache[[key]]
-  else result_cache[[key]] <- value
+  else .GlobalEnv$result_cache[[key]] <- value
 }
 
 reset_results_cache <- function () {

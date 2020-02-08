@@ -124,7 +124,7 @@ load_feather_files <- function(file_names, join = FALSE) {
       df <- df %>% dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
     } else {
       file <- read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble()
-      df <- df %>% dplyr::full_join(file)
+      df <- df %>% dplyr::full_join(file, by = intersect(names(df), names(file)))
     }
   }
   return(df)
@@ -171,17 +171,17 @@ validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
   return(pass_through)
 }
 
-flatten_dupes <- function(group, field) {
-  values <- group[[field]]
-  valid_values <- get_unique_valid_values(group[[field]])
-  if (length(valid_values) > 1) {
-    print(list(group = group, field = field, valid_values = valid_values))
-    stop("DIRTY DATA! Found multiple values for ", field, ": ", paste(valid_values, collapse = ", "))
-  } else if (length(valid_values) == 0) {
-    NA
-  } else {
-    valid_values[[1]]
+flatten_dupes <- function(values) {
+  unique_values <- get_unique_valid_values(values)
+  print(unique_values)
+  value <- values[1]
+  if (length(unique_values) > 1) {
+    print(unique_values)
+    stop("DIRTY DATA! Found multiple values: ", paste(unique_values, collapse = ", "))
+  } else if (length(unique_values) == 1) {
+    value <- unique_values[[1]]
   }
+  return(value)
 }
 
 vector_to_env <- function(vec) {

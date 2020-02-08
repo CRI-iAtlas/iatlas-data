@@ -1,32 +1,38 @@
-resolve_genes_to_samples_dupes <- function(genes_to_samples) {
+resolve_df_dupes <- function(df, keys) {
+
+      cat(crayon::blue(paste0("    ", nrow(df), " original records to check\n")))
   timed(
-    before_message = "resolving genes_to_sample partial-duplicates...\n",
-    after_message = "resolved genes_to_sample partial-duplicates",
+    before_message = paste0("resolving ", deparse(substitute(df)), " partial-duplicates...\n"),
+    after_message = paste0("resolved ", deparse(substitute(df)), " partial-duplicates"),
     {
-      timed(before_message = "  finding partial-duplicates", duplicated_records <- genes_to_samples %>% janitor::get_dupes(sample_id, gene_id, mutation_code_id))
+      timed(
+        before_message = "  finding partial-duplicates\n",
+        duplicated_records <- df %>% janitor::get_dupes(!!! rlang::syms(keys))
+      )
 
       cat(crayon::blue(paste0("    ", nrow(duplicated_records), " duplicate records\n")))
 
+      summarise_keys <- setdiff(names(df), keys)
+
       timed(
-        before_message = "  flattening partial-duplicates",
+        before_message = "  flattening partial-duplicates\n",
         deduplicated_records <- duplicated_records %>%
-          dplyr::group_by(sample_id, gene_id, mutation_code_id) %>%
-          dplyr::summarise(
-            status = flatten_dupes(group = .data, field = "status"),
-            rna_seq_expr = flatten_dupes(group = .data, field = "rna_seq_expr")
-          )
+          dplyr::group_by(!!! rlang::syms(keys)) %>%
+          dplyr::summarise_at(dplyr::vars(summarise_keys), flatten_dupes)
       )
+
+      .GlobalEnv$deduplicated <- cbind(deduplicated_records)
 
       cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
 
       timed(
         before_message = "  removing old partial-duplicates",
-        clean_records <- dplyr::anti_join(genes_to_samples, deduplicated_records, by = c("sample_id" = "sample_id", "gene_id" = "gene_id", "mutation_code_id" = "mutation_code_id"))
+        clean_records <- df %>% dplyr::anti_join(deduplicated_records, by = keys)
       )
 
       cat(crayon::blue(paste0("    ", nrow(clean_records), " original records where not duplicated\n")))
 
-      output <- dplyr::bind_rows(clean_records, deduplicated_records)
+      output <- clean_records %>% dplyr::bind_rows(deduplicated_records)
 
       cat(crayon::blue(paste0("    ", nrow(output), " resulting records\n")))
 
