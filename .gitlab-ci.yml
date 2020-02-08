@@ -44,7 +44,7 @@ Build Container:
       --cache-from ${CI_REGISTRY_IMAGE}:latest
       --tag ${CI_REGISTRY_IMAGE}:latest
       --tag ${CI_REGISTRY_IMAGE}:${RENV_HASH}
-      Dockerfile.build
+      Dockerfile.build .
     - docker push ${CI_REGISTRY_IMAGE}:latest
     - docker push ${CI_REGISTRY_IMAGE}:${RENV_HASH}
 
