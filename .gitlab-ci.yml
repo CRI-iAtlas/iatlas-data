@@ -43,7 +43,7 @@ Build Container:
       --build-arg TARGET_DIRECTORY=${CI_PROJECT_DIR}
       --cache-from ${CI_REGISTRY_IMAGE}:latest
       --tag ${CI_REGISTRY_IMAGE}:latest
-      --tag ${CI_REGISTRY_IMAGES}:${RENV_HASH}
+      --tag ${CI_REGISTRY_IMAGE}:${RENV_HASH}
       Dockerfile.build
     - docker push ${CI_REGISTRY_IMAGE}:latest
     - docker push ${CI_REGISTRY_IMAGE}:${RENV_HASH}
