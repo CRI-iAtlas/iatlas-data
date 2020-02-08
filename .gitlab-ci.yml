@@ -32,8 +32,8 @@ Build Container:
   only:
     refs:
       - feature/feather_file_structure
-    # changes:
-    #   - renv.lock
+    changes:
+      - renv.lock
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -78,10 +78,6 @@ Build Database:
     DB_PW: ${POSTGRES_PASSWORD}
 
   script:
-    # Update the Apt cache
-    - sudo apt-get -y update
-    # Install the Postgres 11 client
-    - sudo apt-get -y install postgresql-client-11 wget
     # TEMPORARY: Pull the data file
     - cd ${CI_PROJECT_DIR}/feather_files; wget https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0 -O EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
     # Build the database structure
