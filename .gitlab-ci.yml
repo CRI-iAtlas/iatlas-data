@@ -37,7 +37,7 @@ Build Container:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - export RENV_HASH=`md5 -q renv.lock`
+    - export RENV_HASH=`md5sum renv.lock | awk '{print $1}'`
     - docker build
       --build-arg R_VERSION
       --build-arg TARGET_DIRECTORY=${CI_PROJECT_DIR}
