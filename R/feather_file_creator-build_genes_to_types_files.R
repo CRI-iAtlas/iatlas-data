@@ -42,9 +42,19 @@ build_genes_to_types_files <- function() {
     return(genes_to_types)
   }
 
+  all_genes_to_types <- get_data_frame()
+  all_genes_to_types <- all_genes_to_types %>%
+    split(rep(1:3, each = ceiling(length(all_genes_to_types)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$genes_to_types <- get_data_frame() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/tcga_genes_to_types.feather"))
+  .GlobalEnv$genes_to_types_01 <- all_genes_to_types %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_01.feather"))
+
+  .GlobalEnv$genes_to_types_02 <- all_genes_to_types %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_02.feather"))
+
+  .GlobalEnv$genes_to_types_03 <- all_genes_to_types %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -53,7 +63,9 @@ build_genes_to_types_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(genes_to_types, pos = ".GlobalEnv")
+  rm(genes_to_types_01, pos = ".GlobalEnv")
+  rm(genes_to_types_02, pos = ".GlobalEnv")
+  rm(genes_to_types_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

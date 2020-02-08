@@ -43,9 +43,19 @@ build_mutation_codes_to_gene_types_files <- function() {
     return(mutation_codes_to_gene_types)
   }
 
+  all_mutation_codes_to_gene_types <- get_codes_to_types()
+  all_mutation_codes_to_gene_types <- all_mutation_codes_to_gene_types %>%
+    split(rep(1:3, each = ceiling(length(all_mutation_codes_to_gene_types)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$mutation_codes_to_gene_types <- get_codes_to_types() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/mutation_codes_to_gene_types/tcga_mutation_codes_to_gene_types.feather"))
+  .GlobalEnv$mutation_codes_to_gene_types_01 <- all_mutation_codes_to_gene_types %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/mutation_codes_to_gene_types/mutation_codes_to_gene_types_01.feather"))
+
+  .GlobalEnv$mutation_codes_to_gene_types_02 <- all_mutation_codes_to_gene_types %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/mutation_codes_to_gene_types/mutation_codes_to_gene_types_02.feather"))
+
+  .GlobalEnv$mutation_codes_to_gene_types_03 <- all_mutation_codes_to_gene_types %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/mutation_codes_to_gene_types/mutation_codes_to_gene_types_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -54,7 +64,9 @@ build_mutation_codes_to_gene_types_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(mutation_codes_to_gene_types, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_01, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_02, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

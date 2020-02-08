@@ -81,7 +81,7 @@ old_build_genes_to_samples_table <- function() {
   genes_to_samples %>%
     dplyr::filter(!is.na(mutation_code_id)) %>%
     dplyr::distinct(sample_id, gene_id, mutation_code_id, status) %>%
-    iatlas.data::replace_table("genes_samples_mutation")
+    iatlas.data::replace_table("genes_samples_mutations")
 
   cat(crayon::blue("Built genes_to_samples table."))
 

@@ -7,59 +7,13 @@ build_slides_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_slides <- function(study, exclude01, exclude02) {
+  get_slides <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get slides by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get slides.")), fill = TRUE)
 
     cat_slides_status("Get the initial values from the slides table.")
     slides <- current_pool %>% dplyr::tbl("slides")
-
-    cat_slides_status("Get patient ids related to the slides.")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("patients_to_slides"),
-      by = c("id" = "slide_id")
-    )
-
-    cat_slides_status("Get sample ids related to the patients.")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(sample_id = id, patient_id),
-      by = "patient_id"
-    )
-
-    cat_slides_status("Get tag ids related to the samples.")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = c("id" = "sample_id")
-    )
-
-    cat_slides_status("Get the tag names for the samples by tag id.")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_slides_status("Get tag ids related to the tags :)")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_slides_status("Get the related tag names for the samples by related tag id.")
-    slides <- slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_slides_status("Filter the data set to tags related to the passed study.")
-    slides <- slides %>% dplyr::filter(
-      tag_name == study | related_tag_name == study |
-        (tag_name != exclude01 & related_tag_name == exclude01 &
-           tag_name != exclude02 & related_tag_name == exclude02)
-    )
 
     cat_slides_status("Clean up the data set.")
     slides <- slides %>%
@@ -74,18 +28,18 @@ build_slides_files <- function() {
     return(slides)
   }
 
+  all_slides <- get_slides()
+  all_slides <- all_slides %>% split(rep(1:3, each = ceiling(length(all_slides)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_slides <- "TCGA_Study" %>%
-    get_slides("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/slides/tcga_study_slides.feather"))
+  .GlobalEnv$slides_01 <- all_slides %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/slides/slides_01.feather"))
 
-  .GlobalEnv$tcga_subtype_slides <- "TCGA_Subtype" %>%
-    get_slides("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/slides/tcga_subtype_slides.feather"))
+  .GlobalEnv$slides_02 <- all_slides %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/slides/slides_02.feather"))
 
-  .GlobalEnv$immune_subtype_slides <- "Immune_Subtype" %>%
-    get_slides("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/slides/immune_subtype_slides.feather"))
+  .GlobalEnv$slides_03 <- all_slides %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/slides/slides_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -94,9 +48,9 @@ build_slides_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_slides, pos = ".GlobalEnv")
-  rm(tcga_subtype_slides, pos = ".GlobalEnv")
-  rm(immune_subtype_slides, pos = ".GlobalEnv")
+  rm(slides_01, pos = ".GlobalEnv")
+  rm(slides_02, pos = ".GlobalEnv")
+  rm(slides_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

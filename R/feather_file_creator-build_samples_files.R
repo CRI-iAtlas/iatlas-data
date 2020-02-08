@@ -7,46 +7,13 @@ build_samples_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_samples <- function(study, exclude01, exclude02) {
+  get_samples <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get samples by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get samples.")), fill = TRUE)
 
     cat_samples_status("Get the initial values from the samples table.")
     samples <- current_pool %>% dplyr::tbl("samples")
-
-    cat_samples_status("Get tag ids related to the samples.")
-    samples <- samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = c("id" = "sample_id")
-    )
-
-    cat_samples_status("Get the tag names for the samples by tag id.")
-    samples <- samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_samples_status("Get tag ids related to the tags :)")
-    samples <- samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_samples_status("Get the related tag names for the samples by related tag id.")
-    samples <- samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_samples_status("Filter the data set to tags related to the passed study.")
-    samples <- samples %>% dplyr::filter(
-      tag_name == study | related_tag_name == study |
-        (tag_name != exclude01 & related_tag_name == exclude01 &
-           tag_name != exclude02 & related_tag_name == exclude02)
-    )
 
     cat_samples_status("Get the patient data from the patients table.")
     samples <- samples %>% dplyr::left_join(
@@ -68,18 +35,18 @@ build_samples_files <- function() {
     return(samples)
   }
 
+  all_samples <- get_samples()
+  all_samples <- all_samples %>% split(rep(1:3, each = ceiling(length(all_samples)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_samples <- "TCGA_Study" %>%
-    get_samples("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_study_samples.feather"))
+  .GlobalEnv$samples_01 <- all_samples %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/samples/samples_01.feather"))
 
-  .GlobalEnv$tcga_subtype_samples <- "TCGA_Subtype" %>%
-    get_samples("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/tcga_subtype_samples.feather"))
+  .GlobalEnv$samples_02 <- all_samples %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/samples/samples_02.feather"))
 
-  .GlobalEnv$immune_subtype_samples <- "Immune_Subtype" %>%
-    get_samples("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/samples/immune_subtype_samples.feather"))
+  .GlobalEnv$samples_03 <- all_samples %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/samples/samples_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -88,9 +55,9 @@ build_samples_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_samples, pos = ".GlobalEnv")
-  rm(tcga_subtype_samples, pos = ".GlobalEnv")
-  rm(immune_subtype_samples, pos = ".GlobalEnv")
+  rm(samples_01, pos = ".GlobalEnv")
+  rm(samples_02, pos = ".GlobalEnv")
+  rm(samples_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

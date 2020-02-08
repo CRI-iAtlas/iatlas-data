@@ -13,7 +13,7 @@
     expect_equal(!!result, c(
       "patients_to_slides",
       "features_to_samples",
-      "genes_samples_mutation",
+      "genes_samples_mutations",
       "genes_to_samples",
       "samples_to_tags",
       "samples"

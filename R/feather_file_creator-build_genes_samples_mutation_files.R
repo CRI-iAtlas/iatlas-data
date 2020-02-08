@@ -1,100 +1,67 @@
-build_genes_samples_mutation_files <- function() {
+build_genes_samples_mutations_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
 
-  cat_genes_samples_mutation_status <- function(message) {
+  cat_genes_samples_mutations_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_genes_samples_mutation <- function(study, exclude01, exclude02) {
+  get_genes_samples_mutations <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get genes_samples_mutation by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get genes_samples_mutations")), fill = TRUE)
 
-    cat_genes_samples_mutation_status("Get the initial values from the genes_samples_mutation table.")
-    genes_samples_mutation <- current_pool %>% dplyr::tbl("genes_samples_mutation")
+    cat_genes_samples_mutations_status("Get the initial values from the genes_samples_mutations table.")
+    genes_samples_mutations <- current_pool %>% dplyr::tbl("genes_samples_mutations")
 
-    cat_genes_samples_mutation_status("Get the tag ids related to the samples.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = "sample_id"
-    )
-
-    cat_genes_samples_mutation_status("Get the tag names for the samples by tag id.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_genes_samples_mutation_status("Get tag ids related to the tags :)")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_genes_samples_mutation_status("Get the related tag names for the samples by related tag id.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_genes_samples_mutation_status("Filter the data set to tags related to the passed study.")
-    genes_samples_mutation <- genes_samples_mutation %>%
-      dplyr::filter(
-        tag_name == study | related_tag_name == study |
-          (tag_name != exclude01 & related_tag_name == exclude01 &
-             tag_name != exclude02 & related_tag_name == exclude02)
-      )
-
-    cat_genes_samples_mutation_status("Get the gene entrezs and hgncs from the genes table.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
+    cat_genes_samples_mutations_status("Get the gene entrezs and hgncs from the genes table.")
+    genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
         dplyr::select(id, entrez, hgnc),
       by = c("gene_id" = "id")
     )
 
-    cat_genes_samples_mutation_status("Get the samples from the samples table.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
+    cat_genes_samples_mutations_status("Get the samples from the samples table.")
+    genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples") %>%
         dplyr::select(id, sample = name),
       by = c("sample_id" = "id")
     )
 
-    cat_genes_samples_mutation_status("Get the mutation codes from the mutation_codes table.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::left_join(
+    cat_genes_samples_mutations_status("Get the mutation codes from the mutation_codes table.")
+    genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("mutation_codes") %>%
         dplyr::select(id, mutation_code = code),
       by = c("mutation_code_id" = "id")
     )
 
-    cat_genes_samples_mutation_status("Clean up the data set.")
-    genes_samples_mutation <- genes_samples_mutation %>%
+    cat_genes_samples_mutations_status("Clean up the data set.")
+    genes_samples_mutations <- genes_samples_mutations %>%
       dplyr::distinct(entrez, hgnc, sample, mutation_code, status) %>%
       dplyr::arrange(entrez, hgnc, mutation_code, sample)
 
-    cat_genes_samples_mutation_status("Execute the query and return a tibble.")
-    genes_samples_mutation <- genes_samples_mutation %>% dplyr::as_tibble()
+    cat_genes_samples_mutations_status("Execute the query and return a tibble.")
+    genes_samples_mutations <- genes_samples_mutations %>% dplyr::as_tibble()
 
     pool::poolReturn(current_pool)
 
-    return(genes_samples_mutation)
+    return(genes_samples_mutations)
   }
 
+  all_genes_samples_mutations <- get_genes_samples_mutations()
+  all_genes_samples_mutations <- all_genes_samples_mutations %>%
+    split(rep(1:3, each = ceiling(length(all_genes_samples_mutations)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_genes_samples_mutation <- "TCGA_Study" %>%
-    get_genes_samples_mutation("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/tcga_study_genes_samples_mutation.feather"))
+  .GlobalEnv$genes_samples_mutations_01 <- all_genes_samples_mutations %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutations/genes_samples_mutations_01.feather"))
 
-  .GlobalEnv$tcga_subtype_genes_samples_mutation <- "TCGA_Subtype" %>%
-    get_genes_samples_mutation("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/tcga_subtype_genes_samples_mutation.feather"))
+  .GlobalEnv$genes_samples_mutations_02 <- all_genes_samples_mutations %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutations/genes_samples_mutations_02.feather"))
 
-  .GlobalEnv$immune_subtype_genes_samples_mutation <- "Immune_Subtype" %>%
-    get_genes_samples_mutation("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutation/immune_subtype_genes_samples_mutation.feather"))
+  .GlobalEnv$genes_samples_mutations_03 <- all_genes_samples_mutations %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_samples_mutations/genes_samples_mutations_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -103,9 +70,9 @@ build_genes_samples_mutation_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_genes_samples_mutation, pos = ".GlobalEnv")
-  rm(tcga_subtype_genes_samples_mutation, pos = ".GlobalEnv")
-  rm(immune_subtype_genes_samples_mutation, pos = ".GlobalEnv")
+  rm(genes_samples_mutations_01, pos = ".GlobalEnv")
+  rm(genes_samples_mutations_02, pos = ".GlobalEnv")
+  rm(genes_samples_mutations_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

@@ -29,8 +29,18 @@ build_tags_files <- function() {
     return(tags)
   }
 
-  .GlobalEnv$tcga_tags <- get_tags() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/tags/tcga_tags.feather"))
+  all_tags <- get_tags()
+  all_tags <- all_tags %>% split(rep(1:3, each = ceiling(length(all_tags)/2.5)))
+
+  # Setting these to the GlobalEnv just for development purposes.
+  .GlobalEnv$tags_01 <- all_tags %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/tags/tags_01.feather"))
+
+  .GlobalEnv$tags_02 <- all_tags %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/tags/tags_02.feather"))
+
+  .GlobalEnv$tags_03 <- all_tags %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/tags/tags_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -39,7 +49,9 @@ build_tags_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_tags, pos = ".GlobalEnv")
+  rm(tags_01, pos = ".GlobalEnv")
+  rm(tags_02, pos = ".GlobalEnv")
+  rm(tags_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

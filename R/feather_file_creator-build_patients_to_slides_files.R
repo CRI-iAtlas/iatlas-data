@@ -7,10 +7,10 @@ build_patients_to_slides_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_patients_to_slides <- function(study, exclude01, exclude02) {
+  get_patients_to_slides <- function() {
     current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get patients_to_slides by `", study, "`")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get patients_to_slides.")), fill = TRUE)
 
     cat_patients_to_slides_status("Get the initial values from the patients_to_slides table.")
     patients_to_slides <- current_pool %>% dplyr::tbl("patients_to_slides")
@@ -20,46 +20,6 @@ build_patients_to_slides_files <- function() {
       current_pool %>% dplyr::tbl("patients") %>%
         dplyr::select(patient_id = id, barcode),
       by = "patient_id"
-    )
-
-    cat_patients_to_slides_status("Get sample ids related to the patients.")
-    patients_to_slides <- patients_to_slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(sample_id = id, patient_id),
-      by = "patient_id"
-    )
-
-    cat_patients_to_slides_status("Get tag ids related to the samples.")
-    patients_to_slides <- patients_to_slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples_to_tags"),
-      by = "sample_id"
-    )
-
-    cat_patients_to_slides_status("Get the tag names for the samples by tag id.")
-    patients_to_slides <- patients_to_slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag_name = name),
-      by = c("tag_id" = "id")
-    )
-
-    cat_patients_to_slides_status("Get tag ids related to the tags :)")
-    patients_to_slides <- patients_to_slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags_to_tags"),
-      by = "tag_id"
-    )
-
-    cat_patients_to_slides_status("Get the related tag names for the samples by related tag id.")
-    patients_to_slides <- patients_to_slides %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, related_tag_name = name),
-      by = c("related_tag_id" = "id")
-    )
-
-    cat_patients_to_slides_status("Filter the data set to tags related to the passed study.")
-    patients_to_slides <- patients_to_slides %>% dplyr::filter(
-      tag_name == study | related_tag_name == study |
-        (tag_name != exclude01 & related_tag_name == exclude01 &
-           tag_name != exclude02 & related_tag_name == exclude02)
     )
 
     cat_patients_to_slides_status("Get the slide ids for each patient id related to the patients_to_slides.")
@@ -82,18 +42,19 @@ build_patients_to_slides_files <- function() {
     return(patients_to_slides)
   }
 
+  all_patients_to_slides <- get_patients_to_slides()
+  all_patients_to_slides <- all_patients_to_slides %>%
+    split(rep(1:3, each = ceiling(length(all_patients_to_slides)/2.5)))
+
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_study_patients_to_slides <- "TCGA_Study" %>%
-    get_patients_to_slides("TCGA_Subtype", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/tcga_study_patients_to_slides.feather"))
+  .GlobalEnv$patients_to_slides_01 <- all_patients_to_slides %>% .[[1]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/patients_to_slides_01.feather"))
 
-  .GlobalEnv$tcga_subtype_patients_to_slides <- "TCGA_Subtype" %>%
-    get_patients_to_slides("TCGA_Study", "Immune_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/tcga_subtype_patients_to_slides.feather"))
+  .GlobalEnv$patients_to_slides_02 <- all_patients_to_slides %>% .[[2]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/patients_to_slides_02.feather"))
 
-  .GlobalEnv$immune_subtype_patients_to_slides <- "Immune_Subtype" %>%
-    get_patients_to_slides("TCGA_Study", "TCGA_Subtype") %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/immune_subtype_patients_to_slides.feather"))
+  .GlobalEnv$patients_to_slides_03 <- all_patients_to_slides %>% .[[3]] %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/patients_to_slides/patients_to_slides_03.feather"))
 
   # Close the database connection.
   pool::poolClose(.GlobalEnv$pool)
@@ -102,9 +63,9 @@ build_patients_to_slides_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(tcga_study_patients_to_slides, pos = ".GlobalEnv")
-  rm(tcga_subtype_patients_to_slides, pos = ".GlobalEnv")
-  rm(immune_subtype_patients_to_slides, pos = ".GlobalEnv")
+  rm(patients_to_slides_01, pos = ".GlobalEnv")
+  rm(patients_to_slides_02, pos = ".GlobalEnv")
+  rm(patients_to_slides_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
