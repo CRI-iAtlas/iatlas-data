@@ -104,5 +104,3 @@ new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   gcinfo(FALSE)
   invisible(NULL);
 }
-
-build_iatlas_db <- new_build_iatlas_db

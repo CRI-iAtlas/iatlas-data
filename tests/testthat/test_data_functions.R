@@ -3,6 +3,15 @@
   library('feather')
   source('./lib_test_data.R')
 
+  test_that("present(vector()) is true", {expect_true(present(vector()))})
+
+  test_that("present('abc') is true", {expect_true(present('abc'))})
+  test_that("present('') is true", {expect_true(present(''))})
+  test_that("present(list()) is true", {expect_true(present(list()))})
+  test_that("present(FALSE) is true", {expect_true(present(FALSE))})
+  test_that("present(NA) is false", {expect_false(present(NA))})
+  test_that("present(NULL) is false", {expect_false(present(NULL))})
+
   # build_references
   test_that("build_references returns NA when no value present.", {
     expect_that(build_references(NA), is_identical_to(NA))

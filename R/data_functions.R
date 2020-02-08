@@ -1,4 +1,4 @@
-present <- function (a) {!is.null(a) && !(typeof(a) == "logical" && is.na(a))}
+present <- function (a) {!identical(a, NA) && !identical(a, NULL)}
 
 timed <- function(v, before_message = NA, after_message = "", message = NA) {
   if (present(message)) {
