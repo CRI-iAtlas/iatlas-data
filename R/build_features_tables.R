@@ -17,6 +17,7 @@ build_features_tables <- function() {
       unit = character()
     )) %>%
     dplyr::distinct(class, display, method_tag, name, order, unit) %>%
+    dplyr::filter(!is.na(name)) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
     dplyr::select(class, display, method_tag, name, order, unit) %>%
     dplyr::arrange(name)
