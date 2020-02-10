@@ -23,7 +23,7 @@ build_genes_samples_mutations_table <- function() {
   )
 
   genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
-    iatlas.data::read_table("genes_samples_mutations") %>%
+    iatlas.data::read_table("mutation_codes") %>%
       dplyr::as_tibble() %>%
       dplyr::select(mutation_code_id = id, mutation_code = code),
     by = "mutation_code"
