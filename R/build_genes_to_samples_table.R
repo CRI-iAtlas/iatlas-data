@@ -2,6 +2,7 @@ build_genes_to_samples_table <- function() {
 
   # genes_to_samples import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes_to_samples."), fill = TRUE)
+  # TODO: This should be filtered by entrez not hgnc.
   genes_to_samples <- iatlas.data::read_iatlas_data_file(
     get_feather_file_folder(),
     "relationships/genes_to_samples"
@@ -11,15 +12,13 @@ build_genes_to_samples_table <- function() {
     dplyr::arrange(entrez, hgnc, sample, rna_seq_expr)
   cat(crayon::blue("Imported feather files for genes_to_samples."), fill = TRUE)
 
-  cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
-
   # genes_to_samples data ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
-  # This should be joined by entrez.
-  genes_to_samples <- genes_to_samples %>% dplyr::left_join(get_genes(), by = "hgnc")
+  # TODO: This should be joined by entrez.
+  genes_to_samples <- genes_to_samples %>% dplyr::left_join(iatlas.data::get_genes(), by = "hgnc")
 
   genes_to_samples <- genes_to_samples %>% dplyr::left_join(
-    get_samples() %>% dplyr::select(sample_id = id, sample = name),
+    iatlas.data::get_samples() %>% dplyr::select(sample_id = id, sample = name),
     by = "sample"
   )
 

@@ -20,17 +20,72 @@ All data (feather files) should be located in the `feather_file` folder.
 
 Within the `feather_file` folder, data files should be segregated as follows:
 
+- `driver_results`
 - `edges`
 - `features`
+- `gene_types`
 - `genes`
+- `mutation_codes`
 - `nodes`
 - `patients`
 - `relationships`
   - `features_to_samples`
+  - `genes_samples_mutations`
   - `genes_to_samples`
-  - `nodes_to_tags`
+  - `genes_to_types`
+  - `mutation_codes_to_gene_types`
   - `samples_to_tags`
   - `tags_to_tags`
-- `results`
 - `samples`
+- `slides`
 - `tags`
+
+## Feather File Structure
+
+Data files in each folder MUST follow a specific convention for that data type. The conventions for each folder are as follows:
+
+- ### `driver_results`
+
+  #### Driver Results Column names
+
+  Column names MUST be spelled exactly as shown in this document.
+
+  - _feature_
+
+    The name of a feature. These unique names MUST exist in data in the `features` folder.
+
+  - _entrez_
+
+    The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+  - _hgnc_ (optional)
+
+    The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
+
+  - _tag_
+
+    The tag name associated with this driver result. These tags MUST exist in data in the `tags` folder.
+
+  - _p_value_
+
+    The p value associated with this driver result.
+
+  - _fold_change_
+
+    The fold change value associated with this driver result.
+
+  - _log10_p_value_
+
+    The log10 p value associated with this driver result.
+
+  - _log10_fold_change_
+
+    The log10 fold change value associated with this driver result.
+
+  - _n_wt_
+
+    The number of "Wild Type" genes associated with this driver result.
+
+  - _n_mut_
+
+    The number of "Mutant" genes associated with this driver result.

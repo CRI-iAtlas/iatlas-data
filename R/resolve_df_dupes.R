@@ -18,10 +18,8 @@ resolve_df_dupes <- function(df, keys) {
         before_message = "  flattening partial-duplicates\n",
         deduplicated_records <- duplicated_records %>%
           dplyr::group_by(!!! rlang::syms(keys)) %>%
-          dplyr::summarise_at(dplyr::vars(summarise_keys), flatten_dupes)
+          dplyr::summarise_at(dplyr::vars(summarise_keys), iatlas.data::flatten_dupes)
       )
-
-      .GlobalEnv$deduplicated <- cbind(deduplicated_records)
 
       cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
 

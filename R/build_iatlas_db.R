@@ -84,6 +84,7 @@ new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   run_skippable_function(build_samples_to_tags_table)
   run_skippable_function(build_features_to_samples_table)
   run_skippable_function(build_genes_to_samples_table)
+  run_skippable_function(build_genes_samples_mutations_table)
   run_skippable_function(build_driver_results_table)
   run_skippable_function(build_nodes_tables)
 

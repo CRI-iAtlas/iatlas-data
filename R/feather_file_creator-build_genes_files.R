@@ -24,8 +24,8 @@ build_genes_files <- function() {
     cat_genes_status("Get all the related gene types from the gene_types table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("gene_types") %>%
-        dplyr::select(id, type = name),
-      by = c("type_id" = "id")
+        dplyr::select(type_id = id, type = name),
+      by = "type_id"
     )
 
     cat_genes_status("Filter the genese down to genes with only the passed gene type.")
@@ -34,55 +34,55 @@ build_genes_files <- function() {
     cat_genes_status("Get all the related gene families from the gene_families table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("gene_families") %>%
-        dplyr::rename(gene_family = name),
-      by = c("gene_family_id" = "id")
+        dplyr::select(gene_family_id = id, gene_family = name),
+      by = "gene_family_id"
     )
 
     cat_genes_status("Get all the related gene funtions from the gene_functions table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("gene_functions") %>%
-        dplyr::rename(gene_function = name),
-      by = c("gene_function_id" = "id")
+        dplyr::select(gene_function_id = id, gene_function = name),
+      by = "gene_function_id"
     )
 
     cat_genes_status("Get all the related immune checkpoints from the immune_checkpoints table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("immune_checkpoints") %>%
-        dplyr::rename(immune_checkpoint = name),
-      by = c("immune_checkpoint_id" = "id")
+        dplyr::select(immune_checkpoint_id = id, immune_checkpoint = name),
+      by = "immune_checkpoint_id"
     )
 
     cat_genes_status("Get all the related node types from the node_types table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("node_types") %>%
-        dplyr::rename(node_type = name),
-      by = c("node_type_id" = "id")
+        dplyr::select(node_type_id = id, node_type = name),
+      by = "node_type_id"
     )
 
     cat_genes_status("Get all the related pathways from the pathways table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("pathways") %>%
-        dplyr::rename(pathway = name),
-      by = c("pathway_id" = "id")
+        dplyr::select(pathway_id = id, pathway = name),
+      by = "pathway_id"
     )
 
     cat_genes_status("Get all the related super categories from the super_categories table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("super_categories") %>%
-        dplyr::rename(super_category = name),
-      by = c("super_cat_id" = "id")
+        dplyr::select(super_cat_id = id, super_category = name),
+      by = "super_cat_id"
     )
 
     cat_genes_status("Get all the related therapy types from the therapy_types table.")
     genes <- genes %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("therapy_types") %>%
-        dplyr::rename(therapy_type = name),
-      by = c("therapy_type_id" = "id")
+        dplyr::select(therapy_type_id = id, therapy_type = name),
+      by = "therapy_type_id"
     )
 
     cat_genes_status("Clean up the data set.")
     genes <- genes %>%
-      dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type, references) %>%
+      dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type, references) %>%
       dplyr::arrange(entrez, hgnc)
 
     cat_genes_status("Execute the query and return a tibble.")
@@ -128,10 +128,10 @@ build_genes_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(driver_mutation_genes, pos = ".GlobalEnv")
-  rm(extra_cellular_network_genes, pos = ".GlobalEnv")
-  rm(immunomodulator_genes, pos = ".GlobalEnv")
-  rm(io_target_genes, pos = ".GlobalEnv")
+  # rm(driver_mutation_genes, pos = ".GlobalEnv")
+  # rm(extra_cellular_network_genes, pos = ".GlobalEnv")
+  # rm(immunomodulator_genes, pos = ".GlobalEnv")
+  # rm(io_target_genes, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

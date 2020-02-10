@@ -1,0 +1,7 @@
+.git/
+Dockerfile*
+sql/
+scripts/
+data_model/
+.Rhistory
+*.Rproj
