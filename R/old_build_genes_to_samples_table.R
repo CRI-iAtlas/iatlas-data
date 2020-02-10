@@ -68,7 +68,8 @@ old_build_genes_to_samples_table <- function() {
     dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
 
-  genes_to_samples <- genes_to_samples %>% resolve_genes_to_samples_dupes()
+  genes_to_samples <- genes_to_samples %>%
+    iatlas.data::resolve_df_dupes(keys = c("sample_id", "gene_id", "mutation_code_id"))
   cat_genes_to_samples_status("Built genes_to_samples data.")
 
   # genes_to_samples <- feather::read_feather("./genes_to_samples.feather")
