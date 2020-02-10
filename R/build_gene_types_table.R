@@ -2,7 +2,7 @@ build_gene_types_table <- function() {
 
   # gene_types import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for gene_types."), fill = TRUE)
-  gene_types <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "gene_types", join = TRUE) %>%
+  gene_types <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_types", join = TRUE) %>%
     dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Imported feather files for gene_types."), fill = TRUE)

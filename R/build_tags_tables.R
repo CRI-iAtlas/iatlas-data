@@ -2,7 +2,7 @@ build_tags_tables <- function() {
 
   # tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags."), fill = TRUE)
-  tags <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "tags") %>%
+  tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "tags") %>%
     dplyr::distinct(name, characteristics, display, color) %>%
     dplyr::arrange(name) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
@@ -16,7 +16,7 @@ build_tags_tables <- function() {
 
   # tags_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags_to_tags."), fill = TRUE)
-  tags_to_tags <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "relationships/tags_to_tags") %>%
+  tags_to_tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "relationships/tags_to_tags") %>%
     dplyr::distinct(tag, related_tag) %>%
     dplyr::arrange(tag)
 

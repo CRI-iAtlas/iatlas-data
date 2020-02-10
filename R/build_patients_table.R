@@ -3,7 +3,7 @@ build_patients_table <- function() {
 
   # patients import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for patients."), fill = TRUE)
-  patients <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "patients", join = TRUE)
+  patients <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "patients", join = TRUE)
   cat(crayon::blue("Imported feather files for patients."), fill = TRUE)
 
   # patients correct columns ---------------------------------------------------

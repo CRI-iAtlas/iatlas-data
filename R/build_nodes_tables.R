@@ -2,7 +2,7 @@ build_nodes_tables <- function() {
 
   # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  nodes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "nodes") %>%
+  nodes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "nodes") %>%
     dplyr::distinct() %>%
     dplyr::arrange(entrez, hgnc)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
