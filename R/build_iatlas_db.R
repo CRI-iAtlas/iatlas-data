@@ -9,7 +9,7 @@
 #'
 #' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
+build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
   if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
@@ -18,7 +18,7 @@ new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
-  num_skippable_steps <- 12 # search this file and count for run_skippable_function calls
+  num_skippable_steps <- 18 # search this file and count for run_skippable_function calls
   skippable_step_count <- 1
 
   tictoc::tic(paste0("Time taken to build iAtlas DB"))
