@@ -173,7 +173,6 @@ validate_dupes <- function(pass_through, group = NA, fields = c(), info = c()) {
 
 flatten_dupes <- function(values) {
   unique_values <- get_unique_valid_values(values)
-  print(unique_values)
   value <- values[1]
   if (length(unique_values) > 1) {
     print(unique_values)
