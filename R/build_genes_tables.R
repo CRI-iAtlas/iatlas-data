@@ -7,6 +7,7 @@ build_genes_tables <- function() {
 
   # genes column fix ---------------------------------------------------
   cat(crayon::magenta("Ensuring genes have all the correct columns and no dupes."), fill = TRUE)
+  # TODO: This should depend on entrez.
   genes <- genes %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
@@ -24,6 +25,7 @@ build_genes_tables <- function() {
       therapy_type = character()
     )) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::filter((!is.na(entrez) | !is.na(hgnc))) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
     iatlas.data::resolve_df_dupes(keys = c("hgnc")) %>%
     dplyr::select(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
