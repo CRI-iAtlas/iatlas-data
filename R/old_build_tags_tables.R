@@ -1,6 +1,6 @@
-old_build_tags_tables <- function(feather_file_folder) {
+old_build_tags_tables <- function() {
   cat(crayon::magenta("Importing feather file for tags."), fill = TRUE)
-  initial_tags <- iatlas.data::read_iatlas_data_file(feather_file_folder, "/SQLite_data/groups.feather") %>%
+  initial_tags <- read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/groups.feather") %>%
     dplyr::rename(name = group, display = group_name)
   cat(crayon::blue("Imported feather file for tags."), fill = TRUE)
 
@@ -32,9 +32,7 @@ old_build_tags_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built tags table. (", nrow(tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building tags_to_tags data."), fill = TRUE)
-  tags_db <- iatlas.data::read_table("tags") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(id, name)
+  tags_db <- old_read_tags()
   all_tags_with_tag_ids <- tags %>%
     dplyr::inner_join(tags_db, by = "name") %>%
     dplyr::select(id, parent_group, subtype_group) %>%

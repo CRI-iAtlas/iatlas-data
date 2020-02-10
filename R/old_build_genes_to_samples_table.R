@@ -1,12 +1,9 @@
 old_build_genes_to_samples_table <- function() {
-  all_samples_with_patient_ids <- old_get_all_samples_with_patient_ids()
   rna_seq_expr_matrix <- old_get_rna_seq_expr_matrix()
-  genes <- old_get_genes()
-  samples <- old_get_samples()
 
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
 
-  genes_to_samples <- all_samples_with_patient_ids
+  genes_to_samples <- old_get_all_samples_with_patient_ids()
 
   cat_genes_to_samples_status <- function (message)
     cat(crayon::cyan(paste0(" - ", message, " (", nrow(genes_to_samples), ")\n")))
@@ -46,7 +43,7 @@ old_build_genes_to_samples_table <- function() {
 
   cat_genes_to_samples_status("Joining gene_ids.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(genes %>% dplyr::rename(gene_id = id), by = "hgnc")
+    dplyr::left_join(old_read_genes() %>% dplyr::rename(gene_id = id), by = "hgnc")
 
   cat_genes_to_samples_status("Joining mutation_code_ids.")
   mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
@@ -58,7 +55,7 @@ old_build_genes_to_samples_table <- function() {
 
   cat_genes_to_samples_status("Joining samples to get ids.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(samples, by = c("sample" = "name"))
+    dplyr::left_join(old_read_samples(), by = c("sample" = "name"))
 
   # cat_genes_to_samples_status("Ensuring no duplicates.")
   genes_to_samples <- genes_to_samples %>% dplyr::select(id, gene_id, mutation_code_id, status, rna_seq_expr)

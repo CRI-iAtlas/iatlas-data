@@ -1,11 +1,9 @@
 old_build_samples_to_tags_table <- function() {
   all_samples <- old_get_all_samples()
-  samples <- old_get_samples()
+  samples <- old_read_samples()
 
   cat(crayon::magenta("Building samples_to_tags data."), fill = TRUE)
-  tags <- iatlas.data::read_table("tags") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(tag_id = id, name)
+  tags <- old_read_tags() %>% dplyr::rename(tag_id = id)
 
   sample_set_tcga_study <- all_samples %>%
     dplyr::distinct(sample, TCGA_Study) %>%

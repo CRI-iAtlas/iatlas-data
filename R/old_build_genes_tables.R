@@ -1,29 +1,23 @@
-old_build_genes_tables <- function(feather_file_folder) {
-
-  apply_path <- function(sub_path) {
-    paste0(feather_file_folder, "/", sub_path)
-  }
+old_build_genes_tables <- function() {
 
   cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
   driver_mutations <- dplyr::bind_rows(
-    feather::read_feather(apply_path("SQLite_data/driver_mutations1.feather")),
-    feather::read_feather(apply_path("SQLite_data/driver_mutations2.feather")),
-    feather::read_feather(apply_path("SQLite_data/driver_mutations3.feather")),
-    feather::read_feather(apply_path("SQLite_data/driver_mutations4.feather")),
-    feather::read_feather(apply_path("SQLite_data/driver_mutations5.feather"))
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations1.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations2.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations3.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations4.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations5.feather")
   ) %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported driver mutation feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing immunomodulators feather files for genes"), fill = TRUE)
-  immunomodulator_expr <- feather::read_feather(
-    apply_path("SQLite_data/immunomodulator_expr.feather")
-  ) %>%
+  immunomodulator_expr <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/immunomodulator_expr.feather") %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
 
-  immunomodulators <- feather::read_feather(apply_path("SQLite_data/immunomodulators.feather")) %>%
+  immunomodulators <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/immunomodulators.feather") %>%
     dplyr::filter(!is.na(gene)) %>%
     dplyr::rename(friendly_name = display2) %>%
     dplyr::mutate(references = iatlas.data::build_references(reference)) %>%
@@ -33,15 +27,15 @@ old_build_genes_tables <- function(feather_file_folder) {
 
   cat(crayon::magenta("Importing io_target feather files for genes"), fill = TRUE)
   io_target_expr <- dplyr::bind_rows(
-    feather::read_feather(apply_path("SQLite_data/io_target_expr1.feather")),
-    feather::read_feather(apply_path("SQLite_data/io_target_expr2.feather")),
-    feather::read_feather(apply_path("SQLite_data/io_target_expr3.feather")),
-    feather::read_feather(apply_path("SQLite_data/io_target_expr4.feather"))
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr1.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr2.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr3.feather"),
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr4.feather")
   ) %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
 
-  io_targets <- feather::read_feather(apply_path("SQLite_data/io_targets.feather")) %>%
+  io_targets <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_targets.feather") %>%
     dplyr::filter(!is.na(gene)) %>%
     dplyr::distinct(gene, .keep_all = TRUE) %>%
     dplyr::select(-c("entrez")) %>%
@@ -54,7 +48,7 @@ old_build_genes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
-  ecns <- feather::read_feather(apply_path("ecn_genes.feather")) %>%
+  ecns <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "ecn_genes.feather") %>%
     dplyr::rename(gene = hgnc) %>%
     dplyr::select(-c("entrez")) %>%
     dplyr::arrange(gene)
@@ -97,7 +91,7 @@ old_build_genes_tables <- function(feather_file_folder) {
     dplyr::arrange(hgnc)
   all_genes <- all_genes %>%
     dplyr::left_join(
-      feather::read_feather(apply_path("gene_ids.feather")),
+      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
       by = "hgnc"
     )
   cat(crayon::blue("Built all gene data."), fill = TRUE)
@@ -229,7 +223,6 @@ old_build_genes_tables <- function(feather_file_folder) {
   gc()
 
   cat(crayon::magenta("Building genes_to_types data."), fill = TRUE)
-  genes <- iatlas.data::read_table("genes") %>% dplyr::select(id, hgnc)
   gene_types <- iatlas.data::read_table("gene_types")
 
   # Collect the ids of the 3 gene_types.
@@ -246,7 +239,7 @@ old_build_genes_tables <- function(feather_file_folder) {
 
   genes_to_types <- driver_mutations %>%
     dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
-    dplyr::inner_join(genes, by = c("gene" = "hgnc")) %>%
+    dplyr::inner_join(old_read_genes(), by = c("gene" = "hgnc")) %>%
     dplyr::rename(gene_id = id) %>%
     dplyr::distinct(gene_id, type_id) %>%
     dplyr::arrange(gene_id, type_id)
