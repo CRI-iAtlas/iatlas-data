@@ -3,7 +3,7 @@ build_mutation_codes_to_gene_types_table <- function() {
   # mutation_codes_to_gene_types import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutation_codes_to_gene_types."), fill = TRUE)
   mutation_codes_to_gene_types <- iatlas.data::read_iatlas_data_file(
-    get_feather_file_folder(),
+    iatlas.data::get_feather_file_folder(),
     "relationships/mutation_codes_to_gene_types"
   ) %>%
     dplyr::distinct(code, gene_type) %>%
