@@ -9,11 +9,12 @@
 #'
 #' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
+new_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
   option_equal <- function (a, b) {present(a) && present(b) && a == b}
   if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
   if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
+  if (present(.GlobalEnv$iatlas_stack_trace)) {rm(iatlas_stack_trace, pos = ".GlobalEnv")}
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
@@ -30,16 +31,17 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
       cat(crayon::green("\n--------------------------------------------------------------------------------"), fill = TRUE)
       cat(crayon::green(paste0("START: ", function_name, " (build_iatlas_db step ", skippable_step_count, "/", num_skippable_steps, ")")), fill = TRUE)
 
-      tryCatch({
+      withCallingHandlers({
         .GlobalEnv$resume_at <- function_name
         f(...)
         gc()
       }, error = function(e) {
-        cat(crayon::magenta(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
+        .GlobalEnv$iatlas_stack_trace <- sys.calls()
+        cat(crayon::red(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
 
         cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
         cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
-        cat(crayon::magenta(crayon::bold(paste0("NOTE: If you change code, you can run source('./.RProfile') and then use one of the resume-options above."))), fill = TRUE)
+        cat(paste0("NOTEs:\n  * If you change code, you can run ", crayon::bold("source('./.RProfile')")," and then use one of the resume-options above.\n  * The error's stack trace is available at: ", crayon::bold("iatlas_stack_trace")), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
@@ -66,25 +68,27 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(build_features_tables,       feather_file_folder)
-  run_skippable_function(build_tags_tables,           feather_file_folder)
-  run_skippable_function(build_genes_tables,          feather_file_folder)
-
-  # before build-samples-tables ---------------------------------------------------
   set_feather_file_folder(feather_file_folder)
 
+  run_skippable_function(build_features_tables)
+  run_skippable_function(build_tags_tables)
+  run_skippable_function(build_genes_tables)
+  run_skippable_function(build_gene_types_table)
+  run_skippable_function(build_genes_to_types_table)
+  run_skippable_function(build_mutation_codes_table)
+  run_skippable_function(build_mutation_codes_to_gene_types_table)
   run_skippable_function(build_patients_table)
+  run_skippable_function(build_slides_table)
+  run_skippable_function(build_patients_to_slides_table)
   run_skippable_function(build_samples_table)
   run_skippable_function(build_samples_to_tags_table)
   run_skippable_function(build_features_to_samples_table)
   run_skippable_function(build_genes_to_samples_table)
-  run_skippable_function(build_slides_table)
+  run_skippable_function(build_genes_samples_mutations_table)
+  run_skippable_function(build_driver_results_table)
+  run_skippable_function(build_nodes_tables)
 
   reset_results_cache()
-
-  # after build-samples-tables ---------------------------------------------------
-  run_skippable_function(build_driver_results_tables, feather_file_folder)
-  run_skippable_function(build_nodes_tables,          paste0(feather_file_folder, "/SQLite_data"))
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)

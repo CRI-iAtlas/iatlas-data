@@ -11,12 +11,12 @@
     result <- get_dependent_tables("patients")
     expect_equal(present(result), TRUE)
     expect_equal(!!result, c(
-      "samples_to_tags",
+      "patients_to_slides",
       "features_to_samples",
+      "genes_samples_mutations",
       "genes_to_samples",
-      "genes_samples_mutation",
-      "samples",
-      "patients_to_slides"
+      "samples_to_tags",
+      "samples"
     ))
   })
 

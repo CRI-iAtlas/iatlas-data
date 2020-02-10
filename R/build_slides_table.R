@@ -1,27 +1,24 @@
 build_slides_table <- function() {
-  cat(crayon::magenta("Building slides & patients_to_slides data."), fill = TRUE)
 
-  slides <- read_iatlas_data_file(get_feather_file_folder(), "SQLite_data/til_image_links.feather") %>%
-    dplyr::rename(name = link) %>%
-    dplyr::mutate(name = ifelse(!is.na(name), stringi::stri_extract_first(name, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"), NA)) %>%
-    dplyr::distinct(name, .keep_all = TRUE)
+  # slides import ---------------------------------------------------
+  cat(crayon::magenta("Importing feather files for slides."), fill = TRUE)
+  slides <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "slides", join = TRUE)
+  cat(crayon::blue("Imported feather files for slides."), fill = TRUE)
 
-  slides %>% dplyr::distinct(name) %>% iatlas.data::replace_table("slides")
+  # slides correct columns ---------------------------------------------------
+  cat(crayon::magenta("Ensuring slides have all the correct columns."), fill = TRUE)
+  slides <- slides %>%
+    dplyr::bind_rows(dplyr::tibble(
+      name = character(),
+      description = character()
+    )) %>%
+    dplyr::distinct(name, .keep_all = TRUE) %>%
+    dplyr::arrange(name)
+  cat(crayon::blue("Imported feather files for slides."), fill = TRUE)
 
-  patients_to_slides <- slides %>%
-    dplyr::left_join(
-      iatlas.data::read_table("slides") %>%
-        dplyr::select(slide_id = id, name),
-      by = "name"
-    )
-  patients_to_slides <- patients_to_slides %>%
-    dplyr::left_join(get_patients(), by = "sample") %>%
-    dplyr::filter(!is.na(patient_id)) %>%
-    dplyr::distinct(patient_id, slide_id) %>%
-    dplyr::arrange(patient_id, slide_id)
+  # slides table ---------------------------------------------------
+  cat(crayon::magenta("Building slides table."), fill = TRUE)
+  table_written <- slides %>% iatlas.data::replace_table("slides")
+  cat(crayon::blue("Built the slides tables. (", nrow(slides), "rows )"), fill = TRUE, sep = " ")
 
-  # patients_to_slides table ---------------------------------------------------
-  patients_to_slides %>% iatlas.data::replace_table("patients_to_slides")
-
-  cat(crayon::blue("Built the slides & patients_to_slides tables. (", nrow(slides), "rows & ", nrow(patients_to_slides), " rows)"), fill = TRUE, sep = " ")
 }

@@ -3,6 +3,15 @@
   library('feather')
   source('./lib_test_data.R')
 
+  test_that("present(vector()) is true", {expect_true(present(vector()))})
+
+  test_that("present('abc') is true", {expect_true(present('abc'))})
+  test_that("present('') is true", {expect_true(present(''))})
+  test_that("present(list()) is true", {expect_true(present(list()))})
+  test_that("present(FALSE) is true", {expect_true(present(FALSE))})
+  test_that("present(NA) is false", {expect_false(present(NA))})
+  test_that("present(NULL) is false", {expect_false(present(NULL))})
+
   # build_references
   test_that("build_references returns NA when no value present.", {
     expect_that(build_references(NA), is_identical_to(NA))
@@ -135,14 +144,14 @@
   test_that("read_iatlas_data_file with directory", {
     first <- read_test_feather("load_feather_data_set/first.feather")
     second <- read_test_feather("load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set")
+    results <- iatlas.data::read_iatlas_data_file(test_data_folder, "load_feather_data_set")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
   test_that("read_iatlas_data_file with glob", {
     first <- read_test_feather("load_feather_data_set/first.feather")
     second <- read_test_feather("load_feather_data_set/second.feather")
-    results <- read_iatlas_data_file(test_data_folder, "load_feather_data_set/*.feather")
+    results <- iatlas.data::read_iatlas_data_file(test_data_folder, "load_feather_data_set/*.feather")
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 

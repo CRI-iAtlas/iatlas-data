@@ -17,13 +17,13 @@ with_test_db_env <- function(tests) {
   copyEnv(.GlobalEnv, backup_env)
   on.exit(teardown(copyEnv(backup_env, .GlobalEnv)))
 
-  .GlobalEnv$DB_NAME <- Sys.getenv("DB_NAME", unset = "iatlas_shiny_test")
-  .GlobalEnv$DB_HOST <- Sys.getenv("DB_HOST", unset = "localhost")
-  .GlobalEnv$DB_PORT <- Sys.getenv("DB_PORT", unset = "5432")
-  .GlobalEnv$DB_USER <- Sys.getenv("DB_USER", unset = "postgres")
-  .GlobalEnv$DB_PW <- Sys.getenv("DB_PW", unset = "docker")
+  .GlobalEnv$DB_NAME <- "iatlas_shiny_test"
+  .GlobalEnv$DB_HOST <- "localhost"
+  .GlobalEnv$DB_PORT <- "5432"
+  .GlobalEnv$DB_USER <- "postgres"
+  .GlobalEnv$DB_PW   <- "docker"
 
-  capture <- tests
+  tests
 }
 
 get_test_data_path <- function (sub_path) paste0(test_data_folder, "/", sub_path)

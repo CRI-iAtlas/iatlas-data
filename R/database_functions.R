@@ -1,8 +1,31 @@
 # Database helper functions.
 
+create_global_db_pool <- function() {
+  if (!present(.GlobalEnv$pool)) {
+    .GlobalEnv$pool <- iatlas.data::connect_to_db()
+  } else {
+    cat(crayon::yellow("WARNING-create_global_db_pool: global db pool already created\n"))
+    .GlobalEnv$pool
+  }
+}
+
+release_global_db_pool <- function() {
+  if (present(.GlobalEnv$pool)) {
+    pool::poolClose(.GlobalEnv$pool)
+    rm(pool, pos = ".GlobalEnv")
+  } else {
+    cat(crayon::yellow("WARNING-release_global_db_pool: Nothing to do. Global db pool does not exist. \n"))
+  }
+}
+
 with_db_pool <- function(f) {
+  if (cleanup_pool <- !present(.GlobalEnv$pool)) create_global_db_pool()
   connection <- pool::poolCheckout(.GlobalEnv$pool)
-  on.exit(pool::poolReturn(connection))
+  on.exit({
+    pool::poolReturn(connection)
+    if (cleanup_pool) release_global_db_pool()
+  })
+
   f(connection)
 }
 
@@ -100,13 +123,13 @@ validate_control_data <- function (data, table_name) {
       else {
         .GlobalEnv[[paste0(table_name,"_data")]] <- data
         .GlobalEnv[[paste0(table_name,"_control_data")]] <- control_data
-        cat(crayon::bold(crayon::red(paste0(
-          "FAIL: control data for ", table_name, " is different.\n",
+        cat(paste0(
+          crayon::bold(crayon::red("FAIL: control data for", table_name, "is different.\n")),
           "Both versions have been stored in the global environment:\n",
           "  - ", table_name, "_data\n",
           "  - ", table_name, "_control_data\n",
-          "To accept the new version, run: update_control_data_snapshot()\n"
-        ))))
+          "To accept the new version, run: ", crayon::bold("update_control_data_snapshot()\n")
+        ))
         .GlobalEnv$update_control_data_snapshot <- function() {
           data %>% feather::write_feather(control_file)
           cat(crayon::green(paste0("Updated control_data for ", table_name, " (", control_file, ", ", nrow(data), " rows)")))

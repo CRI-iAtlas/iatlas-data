@@ -1,38 +1,30 @@
 
 build_patients_table <- function() {
-  cat(crayon::magenta("Building patients data.)"), fill = TRUE)
 
-  fmx <- read_iatlas_data_file(get_feather_file_folder(), "fmx_df.feather") %>%
-    dplyr::distinct(
-      barcode = ParticipantBarcode,
-      age = age_at_initial_pathologic_diagnosis,
-      ethnicity,
-      gender,
-      height,
-      race,
-      weight
-    )
+  # patients import ---------------------------------------------------
+  cat(crayon::magenta("Importing feather files for patients."), fill = TRUE)
+  patients <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "patients", join = TRUE)
+  cat(crayon::blue("Imported feather files for patients."), fill = TRUE)
 
-  # Capture all the barcodes (column names). Removing the fist column "hugo".
-  barcodes <- get_rna_seq_expr_matrix() %>% names() %>% .[-1]
-
-  # Capture all the patient barcodes (first 12 characters) ie "TCGA-OR-A5J1"
-  patient_barcodes <- barcodes %>% stringi::stri_sub(to = 12L)
-
-  # Add all patient barcodes.
-  patients <- dplyr::tibble(barcode = patient_barcodes) %>% dplyr::distinct(barcode)
-
-  # Add ages, ethnicities, genders, heights, races, and weights.
-  patients <- patients %>% dplyr::left_join(fmx, by = "barcode") %>%
-    dplyr::distinct(barcode, .keep_all = TRUE)
-
+  # patients correct columns ---------------------------------------------------
+  cat(crayon::magenta("Ensuring patients have all the correct columns."), fill = TRUE)
   patients <- patients %>%
-    dplyr::bind_rows(get_all_samples() %>% dplyr::distinct(barcode = sample)) %>%
-    dplyr::distinct(barcode, .keep_all = TRUE)
-  cat(crayon::blue("Built patients data."), fill = TRUE)
+    dplyr::bind_rows(dplyr::tibble(
+      barcode = character(),
+      age = integer(),
+      ethnicity = character(),
+      gender = character(),
+      height = character(),
+      race = character(),
+      weight = numeric()
+    )) %>%
+    dplyr::distinct(barcode, age, ethnicity, gender, height, race, weight) %>%
+    dplyr::filter(!is.na(barcode)) %>%
+    dplyr::arrange(barcode)
+  cat(crayon::blue("Ensured patients have all the correct columns."), fill = TRUE)
 
   # patients table ---------------------------------------------------
   cat(crayon::magenta("Building patients table."), fill = TRUE, sep = " ")
-  patients %>% iatlas.data::replace_table("patients")
+  table_written <- patients %>% iatlas.data::replace_table("patients")
   cat(crayon::blue("Built patients table. (", nrow(patients), "rows )"), fill = TRUE, sep = " ")
 }
