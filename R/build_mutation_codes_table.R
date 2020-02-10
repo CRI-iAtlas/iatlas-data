@@ -3,11 +3,11 @@ build_mutation_codes_table <- function() {
   # mutation_codes data ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutation_codes."), fill = TRUE)
   mutation_codes <- iatlas.data::read_iatlas_data_file(
-    get_feather_file_folder(),
-    "mutation_codes",
-    join = TRUE
+    iatlas.data::get_feather_file_folder(),
+    "mutation_codes"
   ) %>%
     dplyr::distinct(code) %>%
+    dplyr::filter(!is.na(code)) %>%
     dplyr::arrange(code)
   cat(crayon::blue("Imported feather files for mutation_codes."), fill = TRUE)
 
