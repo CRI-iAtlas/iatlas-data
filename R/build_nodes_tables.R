@@ -2,10 +2,22 @@ build_nodes_tables <- function() {
 
   # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  nodes <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "nodes") %>%
-    dplyr::distinct() %>%
-    dplyr::arrange(entrez, hgnc)
+  nodes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "nodes")
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
+
+  # nodes column fix ---------------------------------------------------
+  cat(crayon::magenta("Ensuring nodes have all the correct columns and no dupes."), fill = TRUE)
+  nodes <- nodes %>%
+    dplyr::bind_rows(dplyr::tibble(
+      entrez = numeric(),
+      hgnc = character(),
+      feature = character(),
+      tag = character(),
+      score = numeric()
+    )) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(entrez, hgnc, feature)
+  cat(crayon::blue("Ensured nodes have all the correct columns and no dupes."), fill = TRUE)
 
   # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
@@ -49,10 +61,21 @@ build_nodes_tables <- function() {
 
   # edges import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
-  edges <- iatlas.data::read_iatlas_data_file(feather_file_folder, "edges") %>%
+  edges <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "edges")
+  cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
+
+  # edges column fix ---------------------------------------------------
+  cat(crayon::magenta("Ensuring edges have all the correct columns and no dupes."), fill = TRUE)
+  edges <- edges %>%
+    dplyr::bind_rows(dplyr::tibble(
+      from = character(),
+      to = character(),
+      tag = character(),
+      score = numeric()
+    )) %>%
     dplyr::distinct() %>%
     dplyr::arrange(from, to)
-  cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
+  cat(crayon::blue("Ensured edges have all the correct columns and no dupes."), fill = TRUE)
 
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>%

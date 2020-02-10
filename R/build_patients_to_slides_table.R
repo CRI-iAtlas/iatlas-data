@@ -4,7 +4,7 @@ build_patients_to_slides_table <- function() {
   # patients_to_slides import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for patients_to_slides."), fill = TRUE)
   patients_to_slides <- iatlas.data::read_iatlas_data_file(
-    get_feather_file_folder(),
+    iatlas.data::get_feather_file_folder(),
     "relationships/patients_to_slides"
   ) %>%
     dplyr::distinct(barcode, slide) %>%
@@ -21,7 +21,7 @@ build_patients_to_slides_table <- function() {
   )
 
   patients_to_slides <- patients_to_slides %>%
-    dplyr::left_join(get_patients(), by = "barcode")
+    dplyr::left_join(iatlas.data::get_patients(), by = "barcode")
 
   # .GlobalEnv$p_2_s <- cbind(patients_to_slides)
 

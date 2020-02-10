@@ -2,11 +2,26 @@ build_features_tables <- function() {
 
   # features import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for features."), fill = TRUE)
-  features <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "features") %>%
-    dplyr::distinct(class, display, method_tag, name, order, unit) %>%
-    dplyr::arrange(name) %>%
-    iatlas.data::resolve_df_dupes(keys = c("name"))
+  features <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "features")
   cat(crayon::blue("Imported feather files for features."), fill = TRUE)
+
+  # features column fix ---------------------------------------------------
+  cat(crayon::magenta("Ensuring features have all the correct columns and no dupes."), fill = TRUE)
+  features <- features %>%
+    dplyr::bind_rows(dplyr::tibble(
+      class = character(),
+      display = character(),
+      method_tag = character(),
+      name = character(),
+      order = numeric(),
+      unit = character()
+    )) %>%
+    dplyr::distinct(class, display, method_tag, name, order, unit) %>%
+    dplyr::filter(!is.na(name)) %>%
+    iatlas.data::resolve_df_dupes(keys = c("name")) %>%
+    dplyr::select(class, display, method_tag, name, order, unit) %>%
+    dplyr::arrange(name)
+  cat(crayon::blue("Ensured features have all the correct columns and no dupes."), fill = TRUE)
 
   # classes data ---------------------------------------------------
   cat(crayon::magenta("Building classes data."), fill = TRUE)

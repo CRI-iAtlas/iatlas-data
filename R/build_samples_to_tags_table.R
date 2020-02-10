@@ -3,7 +3,7 @@ build_samples_to_tags_table <- function() {
   # samples_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_tags."), fill = TRUE)
   samples_to_tags <- iatlas.data::read_iatlas_data_file(
-    get_feather_file_folder(),
+    iatlas.data::get_feather_file_folder(),
     "relationships/samples_to_tags"
   ) %>%
     dplyr::distinct(sample, tag) %>%
@@ -21,7 +21,7 @@ build_samples_to_tags_table <- function() {
   )
 
   samples_to_tags <- samples_to_tags %>% dplyr::left_join(
-    get_samples() %>%
+    iatlas.data::get_samples() %>%
       dplyr::as_tibble() %>%
       dplyr::select(sample_id = id, sample = name),
     by = "sample"

@@ -1,9 +1,8 @@
-
 build_patients_table <- function() {
 
   # patients import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for patients."), fill = TRUE)
-  patients <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "patients", join = TRUE)
+  patients <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "patients", join = TRUE)
   cat(crayon::blue("Imported feather files for patients."), fill = TRUE)
 
   # patients correct columns ---------------------------------------------------
@@ -20,6 +19,8 @@ build_patients_table <- function() {
     )) %>%
     dplyr::distinct(barcode, age, ethnicity, gender, height, race, weight) %>%
     dplyr::filter(!is.na(barcode)) %>%
+    iatlas.data::resolve_df_dupes(keys = c("barcode")) %>%
+    dplyr::select(barcode, age, ethnicity, gender, height, race, weight) %>%
     dplyr::arrange(barcode)
   cat(crayon::blue("Ensured patients have all the correct columns."), fill = TRUE)
 
