@@ -10,31 +10,38 @@ resolve_df_dupes <- function(df, keys) {
         duplicated_records <- df %>% janitor::get_dupes(!!! rlang::syms(keys))
       )
 
-      cat(crayon::blue(paste0("    ", nrow(duplicated_records), " duplicate records\n")))
+      number_duplicates <- nrow(duplicated_records)
 
-      summarise_keys <- setdiff(names(df), keys)
+      # If there are no duplicates, don't do further processing.
+      if (number_duplicates > 0) {
+        cat(crayon::blue(paste0("    ", number_duplicates, " duplicate records\n")))
 
-      timed(
-        before_message = "  flattening partial-duplicates\n",
-        deduplicated_records <- duplicated_records %>%
-          dplyr::group_by(!!! rlang::syms(keys)) %>%
-          dplyr::summarise_at(dplyr::vars(summarise_keys), iatlas.data::flatten_dupes)
-      )
+        summarise_keys <- setdiff(names(df), keys)
 
-      cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
+        timed(
+          before_message = "  flattening partial-duplicates\n",
+          deduplicated_records <- duplicated_records %>%
+            dplyr::group_by(!!! rlang::syms(keys)) %>%
+            dplyr::summarise_at(dplyr::vars(summarise_keys), iatlas.data::flatten_dupes)
+        )
 
-      timed(
-        before_message = "  removing old partial-duplicates",
-        clean_records <- df %>% dplyr::anti_join(deduplicated_records, by = keys)
-      )
+        cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
 
-      cat(crayon::blue(paste0("    ", nrow(clean_records), " original records where not duplicated\n")))
+        timed(
+          before_message = "  removing old partial-duplicates",
+          clean_records <- df %>% dplyr::anti_join(deduplicated_records, by = keys)
+        )
 
-      output <- clean_records %>% dplyr::bind_rows(deduplicated_records)
+        cat(crayon::blue(paste0("    ", nrow(clean_records), " original records where not duplicated\n")))
+
+        output <- clean_records %>% dplyr::bind_rows(deduplicated_records)
+      } else {
+        output <- df
+      }
 
       cat(crayon::blue(paste0("    ", nrow(output), " resulting records\n")))
 
-      output
+      return(output)
     }
   )
 }

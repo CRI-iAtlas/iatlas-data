@@ -1,14 +1,30 @@
 build_samples_table <- function() {
 
+  # samples import ---------------------------------------------------
+  cat(crayon::magenta("Importing sample files for samples"), fill = TRUE)
+  samples <- iatlas.data::get_all_samples()
+  cat(crayon::blue("Imported sample files for samples"), fill = TRUE)
+
+  # samples column fix ---------------------------------------------------
+  cat(crayon::magenta("Ensuring samples have all the correct columns and no dupes."), fill = TRUE)
+  samples <- samples %>%
+    dplyr::bind_rows(dplyr::tibble(
+      name = character(),
+      patient_barcode = character()
+    )) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(!is.na(name)) %>%
+    dplyr::arrange(name)
+  cat(crayon::blue("Ensured samples have all the correct columns and no dupes."), fill = TRUE)
+
   # sample data ---------------------------------------------------
   cat(crayon::magenta("Building samples data."), fill = TRUE)
-  samples <- get_all_samples() %>%
-    dplyr::distinct(name, barcode = patient_barcode) %>%
-    dplyr::filter(!is.na(name) & !is.na(barcode)) %>%
-    dplyr::arrange(name)
-
   samples <- samples %>%
-    dplyr::left_join(get_patients(), by = "barcode") %>%
+    dplyr::left_join(
+      iatlas.data::get_patients() %>%
+        dplyr::select(patient_id, patient_barcode = barcode),
+      by = "patient_barcode"
+    ) %>%
     dplyr::select(name, patient_id)
   cat(crayon::blue("Built samples data."), fill = TRUE)
 

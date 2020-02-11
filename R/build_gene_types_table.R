@@ -13,6 +13,7 @@ build_gene_types_table <- function() {
       display = character()
     )) %>%
     dplyr::distinct(name, display) %>%
+    dplyr::filter(!is.na(name)) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
     dplyr::select(name, display) %>%
     dplyr::arrange(name)
