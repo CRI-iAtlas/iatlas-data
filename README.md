@@ -45,7 +45,7 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 #### Requirements: MacOS Install instructions
 
-Install brew: [https://brew.sh/](https://brew.sh/)
+Install package manager: [HomeBrew](https://brew.sh/) (or [MacPorts](https://www.macports.org/) or your package manager of choice)
 
 Then run these in your shell:
 
