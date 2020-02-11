@@ -25,7 +25,7 @@ else
     >&2 echo -e "${GREEN}Creating new target DB @ ${DB_HOST}/postgres${NC}"
     PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $DB_HOST  -c"CREATE DATABASE ${NEW_DB}"
     >&2 echo -e "${GREEN}Restoring to DB @ ${DB_HOST}/${NEW_DB}${NC}"
-    PGPASSWORD=${DB_PASSWORD} pg_restore -v -h ${DB_HOST} -U ${DB_USER} -d ${NEW_DB} -h /tmp/iatlas_dev.pgdata
+    PGPASSWORD=${DB_PASSWORD} pg_restore -v -h ${DB_HOST} -U ${DB_USER} -d ${NEW_DB} ${BACKUP_FILE_PATH}
     >&2 echo -e "${GREEN}Swapping new and target DB @ ${DB_HOST}/postgres${NC}"
     PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"ALTER DATABASE ${TARGET_DB} RENAME TO ${TARGET_DB}_old"
     PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"ALTER DATABASE ${NEW_DB} RENAME TO ${TARGET_DB}"
