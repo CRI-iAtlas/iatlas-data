@@ -94,7 +94,7 @@ Deploy To Staging:
   image: postgres:11.5
   variables:
     # Don't pull the repo into this stage, it's not needed
-    GIT_STRATEGY: none
+    # GIT_STRATEGY: none
     STAGING_DB_NAME: iatlas_staging
     STAGING_DB_HOST: sage-test.cau5la50px0r.us-west-2.rds.amazonaws.com
     STAGING_DB_USER: postgres
