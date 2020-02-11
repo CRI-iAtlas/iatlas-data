@@ -1,24 +1,16 @@
-old_build_driver_results_tables <- function(feather_file_folder) {
+old_build_driver_results_tables <- function() {
 
-  all_driver_results <- iatlas.data::read_iatlas_data_file(feather_file_folder, "SQLite_data/driver_results*.feather")
+  all_driver_results <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_results*.feather")
 
   cat(crayon::magenta("Building driver_results data."), fill = TRUE)
-  features <- iatlas.data::read_table("features") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(id, name) %>%
-    dplyr::rename_at("id", ~("feature_id"))
-  genes <- iatlas.data::read_table("genes") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(id, hgnc) %>%
-    dplyr::rename_at("id", ~("gene_id"))
-  tags <- iatlas.data::read_table("tags") %>%
-    dplyr::as_tibble() %>%
-    dplyr::select(id, name) %>%
-    dplyr::rename_at("id", ~("tag_id"))
+  features  <- old_read_features()  %>% dplyr::rename(feature_id  = id)
+  genes     <- old_read_genes()     %>% dplyr::rename(gene_id     = id)
+  tags      <- old_read_tags()      %>% dplyr::rename(tag_id      = id)
+
   results <- all_driver_results %>%
     dplyr::mutate(hgnc = ifelse(!is.na(label), iatlas.data::driver_results_label_to_hgnc(label), NA)) %>%
-    dplyr::rename_at("pvalue", ~("p_value")) %>%
-    dplyr::rename_at("log10_pvalue", ~("log10_p_value")) %>%
+    dplyr::rename(p_value = pvalue) %>%
+    dplyr::rename(log10_p_value = log10_pvalue) %>%
     dplyr::mutate(hgnc = iatlas.data::driver_results_label_to_hgnc(label)) %>%
     dplyr::inner_join(features, by = c("feature" = "name")) %>%
     dplyr::inner_join(genes, by = "hgnc") %>%

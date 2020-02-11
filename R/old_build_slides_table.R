@@ -15,7 +15,7 @@ old_build_slides_table <- function() {
       by = "name"
     )
   patients_to_slides <- patients_to_slides %>%
-    dplyr::left_join(iatlas.data::old_get_patients(), by = "sample") %>%
+    dplyr::left_join(iatlas.data::old_read_patients(), by = "sample") %>%
     dplyr::filter(!is.na(patient_id)) %>%
     dplyr::distinct(patient_id, slide_id) %>%
     dplyr::arrange(patient_id, slide_id)

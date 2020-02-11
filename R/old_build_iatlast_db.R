@@ -32,6 +32,7 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
     if (running_is_on) {
       cat(crayon::green("\n--------------------------------------------------------------------------------"), fill = TRUE)
       cat(crayon::green(paste0("START: ", function_name, " (build_iatlas_db step ", skippable_step_count, "/", num_skippable_steps, ")")), fill = TRUE)
+      tictoc::tic(paste0(function_name, " took"))
 
       withCallingHandlers({
         .GlobalEnv$resume_at <- function_name
@@ -41,13 +42,14 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
         .GlobalEnv$iatlas_stack_trace <- sys.calls()
         cat(crayon::red(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
 
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
-        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: old_build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               old_build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
         cat(paste0("NOTEs:\n  * If you change code, you can run ", crayon::bold("source('./.RProfile')")," and then use one of the resume-options above.\n  * The error's stack trace is available at: ", crayon::bold("iatlas_stack_trace")), fill = TRUE)
         running_is_on <<- FALSE
         stop(e)
       })
-      cat(crayon::green(paste0("SUCCESS: ", function_name)), fill = TRUE)
+      cat(crayon::green(paste0("\nSUCCESS: ", function_name)), fill = TRUE)
+      tictoc::toc()
     } else if (stopped) {
       cat(crayon::yellow(paste0("STOPPED. SKIPPING: '", function_name, "' (as requested by stop_at option)" )), fill = TRUE)
     } else {
@@ -70,25 +72,25 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  run_skippable_function(old_build_features_tables,       feather_file_folder)
-  run_skippable_function(old_build_tags_tables,           feather_file_folder)
-  run_skippable_function(old_build_genes_tables,          feather_file_folder)
-
-  # before build-samples-tables ---------------------------------------------------
   set_feather_file_folder(feather_file_folder)
+
+  run_skippable_function(old_build_features_tables)
+  run_skippable_function(old_build_tags_tables)
+  run_skippable_function(old_build_genes_tables)
 
   run_skippable_function(old_build_patients_table)
   run_skippable_function(old_build_samples_table)
+
+  run_skippable_function(old_build_slides_table)
+
+  run_skippable_function(old_build_driver_results_tables)
+  run_skippable_function(old_build_nodes_tables)
+
   run_skippable_function(old_build_samples_to_tags_table)
   run_skippable_function(old_build_features_to_samples_table)
   run_skippable_function(old_build_genes_to_samples_table)
-  run_skippable_function(old_build_slides_table)
 
   reset_results_cache()
-
-  # after build-samples-tables ---------------------------------------------------
-  run_skippable_function(old_build_driver_results_tables, feather_file_folder)
-  run_skippable_function(old_build_nodes_tables,          paste0(feather_file_folder, "/SQLite_data"))
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
