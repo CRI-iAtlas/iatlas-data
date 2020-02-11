@@ -48,4 +48,4 @@ csv_files/
 docker/
 tsv_files/
 feather_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
-control_data/
+control_data*/
