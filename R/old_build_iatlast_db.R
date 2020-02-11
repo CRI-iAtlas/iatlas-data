@@ -32,6 +32,7 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
     if (running_is_on) {
       cat(crayon::green("\n--------------------------------------------------------------------------------"), fill = TRUE)
       cat(crayon::green(paste0("START: ", function_name, " (build_iatlas_db step ", skippable_step_count, "/", num_skippable_steps, ")")), fill = TRUE)
+      tictoc::tic(paste0(function_name, " took"))
 
       withCallingHandlers({
         .GlobalEnv$resume_at <- function_name
@@ -47,7 +48,8 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
         running_is_on <<- FALSE
         stop(e)
       })
-      cat(crayon::green(paste0("SUCCESS: ", function_name)), fill = TRUE)
+      cat(crayon::green(paste0("\nSUCCESS: ", function_name)), fill = TRUE)
+      tictoc::toc()
     } else if (stopped) {
       cat(crayon::yellow(paste0("STOPPED. SKIPPING: '", function_name, "' (as requested by stop_at option)" )), fill = TRUE)
     } else {
