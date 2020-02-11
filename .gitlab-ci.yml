@@ -70,6 +70,7 @@ Build Database:
     name: "iatlas_data_${CI_COMMIT_REF_NAME}"
     paths:
       - ${CI_PROJECT_DIR}/*.pgdata
+    expire_in: 1 day
   variables:
     DB_NAME: ${POSTGRES_DB}
     DB_HOST: postgres
@@ -99,5 +100,5 @@ Deploy To Staging:
     STAGING_DB_HOST: sage-test.cau5la50px0r.us-west-2.rds.amazonaws.com
     STAGING_DB_USER: postgres
   script:
-    - ls -lart ${CI_PROJECT_DIR}/scripts/
+    - ls -lart ${CI_PROJECT_DIR}/
     - ${CI_PROJECT_DIR}/scripts/gitlab_build_db.sh $STAGING_DB_HOST $STAGING_DB_USER $STAGING_DB_PASSWORD $STAGING_DB_NAME
