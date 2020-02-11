@@ -27,8 +27,9 @@ else
     >&2 echo -e "${GREEN}Restoring to DB @ ${DB_HOST}/${NEW_DB}${NC}"
     PGPASSWORD=${DB_PASSWORD} pg_restore -v -h ${DB_HOST} -U ${DB_USER} -d ${NEW_DB} ${BACKUP_FILE_PATH}
     >&2 echo -e "${GREEN}Swapping new and target DB @ ${DB_HOST}/postgres${NC}"
+    PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"DROP DATABASE IF EXISTS ${TARGET_DB}_old"
+    PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${TARGET_DB}' AND pid <> pg_backend_pid();"
     PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"ALTER DATABASE ${TARGET_DB} RENAME TO ${TARGET_DB}_old"
     PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"ALTER DATABASE ${NEW_DB} RENAME TO ${TARGET_DB}"
-    PGPASSWORD=${DB_PASSWORD} psql -U postgres -h $STAGING_DB_HOST -c"DROP DATABASE ${NEW_DB}"
 fi
 
