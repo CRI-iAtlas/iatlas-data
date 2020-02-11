@@ -16,3 +16,5 @@ reset_results_cache <- function () {
   }
   gc()
 }
+
+reset_results_cache()
