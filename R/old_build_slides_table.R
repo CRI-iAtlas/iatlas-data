@@ -1,27 +1,21 @@
 old_build_slides_table <- function() {
-  cat(crayon::magenta("Building slides & patients_to_slides data."), fill = TRUE)
-
+  cat(crayon::magenta("Building slides data."), fill = TRUE)
   slides <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/til_image_links.feather") %>%
     dplyr::rename(name = link) %>%
     dplyr::mutate(name = ifelse(!is.na(name), stringi::stri_extract_first(name, regex = "[\\w]{4}-[\\w]{2}-[\\w]{4}-[\\w]{3}-[\\d]{2}-[\\w]{3}"), NA)) %>%
-    dplyr::distinct(name, .keep_all = TRUE)
+    dplyr::distinct(name, sample)
 
-  slides %>% dplyr::distinct(name) %>% iatlas.data::replace_table("slides")
-
-  patients_to_slides <- slides %>%
-    dplyr::left_join(
-      iatlas.data::read_table("slides") %>%
-        dplyr::select(slide_id = id, name),
-      by = "name"
-    )
-  patients_to_slides <- patients_to_slides %>%
-    dplyr::left_join(iatlas.data::old_read_patients(), by = "sample") %>%
+  slides <- slides %>% dplyr::left_join(
+    iatlas.data::old_read_samples() %>%
+      dplyr::select(sample = name, patient_id),
+    by = "sample"
+  ) %>%
     dplyr::filter(!is.na(patient_id)) %>%
-    dplyr::distinct(patient_id, slide_id) %>%
-    dplyr::arrange(patient_id, slide_id)
+    dplyr::distinct(name, patient_id) %>%
+    dplyr::arrange(name, patient_id)
+  cat(crayon::blue("Built the slides data. (", nrow(slides), "rows )"), fill = TRUE, sep = " ")
 
-  # patients_to_slides table ---------------------------------------------------
-  patients_to_slides %>% iatlas.data::replace_table("patients_to_slides")
-
-  cat(crayon::blue("Built the slides & patients_to_slides tables. (", nrow(slides), "rows & ", nrow(patients_to_slides), " rows)"), fill = TRUE, sep = " ")
+  cat(crayon::magenta("Building slides table."), fill = TRUE)
+  table_written <- slides %>% iatlas.data::replace_table("slides")
+  cat(crayon::blue("Built the slides table. (", nrow(slides), "rows )"), fill = TRUE, sep = " ")
 }
