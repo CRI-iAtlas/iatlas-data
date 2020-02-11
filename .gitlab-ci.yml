@@ -65,11 +65,11 @@ Build Database:
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
-      - /tmp/*.pgdata
+      - ${CI_PROJECT_DIR}/*.pgdata
   artifacts:
     name: "iatlas_data_${CI_COMMIT_REF_NAME}"
     paths:
-      - /tmp/*.pgdata
+      - ${CI_PROJECT_DIR}/*.pgdata
   variables:
     DB_NAME: ${POSTGRES_DB}
     DB_HOST: postgres
