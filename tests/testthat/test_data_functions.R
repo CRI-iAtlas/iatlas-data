@@ -12,6 +12,11 @@
   test_that("present(NA) is false", {expect_false(present(NA))})
   test_that("present(NULL) is false", {expect_false(present(NULL))})
 
+  test_that("timed returns what you pass in", {expect_equal(timed(123), 123)})
+  test_that("timed before_message", {expect_equal(timed(123, before_message = "hi"), 123)})
+  test_that("timed after_message", {expect_equal(timed(123, after_message = "hi"), 123)})
+  test_that("timed message", {expect_equal(timed(123, message = "hi"), 123)})
+
   # build_references
   test_that("build_references returns NA when no value present.", {
     expect_that(build_references(NA), is_identical_to(NA))

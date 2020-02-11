@@ -58,14 +58,16 @@ sql_schema <- list(
         display VARCHAR,
         \"order\" INTEGER,
         unit UNIT_ENUM,
-        class_id INTEGER REFERENCES classes NOT NULL,
-        method_tag_id INTEGER REFERENCES method_tags,
+        class_id INTEGER NOT NULL,
+        method_tag_id INTEGER,
         PRIMARY KEY (id)
       );",
     addSchema = c(
       "CREATE UNIQUE INDEX feature_name_index ON features (\"name\");",
       "CREATE INDEX feature_class_id_index ON features (class_id);",
-      "CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);"
+      "CREATE INDEX feature_method_tag_id_index ON features (method_tag_id);",
+      "ALTER TABLE features ADD FOREIGN KEY (class_id) REFERENCES classes;",
+      "ALTER TABLE features ADD FOREIGN KEY (method_tag_id) REFERENCES method_tags;"
     )
   ),
   features_to_samples = list(
@@ -89,17 +91,17 @@ sql_schema <- list(
         id SERIAL,
         entrez INTEGER,
         hgnc VARCHAR NOT NULL,
-        \"description\" VARCHAR,
+        description VARCHAR,
         friendly_name VARCHAR,
         io_landscape_name VARCHAR,
-        gene_family_id INTEGER REFERENCES gene_families,
-        gene_function_id INTEGER REFERENCES gene_functions,
-        immune_checkpoint_id INTEGER REFERENCES immune_checkpoints,
-        node_type_id INTEGER REFERENCES node_types,
-        pathway_id INTEGER REFERENCES pathways,
         \"references\" TEXT[],
-        super_cat_id INTEGER REFERENCES super_categories,
-        therapy_type_id INTEGER REFERENCES therapy_types,
+        gene_family_id        INTEGER REFERENCES gene_families,
+        gene_function_id      INTEGER REFERENCES gene_functions,
+        immune_checkpoint_id  INTEGER REFERENCES immune_checkpoints,
+        node_type_id          INTEGER REFERENCES node_types,
+        pathway_id            INTEGER REFERENCES pathways,
+        super_cat_id          INTEGER REFERENCES super_categories,
+        therapy_type_id       INTEGER REFERENCES therapy_types,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -111,7 +113,15 @@ sql_schema <- list(
       "CREATE INDEX gene_node_type_id_index ON genes (node_type_id);",
       "CREATE INDEX gene_pathway_id_index ON genes (pathway_id);",
       "CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);",
-      "CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);"
+      "CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);",
+
+      "ALTER TABLE genes ADD FOREIGN KEY (gene_family_id       ) REFERENCES gene_families;",
+      "ALTER TABLE genes ADD FOREIGN KEY (gene_function_id     ) REFERENCES gene_functions;",
+      "ALTER TABLE genes ADD FOREIGN KEY (immune_checkpoint_id ) REFERENCES immune_checkpoints;",
+      "ALTER TABLE genes ADD FOREIGN KEY (node_type_id         ) REFERENCES node_types;",
+      "ALTER TABLE genes ADD FOREIGN KEY (pathway_id           ) REFERENCES pathways;",
+      "ALTER TABLE genes ADD FOREIGN KEY (super_cat_id         ) REFERENCES super_categories;",
+      "ALTER TABLE genes ADD FOREIGN KEY (therapy_type_id      ) REFERENCES therapy_types;"
     )
   ),
   gene_families = list(
@@ -181,12 +191,14 @@ sql_schema <- list(
   genes_to_types = list(
     create = "
       CREATE TABLE genes_to_types (
-        gene_id INTEGER REFERENCES genes,
-        \"type_id\" INTEGER REFERENCES gene_types,
-        PRIMARY KEY (gene_id, \"type_id\")
+        gene_id INTEGER,
+        type_id INTEGER,
+        PRIMARY KEY (gene_id, type_id)
       );",
     addSchema = c(
-      "CREATE INDEX gene_to_type_type_id_index ON genes_to_types (\"type_id\");"
+      "CREATE INDEX gene_to_type_type_id_index ON genes_to_types (type_id);",
+      "ALTER TABLE genes_to_types ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE genes_to_types ADD FOREIGN KEY (type_id) REFERENCES gene_types;"
     )
   ),
   immune_checkpoints = list(
@@ -222,12 +234,14 @@ sql_schema <- list(
   mutation_codes_to_gene_types = list (
     create = "
       CREATE TABLE mutation_codes_to_gene_types (
-        mutation_code_id INTEGER REFERENCES mutation_codes,
-        \"type_id\" INTEGER REFERENCES gene_types,
-        PRIMARY KEY (mutation_code_id, \"type_id\")
+        mutation_code_id INTEGER,
+        type_id INTEGER,
+        PRIMARY KEY (mutation_code_id, type_id)
       );",
     addSchema = c(
-      "CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types (\"type_id\");"
+      "CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types (type_id);",
+      "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
+      "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (type_id) REFERENCES gene_types;"
     )
   ),
   node_types = list(
@@ -384,12 +398,14 @@ sql_schema <- list(
   tags_to_tags = list(
     create = "
       CREATE TABLE tags_to_tags (
-        tag_id INTEGER REFERENCES tags NOT NULL,
-        related_tag_id INTEGER REFERENCES tags NOT NULL,
+        tag_id INTEGER NOT NULL,
+        related_tag_id INTEGER NOT NULL,
         PRIMARY KEY (tag_id, related_tag_id)
       );",
     addSchema = c(
-      "CREATE INDEX tag_to_tag_related_tag_id_index ON tags_to_tags (related_tag_id);"
+      "CREATE INDEX tag_to_tag_related_tag_id_index ON tags_to_tags (related_tag_id);",
+      "ALTER TABLE tags_to_tags ADD FOREIGN KEY (related_tag_id) REFERENCES tags;",
+      "ALTER TABLE tags_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
     )
   ),
   therapy_types = list(

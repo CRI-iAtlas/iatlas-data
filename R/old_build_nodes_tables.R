@@ -1,7 +1,7 @@
-old_build_nodes_tables <- function(feather_file_folder) {
+old_build_nodes_tables <- function() {
 
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  all_nodes <- iatlas.data::read_iatlas_data_file(feather_file_folder, "nodes") %>%
+  nodes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/nodes") %>%
     dplyr::distinct(hgnc = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%
     dplyr::arrange(hgnc, tag.01, tag.02, score)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
@@ -9,9 +9,8 @@ old_build_nodes_tables <- function(feather_file_folder) {
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
   gene_nodes <- all_nodes %>%
     dplyr::left_join(
-      iatlas.data::read_table("genes") %>%
-        dplyr::select(gene_id = id, hgnc) %>%
-        dplyr::as_tibble(),
+      iatlas.data::old_read_genes() %>%
+        dplyr::select(gene_id = id, hgnc),
       by = "hgnc"
     )
 
@@ -36,18 +35,17 @@ old_build_nodes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building the nodes_to_tags data."), fill = TRUE)
-  tags <- iatlas.data::read_table("tags") %>% dplyr::as_tibble()
 
   node_set_group <- nodes %>%
     dplyr::left_join(
-      tags %>% dplyr::select(tag_id = id, tag.01 = name),
+      old_read_tags() %>% dplyr::select(tag_id = id, tag.01 = name),
       by = "tag.01"
     ) %>%
     dplyr::filter(!is.na(tag_id))
 
   node_set_immune <- nodes %>%
     dplyr::left_join(
-      tags %>% dplyr::select(tag_id = id, tag.02 = name),
+      old_read_tags() %>% dplyr::select(tag_id = id, tag.02 = name),
       by = "tag.02"
     ) %>%
     dplyr::filter(!is.na(tag_id))
@@ -62,7 +60,7 @@ old_build_nodes_tables <- function(feather_file_folder) {
   cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
-  edges <- iatlas.data::read_iatlas_data_file(feather_file_folder, "edges") %>%
+  edges <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/edges") %>%
     dplyr::distinct(From, To, tag.01 = Group, tag.02 = Immune, score = ratioScore) %>%
     dplyr::arrange(From, To, tag.01, tag.02)
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
