@@ -45,7 +45,7 @@ Build Container:
       --tag ${CI_REGISTRY_IMAGE}:${RENV_HASH}
       -f Dockerfile.build .
     - docker push ${CI_REGISTRY_IMAGE}:latest
-    - docker push ${CI_REGISTRY_IMAGE}:${RENV_HASH}
+    - docker push ${CI_REGISTRY_IMAGE}:renv-${RENV_HASH}
 
 # Test Data:
 #   stage: test_data
@@ -85,7 +85,7 @@ Build Database:
     # Build the data
     - cd ${CI_PROJECT_DIR}; R -e "build_iatlas_db(env=\"prod\")"
     # Do a binary dump of the database
-    - pg_dump "postgres://postgres:docker@postgres/iatlas_staging" --format custom -f ${CI_PROJECT_DIR}/iatlas_dev.pgdata
+    - pg_dump "postgres://postgres:docker@postgres/${POSTGRES_DB}" --format custom -f ${CI_PROJECT_DIR}/iatlas_dev.pgdata
 
 Deploy To Staging:
   stage: deploy_to_staging
