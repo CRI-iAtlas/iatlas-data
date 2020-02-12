@@ -28,12 +28,7 @@ build_driver_results_table <- function() {
 
   # driver_results data ---------------------------------------------------
   cat(crayon::magenta("Building driver_results data."), fill = TRUE)
-  driver_results <- driver_results %>% dplyr::left_join(
-    iatlas.data::read_table("features") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(feature_id = id, feature = name),
-    by = "feature"
-  )
+  driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
   driver_results <- driver_results %>% dplyr::left_join(
     iatlas.data::read_table("tags") %>%

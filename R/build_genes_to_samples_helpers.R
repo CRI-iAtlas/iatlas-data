@@ -1,5 +1,0 @@
-get_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(gene_id = id, entrez, hgnc))
-get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", load_rna_seq_expr(.GlobalEnv$feather_file_folder, get_genes()))
-get_all_samples <- function() result_cached("all_samples", load_all_samples())
-get_patients <- function() result_cached("patients", iatlas.data::read_table("patients") %>% dplyr::select(patient_id = id, barcode))
-get_samples <- function() result_cached("samples", iatlas.data::read_table("samples") %>% dplyr::as_tibble())
