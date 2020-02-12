@@ -10,13 +10,13 @@ The database makes use of a couple enumerables. These "enums" are built into the
 
 The available enums are:
 
-- ### status_enum:
+- ### status_enum
 
   `( 'Wt', 'Mut' )`
 
   This enum represents the status of a gene. Wt = Wild Type, Mut = Mutant
 
-- ### unit_enum:
+- ### unit_enum
 
   `( 'Fraction', 'Count', 'Score', 'Per Megabase', ''Year' )`
 
@@ -184,6 +184,12 @@ The relational (join) tables are:
   Each row describes a node to tag relationship.
 
   For example, "Node 1" may be related to "Good Tag". That would be one row. "Node 2" may also be related to "Good Tag". That would be an additional row. "Node 1" may also be related to "Great Tag". That would be yet again another row, and so on.
+
+- ### edges_to_tags
+
+  Each row describes an edge to tag relationship.
+
+  For example, "Edge 1" may be related to "Good Tag". That would be one row. "Edge 2" may also be related to "Good Tag". That would be an additional row. "Edge 1" may also be related to "Great Tag". That would be yet again another row, and so on.
 
 ## Table Fields
 
@@ -448,6 +454,12 @@ The following are descriptions of each field in each table. This should be exhau
   - `node_2_id` - The database identifier of a specific node. Relates to the `id` field in a row in the [nodes](#nodes) main table. (an integer)
 
   - `score` - The relationship value between the two nodes. (an integer)
+
+- [edges_to_tags](#edges_to_tags)
+
+  - `edge_id` - The database identifier of a specific edge. Relates to the `id` field in a row in the [edges](#edges) main table. (an integer)
+
+  - `tag_id` - The database identifier of a specific tag. Relates to the `id` field in a row in the [tags](#tags) main table. (an integer)
 
 ## Data Structure
 
