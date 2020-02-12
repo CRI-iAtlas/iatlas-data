@@ -31,7 +31,7 @@ Build Container:
     - docker:19.03.1-dind
   only:
     refs:
-      - feature/feather_file_structure
+      - staging
     changes:
       - renv.lock
   before_script:
@@ -58,7 +58,7 @@ Build Container:
 Build Database:
   stage: build_data
   only:
-    - feature/feather_file_structure
+    - staging
   image: ${CI_REGISTRY_IMAGE}:latest
   services:
     - postgres:11.5
@@ -91,7 +91,7 @@ Build Database:
 Deploy To Staging:
   stage: deploy_to_staging
   only:
-    - feature/feather_file_structure
+    - staging
   image: postgres:11.5
   variables:
     # Don't pull the repo into this stage, it's not needed
