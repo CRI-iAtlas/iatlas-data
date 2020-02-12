@@ -27,4 +27,4 @@ old_read_samples <- function() result_cached("samples", iatlas.data::read_table(
 
 old_get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", load_rna_seq_expr(.GlobalEnv$feather_file_folder, old_read_genes()))
 old_get_all_samples <- function() result_cached("all_samples", old_load_all_samples(.GlobalEnv$feather_file_folder))
-old_get_all_samples_with_patient_ids <- function() result_cached("all_samples_with_patient_ids", old_get_all_samples() %>% dplyr::left_join(old_read_patients(), by = "barcode"))
+old_get_all_samples_with_patient_ids <- function() result_cached("all_samples_with_patient_ids", old_get_all_samples() %>% dplyr::left_join(old_read_patients(), by = c("sample" = "barcode")))
