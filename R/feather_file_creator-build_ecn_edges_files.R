@@ -91,10 +91,10 @@ build_ecn_edges_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(edges_TCGAImmune, pos = ".GlobalEnv")
-  # rm(edges_TCGAStudy_Immune, pos = ".GlobalEnv")
-  # rm(edges_TCGAStudy, pos = ".GlobalEnv")
-  # rm(edges_TCGASubtype, pos = ".GlobalEnv")
+  rm(edges_TCGAImmune, pos = ".GlobalEnv")
+  rm(edges_TCGAStudy_Immune, pos = ".GlobalEnv")
+  rm(edges_TCGAStudy, pos = ".GlobalEnv")
+  rm(edges_TCGASubtype, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
