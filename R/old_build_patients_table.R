@@ -26,7 +26,7 @@ old_build_patients_table <- function() {
     dplyr::distinct(barcode, .keep_all = TRUE)
 
   patients <- patients %>%
-    dplyr::bind_rows(iatlas.data::old_get_all_samples() %>% dplyr::distinct(barcode)) %>%
+    dplyr::bind_rows(iatlas.data::old_get_all_samples() %>% dplyr::select(barcode = sample)) %>%
     dplyr::distinct(barcode, .keep_all = TRUE)
   cat(crayon::blue("Built patients data."), fill = TRUE)
 
