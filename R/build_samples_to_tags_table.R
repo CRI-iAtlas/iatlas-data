@@ -14,9 +14,7 @@ build_samples_to_tags_table <- function() {
   # samples_to_tags data ---------------------------------------------------
   cat(crayon::magenta("Building samples_to_tags data."), fill = TRUE)
   samples_to_tags <- samples_to_tags %>% dplyr::left_join(
-    iatlas.data::read_table("tags") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(tag_id = id, tag = name),
+    iatlas.data::get_tags(),
     by = "tag"
   )
 

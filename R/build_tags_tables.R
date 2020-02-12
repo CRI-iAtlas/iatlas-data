@@ -33,17 +33,10 @@ build_tags_tables <- function() {
     dplyr::filter(!is.na(tag) & !is.na(related_tag)) %>%
     dplyr::arrange(tag)
 
-  tags_to_tags <- tags_to_tags %>% dplyr::left_join(
-    iatlas.data::read_table("tags") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(tag_id = id, tag = name),
-    by = "tag"
-  )
+  tags_to_tags <- tags_to_tags %>% dplyr::left_join(iatlas.data::get_tags(), by = "tag")
 
   tags_to_tags <- tags_to_tags %>% dplyr::left_join(
-    iatlas.data::read_table("tags") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(related_tag_id = id, related_tag = name),
+    iatlas.data::get_tags() %>% dplyr::select(related_tag_id = tag_id, related_tag = tag),
     by = "related_tag"
   )
 

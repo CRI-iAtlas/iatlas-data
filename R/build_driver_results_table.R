@@ -31,9 +31,7 @@ build_driver_results_table <- function() {
   driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
   driver_results <- driver_results %>% dplyr::left_join(
-    iatlas.data::read_table("tags") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(tag_id = id, tag = name),
+    iatlas.data::get_tags(),
     by = "tag"
   )
 

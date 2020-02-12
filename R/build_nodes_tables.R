@@ -47,9 +47,7 @@ build_nodes_tables <- function() {
     dplyr::select(-c("delete"))
 
   nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
-    iatlas.data::read_table("tags") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(tag_id = id, tag = name),
+    iatlas.data::get_tags(),
     by = "tag"
   )
 
