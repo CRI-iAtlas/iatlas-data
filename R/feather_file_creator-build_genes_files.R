@@ -128,10 +128,10 @@ build_genes_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(driver_mutation_genes, pos = ".GlobalEnv")
-  # rm(extra_cellular_network_genes, pos = ".GlobalEnv")
-  # rm(immunomodulator_genes, pos = ".GlobalEnv")
-  # rm(io_target_genes, pos = ".GlobalEnv")
+  rm(driver_mutation_genes, pos = ".GlobalEnv")
+  rm(extra_cellular_network_genes, pos = ".GlobalEnv")
+  rm(immunomodulator_genes, pos = ".GlobalEnv")
+  rm(io_target_genes, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

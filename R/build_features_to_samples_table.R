@@ -25,12 +25,7 @@ build_features_to_samples_table <- function() {
 
   # features_to_samples data ---------------------------------------------------
   cat(crayon::magenta("Building features_to_samples data."), fill = TRUE)
-  features_to_samples <- features_to_samples %>% dplyr::left_join(
-    iatlas.data::read_table("features") %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(feature_id = id, feature = name),
-    by = "feature"
-  )
+  features_to_samples <- features_to_samples %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
   features_to_samples <- features_to_samples %>% dplyr::left_join(
     get_samples() %>%

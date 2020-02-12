@@ -13,7 +13,7 @@ old_build_patients_table <- function() {
     )
 
   # Capture all the barcodes (column names). Removing the fist column "hugo".
-  barcodes <- old_get_rna_seq_expr_matrix() %>% names() %>% .[-1]
+  barcodes <- iatlas.data::old_get_rna_seq_expr_matrix() %>% names() %>% .[-1]
 
   # Capture all the patient barcodes (first 12 characters) ie "TCGA-OR-A5J1"
   patient_barcodes <- barcodes %>% stringi::stri_sub(to = 12L)
@@ -25,14 +25,10 @@ old_build_patients_table <- function() {
   patients <- patients %>% dplyr::left_join(fmx, by = "barcode") %>%
     dplyr::distinct(barcode, .keep_all = TRUE)
 
-  .GlobalEnv$p_1 <- cbind(patients)
-
   patients <- patients %>%
-    dplyr::bind_rows(old_get_all_samples() %>% dplyr::distinct(barcode = sample)) %>%
+    dplyr::bind_rows(iatlas.data::old_get_all_samples() %>% dplyr::select(barcode = sample)) %>%
     dplyr::distinct(barcode, .keep_all = TRUE)
   cat(crayon::blue("Built patients data."), fill = TRUE)
-
-  .GlobalEnv$p_2 <- cbind(patients)
 
   # patients table ---------------------------------------------------
   cat(crayon::magenta("Building patients table."), fill = TRUE, sep = " ")

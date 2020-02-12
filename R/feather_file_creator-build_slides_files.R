@@ -15,9 +15,16 @@ build_slides_files <- function() {
     cat_slides_status("Get the initial values from the slides table.")
     slides <- current_pool %>% dplyr::tbl("slides")
 
+    cat_slides_status("Get the sample names.")
+    slides <- slides %>% dplyr::left_join(
+      current_pool %>% dplyr::tbl("patients") %>%
+        dplyr::select(patient_id = id, patient_barcode = barcode),
+      by = "patient_id"
+    )
+
     cat_slides_status("Clean up the data set.")
     slides <- slides %>%
-      dplyr::distinct(name, description) %>%
+      dplyr::select(name, patient_barcode) %>%
       dplyr::arrange(name)
 
     cat_slides_status("Execute the query and return a tibble.")

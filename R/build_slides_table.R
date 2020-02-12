@@ -10,12 +10,17 @@ build_slides_table <- function() {
   slides <- slides %>%
     dplyr::bind_rows(dplyr::tibble(
       name = character(),
-      description = character()
+      description = character(),
+      patient_barcode = character()
     )) %>%
     dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::filter(!is.na(name)) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
     dplyr::arrange(name)
+
+  slides <- slides %>% dplyr::left_join(iatlas.data::get_patients(), by = c("patient_barcode" = "barcode"))
+
+  slides <- slides %>% dplyr::select(name, description, patient_id)
   cat(crayon::blue("Ensured slides have all the correct columns and no dupes."), fill = TRUE)
 
   # slides table ---------------------------------------------------

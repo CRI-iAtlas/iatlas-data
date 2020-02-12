@@ -318,19 +318,6 @@ sql_schema <- list(
       "CREATE INDEX patient_weight_index ON patients (\"weight\");"
     )
   ),
-  patients_to_slides = list(
-    create = "
-      CREATE TABLE patients_to_slides (
-        patient_id INTEGER,
-        slide_id INTEGER,
-        PRIMARY KEY (patient_id, slide_id)
-      );",
-    addSchema = c(
-      "CREATE INDEX patients_to_slides_slide_id_index ON patients_to_slides (slide_id);",
-      "ALTER TABLE patients_to_slides ADD FOREIGN KEY (patient_id) REFERENCES patients;",
-      "ALTER TABLE patients_to_slides ADD FOREIGN KEY (slide_id) REFERENCES slides;"
-    )
-  ),
   samples = list(
     create = "
       CREATE TABLE samples (
@@ -341,7 +328,7 @@ sql_schema <- list(
       );",
     addSchema = c(
       "CREATE UNIQUE INDEX sample_name_index ON samples (\"name\");",
-      "CREATE UNIQUE INDEX sample_patient_index ON samples (patient_id);",
+      "CREATE INDEX sample_patient_index ON samples (patient_id);",
       "ALTER TABLE samples ADD FOREIGN KEY (patient_id) REFERENCES patients;"
     )
   ),
@@ -364,10 +351,13 @@ sql_schema <- list(
         id SERIAL,
         \"name\" VARCHAR NOT NULL,
         \"description\" VARCHAR,
+        patient_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE UNIQUE INDEX slide_name_index ON slides (\"name\");"
+      "CREATE UNIQUE INDEX slide_name_index ON slides (\"name\");",
+      "CREATE INDEX slide_patient_index ON slides (patient_id);",
+      "ALTER TABLE slides ADD FOREIGN KEY (patient_id) REFERENCES patients;"
     )
   ),
   super_categories = list(
