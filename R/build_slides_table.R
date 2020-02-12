@@ -10,7 +10,8 @@ build_slides_table <- function() {
   slides <- slides %>%
     dplyr::bind_rows(dplyr::tibble(
       name = character(),
-      description = character()
+      description = character(),
+      patient_barcode = character()
     )) %>%
     dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::filter(!is.na(name)) %>%

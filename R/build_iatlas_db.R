@@ -18,7 +18,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
-  num_skippable_steps <- 18 # search this file and count for run_skippable_function calls
+  num_skippable_steps <- 17 # search this file and count for run_skippable_function calls
   skippable_step_count <- 1
 
   tictoc::tic(paste0("Time taken to build iAtlas DB"))
@@ -79,7 +79,6 @@ build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, 
   run_skippable_function(build_mutation_codes_to_gene_types_table)
   run_skippable_function(build_patients_table)
   run_skippable_function(build_slides_table)
-  run_skippable_function(build_patients_to_slides_table)
   run_skippable_function(build_samples_table)
   run_skippable_function(build_samples_to_tags_table)
   run_skippable_function(build_features_to_samples_table)
