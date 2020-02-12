@@ -1,4 +1,4 @@
-load_config <- function(configName) {
+load_config <- function(configName = "dev") {
   dbConfig = config::get("database", config = configName)
   .GlobalEnv$DB_NAME <- Sys.getenv("DB_NAME",  unset = dbConfig$name)
   .GlobalEnv$DB_HOST <- Sys.getenv("DB_HOST",  unset = dbConfig$host)
