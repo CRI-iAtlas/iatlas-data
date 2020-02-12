@@ -1,0 +1,28 @@
+Package: iatlas.data
+Title: iAtlas Data
+Version: 0.0.1
+Authors@R: c(
+    person(given = "Jon",
+           family = "Ryser",
+           role = c("aut", "cre"),
+           email = "jon@genui.co"),
+    person(given = "Shane",
+           family = "Delamore",
+           role = "aut",
+           email = "shane@genui.co")
+    )
+Description: Data and scripts to build said data into a Postgres database for the iAtlas app.
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+Imports:
+    devtools,
+    covr,
+    testthat,
+    crayon,
+    tictoc,
+    stringi,
+    magrittr,
+    feather,
+    RPostgres,
+    pool

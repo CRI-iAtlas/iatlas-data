@@ -1,0 +1,104 @@
+# Input variables
+# - Core R release number (e.g. 3.6.2)
+# - Postgresql release number (e.g. 11.5)
+# - RDS target URL
+# - RDS target credentials
+# - Environment name?
+
+variables:
+  POSTGRES_DB: iatlas_dev
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: docker
+  R_VERSION: "3.6.2"
+  CI: "1"
+
+stages:
+  - build_container
+  - test_data
+  - build_data
+  - deploy_to_staging
+  - deploy_to_prod
+
+# The build container stage resolves dependencies and then publishes
+# a base container so it doesn't need to be done again for every single
+# build, only when the renv.lock file changes
+# It will push both a 'latest', and a container with a tag that matches
+# the MD5 hash of the renv.lock file
+Build Container:
+  stage: build_container
+  image: docker:19.03.1-dind
+  services:
+    - docker:19.03.1-dind
+  only:
+    refs:
+      - feature/feather_file_structure
+    changes:
+      - renv.lock
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - export RENV_HASH=`md5sum renv.lock | awk '{print $1}'`
+    - docker build
+      --build-arg R_VERSION
+      --cache-from ${CI_REGISTRY_IMAGE}:latest
+      --tag ${CI_REGISTRY_IMAGE}:latest
+      --tag ${CI_REGISTRY_IMAGE}:${RENV_HASH}
+      -f Dockerfile.build .
+    - docker push ${CI_REGISTRY_IMAGE}:latest
+    - docker push ${CI_REGISTRY_IMAGE}:renv-${RENV_HASH}
+
+# Test Data:
+#   stage: test_data
+#   image: rocker/verse:${R_VERSION}
+#   only:
+#     - staging
+#   script:
+#     - R -e "d"
+
+Build Database:
+  stage: build_data
+  only:
+    - feature/feather_file_structure
+  image: ${CI_REGISTRY_IMAGE}:latest
+  services:
+    - postgres:11.5
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - ${CI_PROJECT_DIR}/*.pgdata
+  artifacts:
+    name: "iatlas_data_${CI_COMMIT_REF_NAME}"
+    paths:
+      - ${CI_PROJECT_DIR}/*.pgdata
+    expire_in: 1 day
+  variables:
+    DB_NAME: ${POSTGRES_DB}
+    DB_HOST: postgres
+    DB_PORT: 5432
+    DB_USER: ${POSTGRES_USER}
+    DB_PW: ${POSTGRES_PASSWORD}
+
+  script:
+    # TEMPORARY: Pull the data file
+    - cd ${CI_PROJECT_DIR}/feather_files; wget https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0 -O EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
+    # Build the database structure
+    - cd ${CI_PROJECT_DIR}/sql; psql -a "postgres://postgres:docker@postgres/postgres" -f create_dev_db.sql
+    # Build the data
+    - cd ${CI_PROJECT_DIR}; R -e "build_iatlas_db(env=\"prod\")"
+    # Do a binary dump of the database
+    - pg_dump "postgres://postgres:docker@postgres/${POSTGRES_DB}" --format custom -f ${CI_PROJECT_DIR}/iatlas_dev.pgdata
+
+Deploy To Staging:
+  stage: deploy_to_staging
+  only:
+    - feature/feather_file_structure
+  image: postgres:11.5
+  variables:
+    # Don't pull the repo into this stage, it's not needed
+    # GIT_STRATEGY: none
+    STAGING_DB_NAME: iatlas_staging
+    STAGING_DB_HOST: sage-test.cau5la50px0r.us-west-2.rds.amazonaws.com
+    STAGING_DB_USER: postgres
+  script:
+    - ls -lart ${CI_PROJECT_DIR}/
+    - ${CI_PROJECT_DIR}/scripts/gitlab_build_db.sh $STAGING_DB_HOST $STAGING_DB_USER $STAGING_DB_PASSWORD $STAGING_DB_NAME

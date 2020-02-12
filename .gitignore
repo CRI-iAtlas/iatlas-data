@@ -1,3 +1,6 @@
+# used by git-log to rewrite usernames
+.mailmap
+
 # History files
 .Rhistory
 .Rapp.history
@@ -42,4 +45,7 @@ vignettes/*.pdf
 .DS_Store
 
 csv_files/
+docker/
 tsv_files/
+feather_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
+control_data*/

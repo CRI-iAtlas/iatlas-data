@@ -6,31 +6,78 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
 
 ## Install
 
-### Install Core Apps and System libraries
+### Requirements
+
+**IMPORTANT**: For the smoothest installation, install git-lfs BEFORE cloning this repository.
+
+> If you've already cloned, you may be able to do a `git pull` after installing git-lfs to fetch the large files (unverified).
+
+- git-lfs: [https://git-lfs.github.com](https://git-lfs.github.com)
+
+  - Some feather files are _very_ large. `git-lfs` is used to store these files.
+
+  - For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
 
 - R: [https://www.r-project.org/](https://www.r-project.org/) - v3.6.2
 
-- RStudio: [https://rstudio.com/products/rstudio/download/](https://rstudio.com/products/rstudio/download/)
+- RStudio: [https://rstudio.com/products/rstudio/download](https://rstudio.com/products/rstudio/download)
 
 - Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+
+  Ensure that the location of the repository is shared via docker:
+
+  - Mac: [https://docs.docker.com/docker-for-mac/#file-sharing](https://docs.docker.com/docker-for-mac/#file-sharing)
+
+  - Windows: [https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes)
+
+- libpq (postgres): [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
+
+- lib cairo: [https://www.cairographics.org/](https://www.cairographics.org/) (only required for iAtlas client)
+
+- gfortran (libgfortran): usually installed with gcc
+
+- Download the (very large) RNA Seq Expression file.
+
+  - Download [EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather](https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0) and put it in the `/feather_files` folder
+  - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).\
+    The original tsv is found at: [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
+- STOP your local postgres server, if you have one running. The scripts in this repository will spin up a postgres server in a docker container. Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
+
+#### Requirements: MacOS Install instructions
+
+Install package manager: [HomeBrew](https://brew.sh/) (or [MacPorts](https://www.macports.org/) or your package manager of choice)
+
+Then run these in your shell:
+
+- xcode-select --install
+- brew install R
+- brew install cairo
+- brew install git-lfs
+- brew install postgres
+- download and install RStudio: [https://rstudio.com/products/rstudio/download](https://rstudio.com/products/rstudio/download)
+- download and install Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
 
 ### Initialize R Packages and builds the Database
 
 To build the database locally:
 
-1. Clone this repository
+1. Open `iatlas-data.Rproj` in Rstudio.
 
-1. Open `iatlas-data.Rproj`
+1. Follow the instructions.
 
-1. Build the database locally with the following:
+When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
-   1. Build the database by executing the following in the R console:
+## Testing
 
-      ```R
-      build_iatlas_db(reset = "reset")
-      ```
+After completing installation, open the Rproj and run:
 
-   The databse should now be available on `localhost:5432`. The database is called `iatlas_dev`.
+```R
+# run tests:
+testthat::auto_test_package()
+
+# code coverage report:
+covr::report()
+```
 
 ## Data
 
