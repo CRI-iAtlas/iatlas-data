@@ -2,7 +2,7 @@ build_driver_results_table <- function() {
 
   # driver_results import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for driver_results."), fill = TRUE)
-  driver_results <- iatlas.data::read_iatlas_data_file(get_feather_file_folder(), "driver_results")
+  driver_results <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "driver_results")
   cat(crayon::blue("Imported feather files for driver_results."), fill = TRUE)
 
   # driver_results column fix ---------------------------------------------------
