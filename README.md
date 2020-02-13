@@ -74,9 +74,12 @@ After completing installation, open the Rproj and run:
 
 ```R
 # run tests:
+devtools::test()
+
+# run interactively:
 testthat::auto_test_package()
 
-# code coverage report:
+# get code coverage report:
 covr::report()
 ```
 
