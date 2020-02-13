@@ -9,6 +9,11 @@ create_global_db_pool <- function() {
   }
 }
 
+vivify_global_db_pool <- function() {
+  if (!present(.GlobalEnv$pool)) create_global_db_pool()
+  else .GlobalEnv$pool
+}
+
 release_global_db_pool <- function() {
   if (present(.GlobalEnv$pool)) {
     pool::poolClose(.GlobalEnv$pool)
@@ -19,11 +24,9 @@ release_global_db_pool <- function() {
 }
 
 with_db_pool <- function(f) {
-  if (cleanup_pool <- !present(.GlobalEnv$pool)) create_global_db_pool()
-  connection <- pool::poolCheckout(.GlobalEnv$pool)
+  connection <- pool::poolCheckout(vivify_global_db_pool())
   on.exit({
     pool::poolReturn(connection)
-    if (cleanup_pool) release_global_db_pool()
   })
 
   f(connection)
