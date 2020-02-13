@@ -1,6 +1,6 @@
 route_logs_to_file <- function() {
   logging::basicConfig()
-  logging::addHandler(logging::writeToFile, file="~/iatlas.data.log")
+  logging::addHandler(logging::writeToFile, file="/Users/shanebdavis/iatlas.data.log")
 }
 
 log_info <- function(...) {
