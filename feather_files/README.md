@@ -1,12 +1,10 @@
 # iAtlas Data Structures
 
-<span style="color: red; font: normal 1.4rem/1 arial">**Please Note:** This file is a work in progress. Please do not reference this file until this warning has been removed.</span>
-
 When importing data into iAtlas, it is very imprtant that the following conventions are followed. Doing so will get the new data into the iAtlas database and make it available for the app.
 
 ## Data Model
 
-Information on the data model can be found in the `data_model` folder which contains this [README.md](README.md#iatlas-data-model) file.
+Information on the data model can be found in the `data_model` folder which contains this [README.md](../data_model/README.md#iatlas-data-model) file.
 
 ## File Format
 

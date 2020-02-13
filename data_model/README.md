@@ -463,7 +463,7 @@ The following are descriptions of each field in each table. This should be exhau
 
 ## Data Structure
 
-Information on the data structure can be found in the `data_model` folder which contains this [DATA_STRUCTURES.md](DATA_STRUCTURES.md#iatlas-data-structures) markdown file.
+Information on the data structure can be found in the `feather_files` folder which contains this [README.md](../feather_files/README.md#iatlas-data-structures) markdown file.
 
 ## Data Model Diagram
 
