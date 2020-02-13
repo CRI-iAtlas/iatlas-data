@@ -41,6 +41,7 @@ Shiny-iAtlas is an interactive web portal that provides multiple analysis module
   - Download [EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather](https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0) and put it in the `/feather_files` folder
   - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).\
     The original tsv is found at: [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
+
 - STOP your local postgres server, if you have one running. The scripts in this repository will spin up a postgres server in a docker container. Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
 
 #### Requirements: MacOS Install instructions
@@ -83,11 +84,11 @@ covr::report()
 
 ### Data Model
 
-Information on the data model can be found in the `data_model` folder which contains this [README.md](data_model/README.md#iatlas-data-model) file.
+Information on the data model can be found in the `data_model` folder which contains this [README.md](./data_model/README.md#iatlas-data-model) file.
 
 ### Data Structure
 
-Information on the data structure can be found in the `data_model` folder which contains this [DATA_STRUCTURES.md](data_model/DATA_STRUCTURES.md#iatlas-data-structures) markdown file.
+Information on the data structure can be found in the `feather_files` folder which contains this [README.md](./feather_files/README.md#iatlas-data-structures) markdown file.
 
 ### Data Sources
 
