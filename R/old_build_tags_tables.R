@@ -8,26 +8,20 @@ old_build_tags_tables <- function() {
   parents <- initial_tags %>%
     dplyr::filter(!is.na(parent_group)) %>%
     dplyr::distinct(parent_group, .keep_all = TRUE) %>%
-    dplyr::select(parent_group, parent_group_display) %>%
-    dplyr::rename(name = parent_group,display = parent_group_display) %>%
-    tibble::add_column(characteristics = NA, color = NA, .after = "display") %>%
-    dplyr::arrange(name)
+    dplyr::select(name = parent_group, display = parent_group_display)
   subtype <- initial_tags %>%
     dplyr::filter(!is.na(subtype_group)) %>%
     dplyr::distinct(subtype_group, .keep_all = TRUE) %>%
-    dplyr::select(subtype_group, subtype_group_display) %>%
-    dplyr::rename(name = subtype_group, display = subtype_group_display) %>%
-    tibble::add_column(characteristics = NA, color = NA, .after = "display") %>%
-    dplyr::arrange(name)
+    dplyr::select(name = subtype_group, display = subtype_group_display)
   tags <- parents %>%
     dplyr::bind_rows(initial_tags, subtype) %>%
-    dplyr::arrange(name) %>%
-    dplyr::distinct(name, .keep_all = TRUE)
+    dplyr::distinct(name, .keep_all = TRUE) %>%
+    dplyr::arrange(name)
   cat(crayon::blue("Built tags data"), fill = TRUE)
 
   cat(crayon::magenta("Building tags table."), fill = TRUE)
   table_written <- tags %>%
-    dplyr::select(-c("parent_group", "parent_group_display", "subtype_group", "subtype_group_display")) %>%
+    dplyr::select(name, characteristics, display, color) %>%
     iatlas.data::replace_table("tags")
   cat(crayon::blue("Built tags table. (", nrow(tags), "rows )"), fill = TRUE, sep = " ")
 
@@ -46,6 +40,7 @@ old_build_tags_tables <- function() {
     dplyr::select(tag_id, related_tag_id)
   tags_to_tags <- related_parent_tags %>%
     dplyr::bind_rows(related_subtype_tags) %>%
+    dplyr::filter(!is.na(related_tag_id)) %>%
     dplyr::distinct(tag_id, related_tag_id)
   cat(crayon::magenta("Built tags_to_tags data."), fill = TRUE)
 
