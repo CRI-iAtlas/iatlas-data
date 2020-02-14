@@ -15,10 +15,10 @@ build_genes_samples_mutations_files <- function() {
     cat_genes_samples_mutations_status("Get the initial values from the genes_samples_mutations table.")
     genes_samples_mutations <- current_pool %>% dplyr::tbl("genes_samples_mutations")
 
-    cat_genes_samples_mutations_status("Get the gene entrezs and hgncs from the genes table.")
+    cat_genes_samples_mutations_status("Get the gene entrezs from the genes table.")
     genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(id, entrez, hgnc),
+        dplyr::select(id, entrez),
       by = c("gene_id" = "id")
     )
 
@@ -38,8 +38,8 @@ build_genes_samples_mutations_files <- function() {
 
     cat_genes_samples_mutations_status("Clean up the data set.")
     genes_samples_mutations <- genes_samples_mutations %>%
-      dplyr::distinct(entrez, hgnc, sample, mutation_code, status) %>%
-      dplyr::arrange(entrez, hgnc, mutation_code, sample)
+      dplyr::distinct(entrez, sample, mutation_code, status) %>%
+      dplyr::arrange(entrez, sample, mutation_code)
 
     cat_genes_samples_mutations_status("Execute the query and return a tibble.")
     genes_samples_mutations <- genes_samples_mutations %>% dplyr::as_tibble()
