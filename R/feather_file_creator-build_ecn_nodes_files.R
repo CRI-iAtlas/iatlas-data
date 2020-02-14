@@ -49,8 +49,7 @@ build_ecn_nodes_files <- function() {
         dplyr::as_tibble(),
       by = "node"
     ) %>%
-      dplyr::filter(!is.na(gene_id)) %>%
-      dplyr::rename(hgnc = node)
+      dplyr::filter(!is.na(gene_id))
   }
 
   cat_ecn_nodes_status("Creating the nodes_TCGAImmune data.")
@@ -62,7 +61,7 @@ build_ecn_nodes_files <- function() {
   genes_nodes_TCGAImmune <- nodes_TCGAImmune %>% join_genes()
   nodes_TCGAImmune <- features_nodes_TCGAImmune %>%
     dplyr::bind_rows(genes_nodes_TCGAImmune) %>%
-    dplyr::select(entrez, hgnc, feature, tag, score)
+    dplyr::select(entrez, feature, tag, score)
 
   cat_ecn_nodes_status("Creating the nodes_TCGAStudy_Immune data.")
   nodes_TCGAStudy_Immune <- feather::read_feather(apply_path("nodes_TCGAStudy_Immune.feather")) %>%
@@ -73,7 +72,7 @@ build_ecn_nodes_files <- function() {
   genes_nodes_TCGAStudy_Immune <- nodes_TCGAStudy_Immune %>% join_genes()
   nodes_TCGAStudy_Immune <- features_nodes_TCGAStudy_Immune %>%
     dplyr::bind_rows(genes_nodes_TCGAStudy_Immune) %>%
-    dplyr::select(entrez, hgnc, feature, tag, tag.01, score)
+    dplyr::select(entrez, feature, tag, tag.01, score)
 
   cat_ecn_nodes_status("Creating the nodes_TCGAStudy data.")
   nodes_TCGAStudy <- feather::read_feather(apply_path("nodes_TCGAStudy.feather")) %>%
@@ -84,7 +83,7 @@ build_ecn_nodes_files <- function() {
   genes_nodes_TCGAStudy <- nodes_TCGAStudy %>% join_genes()
   nodes_TCGAStudy <- features_nodes_TCGAStudy %>%
     dplyr::bind_rows(genes_nodes_TCGAStudy) %>%
-    dplyr::select(entrez, hgnc, feature, tag, score)
+    dplyr::select(entrez, feature, tag, score)
 
   cat_ecn_nodes_status("Creating the nodes_TCGASubtype data.")
   nodes_TCGASubtype <- feather::read_feather(apply_path("nodes_TCGASubtype.feather")) %>%
@@ -95,7 +94,7 @@ build_ecn_nodes_files <- function() {
   genes_nodes_TCGASubtype <- nodes_TCGASubtype %>% join_genes()
   nodes_TCGASubtype <- features_nodes_TCGASubtype %>%
     dplyr::bind_rows(genes_nodes_TCGASubtype) %>%
-    dplyr::select(entrez, hgnc, feature, tag, score)
+    dplyr::select(entrez, feature, tag, score)
 
   pool::poolReturn(current_pool)
 
