@@ -6,9 +6,13 @@ old_build_slides_table <- function() {
     dplyr::distinct(name, sample)
 
   slides <- slides %>% dplyr::left_join(
-    iatlas.data::old_read_samples() %>% dplyr::select(sample, patient_id),
+    iatlas.data::read_table("samples") %>%
+      dplyr::as_tibble() %>%
+      dplyr::select(sample = name, patient_id),
     by = "sample"
-  ) %>%
+  )
+
+  slides <- slides %>%
     dplyr::filter(!is.na(patient_id)) %>%
     dplyr::distinct(name, patient_id) %>%
     dplyr::arrange(name, patient_id)
