@@ -43,26 +43,23 @@ old_build_genes_to_samples_table <- function() {
 
   cat_genes_to_samples_status("Joining gene_ids.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(old_read_genes() %>% dplyr::rename(gene_id = id), by = "hgnc")
+    dplyr::left_join(old_read_genes(), by = "hgnc")
 
   cat_genes_to_samples_status("Joining mutation_code_ids.")
-  mutation_codes <- iatlas.data::read_table("mutation_codes") %>% dplyr::as_tibble()
-  genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(mutation_codes %>% dplyr::rename(mutation_code_id = id), by = "code")
+  genes_to_samples <- genes_to_samples %>% dplyr::left_join(old_read_mutation_codes(), by = "code")
 
   # cat_genes_to_samples_status("Ensuring no duplicates.")
   genes_to_samples <- genes_to_samples %>% dplyr::select(sample, gene_id, mutation_code_id, status, rna_seq_expr)
 
   cat_genes_to_samples_status("Joining samples to get ids.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::left_join(old_read_samples(), by = c("sample" = "name"))
+    dplyr::left_join(old_read_samples(), by = "sample")
 
   # cat_genes_to_samples_status("Ensuring no duplicates.")
-  genes_to_samples <- genes_to_samples %>% dplyr::select(id, gene_id, mutation_code_id, status, rna_seq_expr)
+  genes_to_samples <- genes_to_samples %>% dplyr::select(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
 
   cat_genes_to_samples_status("Rename id to sample_id and arrange.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::rename(sample_id = id) %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
 
   genes_to_samples <- genes_to_samples %>%

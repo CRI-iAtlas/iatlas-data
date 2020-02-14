@@ -62,6 +62,10 @@ The conventions for the feather files in each folder are as follows:
 
     The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
 
+  - _mutation_code_
+
+    The mutation code associated with this driver result. These mutation codes MUST exist in data in the `mutation_codes` folder.
+
   - _tag_
 
     The tag name associated with this driver result. These tags MUST exist in data in the `tags` folder.

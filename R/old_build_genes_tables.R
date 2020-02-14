@@ -42,7 +42,7 @@ old_build_genes_tables <- function() {
     dplyr::rename(io_landscape_name = display2) %>%
     dplyr::mutate(references = iatlas.data::link_to_references(link)) %>%
     dplyr::select(-c("display", "link")) %>%
-    dplyr::left_join(immunomodulators, by = "gene",suffix = c("",".y"))  %>%
+    dplyr::left_join(immunomodulators, by = "gene", suffix = c("",".y"))  %>%
     dplyr::select(-dplyr::ends_with(".y")) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
@@ -58,8 +58,8 @@ old_build_genes_tables <- function() {
   mutation_codes <- driver_mutations %>%
     dplyr::distinct(gene) %>%
     dplyr::mutate(code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA)) %>%
-    dplyr::distinct(code) %>%
-    dplyr::filter(!is.na(code))
+    dplyr::filter(!is.na(code)) %>%
+    dplyr::distinct(code)
   cat(crayon::blue("Built mutation_codes data."), fill = TRUE)
 
   cat(crayon::magenta("Building mutation_codes table."), fill = TRUE)
@@ -79,7 +79,7 @@ old_build_genes_tables <- function() {
   all_genes <- dplyr::bind_rows(immunomodulators, io_targets)
   all_genes <- ecns %>%
     dplyr::select(-c("type")) %>%
-    dplyr::full_join(all_genes, by = "gene",suffix = c("",".y")) %>%
+    dplyr::full_join(all_genes, by = "gene", suffix = c("",".y")) %>%
     dplyr::select(-dplyr::ends_with(".y")) %>%
     dplyr::distinct(gene, .keep_all = TRUE)
   cat(crayon::blue("Bound ecn, immunomodulators, and io_targets."), fill = TRUE)
@@ -89,11 +89,19 @@ old_build_genes_tables <- function() {
     dplyr::full_join(all_genes, by = "gene") %>%
     dplyr::rename(hgnc = gene) %>%
     dplyr::arrange(hgnc)
-  all_genes <- all_genes %>%
-    dplyr::left_join(
-      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
-      by = "hgnc"
-    )
+  all_genes <- all_genes %>% dplyr::left_join(
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
+    by = "hgnc"
+  )
+  all_genes <- all_genes %>% dplyr::left_join(
+    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/missing_genes.feather"),
+    by = "hgnc"
+  ) %>%
+    dplyr::mutate(
+      description = ifelse(is.na(description.x), description.y, description.x),
+      entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x)
+    ) %>%
+    dplyr::select(-c("description.x", "description.y", "entrez.y", "entrez.x"))
   cat(crayon::blue("Built all gene data."), fill = TRUE)
 
   # Clean up.
@@ -114,12 +122,10 @@ old_build_genes_tables <- function() {
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
-  mutation_codes_to_gene_types <- iatlas.data::read_table("mutation_codes") %>%
-    dplyr::rename(mutation_code_id = id) %>%
+  mutation_codes_to_gene_types <- old_read_mutation_codes() %>%
     tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
     dplyr::left_join(iatlas.data::read_table("gene_types"), by = c("type" = "name")) %>%
-    dplyr::rename(type_id = id) %>%
-    dplyr::distinct(mutation_code_id, type_id)
+    dplyr::distinct(mutation_code_id, type_id = id)
   cat(crayon::blue("Built mutation_codes_to_gene_types data (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types table."), fill = TRUE)
@@ -239,8 +245,8 @@ old_build_genes_tables <- function() {
 
   genes_to_types <- driver_mutations %>%
     dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
-    dplyr::inner_join(old_read_genes(), by = c("gene" = "hgnc")) %>%
-    dplyr::rename(gene_id = id) %>%
+    dplyr::mutate(hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)) %>%
+    dplyr::left_join(old_read_genes(), by = "hgnc") %>%
     dplyr::distinct(gene_id, type_id) %>%
     dplyr::arrange(gene_id, type_id)
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
