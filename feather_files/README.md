@@ -173,43 +173,43 @@ The conventions for the feather files in each folder are as follows:
 
     A description of the gene.
 
-  - _friendly_name_
+  - _friendly_name_ (optional)
 
     A human friendly display name for the gene.
 
-  - _io_landscape_name_
+  - _io_landscape_name_ (optional)
 
     The IO Landscape name for the gene.
 
-  - _gene_family_
+  - _gene_family_ (optional)
 
     The gene family of the gene.
 
-  - _gene_function_
+  - _gene_function_ (optional)
 
     The gene function of the gene.
 
-  - _immune_checkpoint_
+  - _immune_checkpoint_ (optional)
 
     The immune checkpoint for the gene.
 
-  - _node_type_
+  - _node_type_ (optional)
 
     The node type of the gene.
 
-  - _pathway_
+  - _pathway_ (optional)
 
     The pathway of the gene.
 
-  - _super_category_
+  - _super_category_ (optional)
 
     The super category of the gene.
 
-  - _therapy_type_
+  - _therapy_type_ (optional)
 
     The therapy type of the gene.
 
-  - _references_
+  - _references_ (optional)
 
     URL references for the gene. This MUST be formatted as comma separated URLs inside curly braces -ie:\
     multiple references -> `{http://some-reference-url,https://another-reference-url}`\
@@ -264,27 +264,27 @@ The conventions for the feather files in each folder are as follows:
 
     The unique identifier representing a patient.
 
-  - _age_
+  - _age_ (optional)
 
     The age of the patient.
 
-  - _ethinicity_
+  - _ethinicity_ (optional)
 
     The ethinicity of the patient.
 
-  - _gender_
+  - _gender_ (optional)
 
     The gender of the patient.
 
-  - _height_
+  - _height_ (optional)
 
     The height of the patient.
 
-  - _race_
+  - _race_ (optional)
 
     The race of the patient.
 
-  - _weight_
+  - _weight_ (optional)
 
     The weight of the patient.
 
@@ -324,7 +324,7 @@ The conventions for the feather files in each folder are as follows:
 
   - _characteristics_
 
-    Any identifying charachteristics of the tag.
+    Any identifying characteristics of the tag.
 
   - _display_
 

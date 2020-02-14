@@ -13,7 +13,7 @@ timed <- function(v, before_message = NA, after_message = "", message = NA) {
 
 build_references <- function(reference) {
   return(ifelse(
-    !identical(reference, "NA") & !is.na(reference),
+    reference != "NA" & !is.na(reference),
     paste0("{", reference %>% base::strsplit("\\s\\|\\s") %>% stringi::stri_join_list(sep = ','), "}"),
     NA
   ))

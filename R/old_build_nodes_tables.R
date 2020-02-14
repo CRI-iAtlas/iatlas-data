@@ -23,14 +23,14 @@ old_build_nodes_tables <- function() {
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
   gene_nodes <- all_nodes %>% dplyr::left_join(
     iatlas.data::old_read_genes() %>%
-      dplyr::select(gene_id = id, node = hgnc),
+      dplyr::select(gene_id, node = hgnc),
     by = "node"
   ) %>%
     dplyr::filter(!is.na(gene_id))
 
   feature_nodes <- all_nodes %>% dplyr::left_join(
     iatlas.data::old_read_features() %>%
-      dplyr::select(feature_id = id, node = name),
+      dplyr::select(feature_id, node = feature),
     by = "node"
   ) %>%
     dplyr::filter(!is.na(feature_id))
@@ -52,14 +52,14 @@ old_build_nodes_tables <- function() {
 
   node_set_group <- nodes %>%
     dplyr::left_join(
-      old_read_tags() %>% dplyr::select(tag_id = id, tag.01 = name),
+      old_read_tags() %>% dplyr::select(tag_id, tag.01 = tag),
       by = "tag.01"
     ) %>%
     dplyr::filter(!is.na(tag_id))
 
   node_set_immune <- nodes %>%
     dplyr::left_join(
-      old_read_tags() %>% dplyr::select(tag_id = id, tag.02 = name),
+      old_read_tags() %>% dplyr::select(tag_id, tag.02 = tag),
       by = "tag.02"
     ) %>%
     dplyr::filter(!is.na(tag_id))
