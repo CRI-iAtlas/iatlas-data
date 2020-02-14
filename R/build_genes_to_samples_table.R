@@ -10,7 +10,6 @@ build_genes_to_samples_table <- function() {
 
   # genes_to_samples column fix ---------------------------------------------------
   cat(crayon::magenta("Ensuring genes_to_samples have all the correct columns and no dupes."), fill = TRUE)
-  # TODO: This should be filtered by entrez not hgnc.
   genes_to_samples <- genes_to_samples %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = integer(),
@@ -19,8 +18,8 @@ build_genes_to_samples_table <- function() {
       rna_seq_expr = numeric()
     )) %>%
     dplyr::distinct(entrez, hgnc, sample, rna_seq_expr) %>%
-    dplyr::filter((!is.na(entrez) | !is.na(hgnc)) & !is.na(sample)) %>%
-    iatlas.data::resolve_df_dupes(keys = c("hgnc", "sample")) %>%
+    dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez", "sample")) %>%
     dplyr::select(entrez, hgnc, sample, rna_seq_expr) %>%
     dplyr::arrange(entrez, hgnc, sample)
   cat(crayon::blue("Ensured genes_to_samples have all the correct columns and no dupes."), fill = TRUE)
@@ -28,7 +27,7 @@ build_genes_to_samples_table <- function() {
   # genes_to_samples data ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
   # TODO: This should be joined by entrez.
-  genes_to_samples <- genes_to_samples %>% dplyr::left_join(iatlas.data::get_genes(), by = "hgnc")
+  genes_to_samples <- genes_to_samples %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
   genes_to_samples <- genes_to_samples %>% dplyr::left_join(
     iatlas.data::get_samples() %>% dplyr::select(sample_id = id, sample = name),

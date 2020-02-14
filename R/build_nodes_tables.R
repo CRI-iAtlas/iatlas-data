@@ -16,14 +16,13 @@ build_nodes_tables <- function() {
       score = numeric()
     )) %>%
     dplyr::distinct() %>%
-    dplyr::arrange(entrez, hgnc, feature)
+    dplyr::arrange(entrez, feature)
   cat(crayon::blue("Ensured nodes have all the correct columns and no dupes."), fill = TRUE)
 
   # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
-  # This should be use the entrez instead of the hgnc.
   nodes <- nodes %>%
-    dplyr::left_join(iatlas.data::get_genes() %>% dplyr::select(gene_id, hgnc), by = "hgnc")
+    dplyr::left_join(iatlas.data::get_genes() %>% dplyr::select(gene_id, entrez), by = "entrez")
 
   nodes <- nodes %>%
     dplyr::left_join(iatlas.data::get_features(), by = "feature")
@@ -82,17 +81,16 @@ build_nodes_tables <- function() {
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>% dplyr::left_join(
     nodes %>%
-      dplyr::filter(!is.na(hgnc)) %>%
-      dplyr::rename(node_1_id = node_id) %>%
-      dplyr::select(-c("entrez", "feature", "feature_id", "gene_id", "score")),
-    by = c("from" = "hgnc", node_tag_column_names)
+      dplyr::filter(!is.na(entrez)) %>%
+      dplyr::select(node_1_id = node_id, entrez, node_tag_column_names) %>%
+      dplyr::mutate(entrez = entrez %>% as.character()),
+    by = c("from" = "entrez", node_tag_column_names)
   )
 
   edges <- edges %>% dplyr::left_join(
     nodes %>%
       dplyr::filter(!is.na(feature)) %>%
-      dplyr::rename(node_1_id = node_id) %>%
-      dplyr::select(-c("entrez", "hgnc", "feature_id", "gene_id", "score")),
+      dplyr::select(node_1_id = node_id, feature, node_tag_column_names),
     by = c("from" = "feature", node_tag_column_names)
   )
 
@@ -102,17 +100,16 @@ build_nodes_tables <- function() {
 
   edges <- edges %>% dplyr::left_join(
     nodes %>%
-      dplyr::filter(!is.na(hgnc)) %>%
-      dplyr::rename(node_2_id = node_id) %>%
-      dplyr::select(-c("entrez", "feature", "feature_id", "gene_id", "score")),
-    by = c("to" = "hgnc", node_tag_column_names)
+      dplyr::filter(!is.na(entrez)) %>%
+      dplyr::select(node_2_id = node_id, entrez, node_tag_column_names) %>%
+      dplyr::mutate(entrez = entrez %>% as.character()),
+    by = c("to" = "entrez", node_tag_column_names)
   )
 
   edges <- edges %>% dplyr::left_join(
     nodes %>%
       dplyr::filter(!is.na(feature)) %>%
-      dplyr::rename(node_2_id = node_id) %>%
-      dplyr::select(-c("entrez", "hgnc", "feature_id", "gene_id", "score")),
+      dplyr::select(node_2_id = node_id, feature, node_tag_column_names),
     by = c("to" = "feature", node_tag_column_names)
   )
 

@@ -25,15 +25,15 @@ build_genes_tables <- function() {
       therapy_type = character()
     )) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
-    dplyr::filter((!is.na(entrez) | !is.na(hgnc))) %>%
+    dplyr::filter(!is.na(entrez)) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
-    iatlas.data::resolve_df_dupes(keys = c("hgnc")) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
     dplyr::select(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
   # entrez fix ---------------------------------------------------
-  cat(crayon::magenta("Ensure genes have entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
+  cat(crayon::magenta("Ensure genes have the correct entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(
       iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather") %>%

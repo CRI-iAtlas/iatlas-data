@@ -9,7 +9,6 @@ build_genes_to_types_table <- function() {
 
   # genes_to_types column fix ---------------------------------------------------
   cat(crayon::magenta("Ensuring genes_to_types have all the correct columns and no dupes."), fill = TRUE)
-  # TODO: This should be filtered by entrez not hgnc.
   genes_to_types <- genes_to_types %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
@@ -17,15 +16,15 @@ build_genes_to_types_table <- function() {
       gene_type = character()
     )) %>%
     dplyr::distinct(entrez, hgnc, gene_type) %>%
-    dplyr::filter((!is.na(entrez) | !is.na(hgnc)) & !is.na(gene_type)) %>%
-    iatlas.data::resolve_df_dupes(keys = c("hgnc", "gene_type")) %>%
+    dplyr::filter(!is.na(entrez) & !is.na(gene_type)) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez", "gene_type")) %>%
     dplyr::select(entrez, hgnc, gene_type) %>%
     dplyr::arrange(entrez, hgnc, gene_type)
   cat(crayon::blue("Ensured genes_to_types have all the correct columns and no dupes."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types data."), fill = TRUE)
   # This should be joined by entrez.
-  genes_to_types <- genes_to_types %>% dplyr::left_join(get_genes(), by = "hgnc")
+  genes_to_types <- genes_to_types %>% dplyr::left_join(get_genes(), by = "entrez")
 
   genes_to_types <- genes_to_types %>% dplyr::left_join(
     iatlas.data::read_table("gene_types") %>%
