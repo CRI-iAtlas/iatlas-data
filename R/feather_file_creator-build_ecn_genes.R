@@ -15,11 +15,10 @@ build_ecn_genes <- function() {
     dplyr::rename(display = FriendlyName) %>%
     tibble::add_column(type = "extra_cellular_network")
 
-  node_names <- node_names %>%
-    dplyr::inner_join(
-      gene_ids %>% dplyr::mutate_at(dplyr::vars(entrez), as.numeric),
-      by = "hgnc"
-    )
+  node_names <- node_names %>% dplyr::left_join(
+    gene_ids %>% dplyr::mutate_at(dplyr::vars(entrez), as.numeric),
+    by = "hgnc"
+  )
 
   node_names %>% feather::write_feather(paste0(getwd(), "/feather_files/ecn_genes.feather"))
 
