@@ -114,8 +114,7 @@ old_build_genes_tables <- function() {
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
-  mutation_codes_to_gene_types <- iatlas.data::read_table("mutation_codes") %>%
-    dplyr::rename(mutation_code_id = id) %>%
+  mutation_codes_to_gene_types <- old_read_mutation_codes() %>%
     tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
     dplyr::left_join(iatlas.data::read_table("gene_types"), by = c("type" = "name")) %>%
     dplyr::rename(type_id = id) %>%
@@ -239,8 +238,7 @@ old_build_genes_tables <- function() {
 
   genes_to_types <- driver_mutations %>%
     dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
-    dplyr::inner_join(old_read_genes(), by = c("gene" = "hgnc")) %>%
-    dplyr::rename(gene_id = id) %>%
+    dplyr::left_join(old_read_genes(), by = c("gene" = "hgnc")) %>%
     dplyr::distinct(gene_id, type_id) %>%
     dplyr::arrange(gene_id, type_id)
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)

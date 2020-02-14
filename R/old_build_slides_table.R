@@ -6,8 +6,7 @@ old_build_slides_table <- function() {
     dplyr::distinct(name, sample)
 
   slides <- slides %>% dplyr::left_join(
-    iatlas.data::old_read_samples() %>%
-      dplyr::select(sample = name, patient_id),
+    iatlas.data::old_read_samples() %>% dplyr::select(sample, patient_id),
     by = "sample"
   ) %>%
     dplyr::filter(!is.na(patient_id)) %>%

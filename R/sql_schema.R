@@ -22,16 +22,19 @@ sql_schema <- list(
         n_mut INTEGER,
         feature_id INTEGER,
         gene_id INTEGER,
+        mutation_code_id INTEGER,
         tag_id INTEGER,
         PRIMARY KEY (id)
       );",
     addSchema = c(
       "CREATE INDEX driver_results_feature_id_index ON driver_results (feature_id);",
       "CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);",
-      "CREATE INDEX driver_results_tag_id_id_index ON driver_results (tag_id);",
+      "CREATE INDEX driver_results_tag_id_index ON driver_results (tag_id);",
+      "CREATE INDEX driver_results_mutation_code_id_index ON driver_results (mutation_code_id);",
       "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
-      "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+      "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
     )
   ),
   edges = list (

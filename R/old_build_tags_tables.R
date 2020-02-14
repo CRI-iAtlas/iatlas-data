@@ -34,19 +34,16 @@ old_build_tags_tables <- function() {
   cat(crayon::magenta("Building tags_to_tags data."), fill = TRUE)
   tags_db <- old_read_tags()
   all_tags_with_tag_ids <- tags %>%
-    dplyr::inner_join(tags_db, by = "name") %>%
-    dplyr::select(id, parent_group, subtype_group) %>%
-    dplyr::rename(tag_id = id)
+    dplyr::left_join(tags_db, by = c("name" = "tag")) %>%
+    dplyr::select(tag_id, parent_group, subtype_group)
   related_parent_tags <- all_tags_with_tag_ids %>%
     dplyr::rename(name = parent_group) %>%
-    dplyr::inner_join(tags_db, by = "name") %>%
-    dplyr::select(tag_id, id) %>%
-    dplyr::rename(related_tag_id = id)
+    dplyr::left_join(tags_db %>% dplyr::rename(related_tag_id = tag_id), by = c("name" = "tag")) %>%
+    dplyr::select(tag_id, related_tag_id)
   related_subtype_tags <- all_tags_with_tag_ids %>%
     dplyr::rename(name = subtype_group) %>%
-    dplyr::inner_join(tags_db, by = "name") %>%
-    dplyr::select(tag_id, id) %>%
-    dplyr::rename(related_tag_id = id)
+    dplyr::left_join(tags_db %>% dplyr::rename(related_tag_id = tag_id), by = c("name" = "tag")) %>%
+    dplyr::select(tag_id, related_tag_id)
   tags_to_tags <- related_parent_tags %>%
     dplyr::bind_rows(related_subtype_tags) %>%
     dplyr::distinct(tag_id, related_tag_id)
