@@ -15,10 +15,10 @@ build_genes_to_samples_files <- function() {
     cat_genes_to_samples_status("Get the initial values from the genes_to_samples table.")
     genes_to_samples <- current_pool %>% dplyr::tbl("genes_to_samples")
 
-    cat_genes_to_samples_status("Get the gene entrezs and hgncs from the genes table.")
+    cat_genes_to_samples_status("Get the gene entrezs from the genes table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(id, entrez, hgnc),
+        dplyr::select(id, entrez),
       by = c("gene_id" = "id")
     )
 
@@ -31,8 +31,8 @@ build_genes_to_samples_files <- function() {
 
     cat_genes_to_samples_status("Clean up the data set.")
     genes_to_samples <- genes_to_samples %>%
-      dplyr::distinct(entrez, hgnc, sample, rna_seq_expr) %>%
-      dplyr::arrange(entrez, hgnc, sample)
+      dplyr::distinct(entrez, sample, rna_seq_expr) %>%
+      dplyr::arrange(entrez, sample)
 
     cat_genes_to_samples_status("Execute the query and return a tibble.")
     genes_to_samples <- genes_to_samples %>% dplyr::as_tibble()
