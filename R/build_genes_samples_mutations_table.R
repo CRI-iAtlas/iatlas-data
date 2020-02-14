@@ -10,7 +10,6 @@ build_genes_samples_mutations_table <- function() {
 
   # genes_samples_mutations column fix ---------------------------------------------------
   cat(crayon::magenta("Ensuring genes_samples_mutations have all the correct columns and no dupes."), fill = TRUE)
-  # TODO: This should be filtered by entrez not hgnc.
   genes_samples_mutations <- genes_samples_mutations %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
@@ -19,16 +18,15 @@ build_genes_samples_mutations_table <- function() {
       status = character()
     )) %>%
     dplyr::distinct(entrez, hgnc, sample, mutation_code, status) %>%
-    dplyr::filter((!is.na(entrez) | !is.na(hgnc)) & !is.na(sample)) %>%
-    iatlas.data::resolve_df_dupes(keys = c("hgnc", "sample", "mutation_code")) %>%
+    dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez", "sample", "mutation_code")) %>%
     dplyr::select(entrez, hgnc, sample, mutation_code, status) %>%
     dplyr::arrange(entrez, hgnc, sample, mutation_code)
   cat(crayon::blue("Ensured genes_samples_mutations have all the correct columns and no dupes."), fill = TRUE)
 
   # genes_samples_mutations data ---------------------------------------------------
   cat(crayon::magenta("Building genes_samples_mutations data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
-  # TODO: This should be joined by entrez.
-  genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(iatlas.data::get_genes(), by = "hgnc")
+  genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
   genes_samples_mutations <- genes_samples_mutations %>% dplyr::left_join(
     iatlas.data::get_samples() %>% dplyr::select(sample_id = id, sample = name),
