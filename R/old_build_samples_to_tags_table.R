@@ -12,6 +12,7 @@ old_build_samples_to_tags_table <- function() {
     tibble::add_column(tag = "TCGA_Study") %>%
     dplyr::left_join(tags %>% dplyr::rename(new_tag_id = tag_id), by = "tag") %>%
     tidyr::pivot_longer(c("tag_id", "new_tag_id"), names_to = "delete", values_to = "tag_id") %>%
+    dplyr::filter(!is.na(tag_id)) %>%
     dplyr::distinct(sample, tag_id)
 
   sample_set_tcga_subtype <- all_samples %>%
@@ -22,6 +23,7 @@ old_build_samples_to_tags_table <- function() {
     tibble::add_column(tag = "TCGA_Subtype") %>%
     dplyr::left_join(tags %>% dplyr::rename(new_tag_id = tag_id), by = "tag") %>%
     tidyr::pivot_longer(c("tag_id", "new_tag_id"), names_to = "delete", values_to = "tag_id") %>%
+    dplyr::filter(!is.na(tag_id)) %>%
     dplyr::distinct(sample, tag_id)
 
   sample_set_immune_subtype <- all_samples %>%
@@ -32,6 +34,7 @@ old_build_samples_to_tags_table <- function() {
     tibble::add_column(tag = "Immune_Subtype") %>%
     dplyr::left_join(tags %>% dplyr::rename(new_tag_id = tag_id), by = "tag") %>%
     tidyr::pivot_longer(c("tag_id", "new_tag_id"), names_to = "delete", values_to = "tag_id") %>%
+    dplyr::filter(!is.na(tag_id)) %>%
     dplyr::distinct(sample, tag_id)
 
   samples_to_tags <- dplyr::bind_rows(
