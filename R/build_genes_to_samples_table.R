@@ -41,6 +41,6 @@ build_genes_to_samples_table <- function() {
   # genes_to_samples table ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples table."), fill = TRUE)
   table_written <- genes_to_samples %>% iatlas.data::replace_table("genes_to_samples")
-  cat(crayon::blue("Built genes_to_samples table."))
+  cat(crayon::blue("Built genes_to_samples table."), fill = TRUE)
 
 }
