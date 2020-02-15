@@ -28,7 +28,7 @@ build_features_to_samples_table <- function() {
   features_to_samples <- features_to_samples %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
   features_to_samples <- features_to_samples %>% dplyr::left_join(
-    get_samples() %>%
+    iatlas.data::get_samples() %>%
       dplyr::as_tibble() %>%
       dplyr::select(sample_id = id, sample = name),
     by = "sample"
