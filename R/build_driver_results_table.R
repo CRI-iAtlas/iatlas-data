@@ -10,7 +10,6 @@ build_driver_results_table <- function() {
   driver_results <- driver_results %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
-      hgnc = character(),
       tag = character(),
       feature = character(),
       mutation_code = character(),
@@ -21,9 +20,9 @@ build_driver_results_table <- function() {
       n_wt = integer(),
       n_mut = integer()
     )) %>%
-    dplyr::distinct(entrez, hgnc, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
+    dplyr::distinct(entrez, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "tag", "feature", "mutation_code")) %>%
-    dplyr::select(entrez, hgnc, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
+    dplyr::select(entrez, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
     dplyr::arrange(entrez, tag, feature, mutation_code)
   cat(crayon::blue("Ensured driver results have all the correct columns and no dupes."), fill = TRUE)
 
@@ -35,7 +34,7 @@ build_driver_results_table <- function() {
 
   driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_mutation_codes(), by = c("mutation_code" = "code"))
 
-  driver_results <- driver_results %>% dplyr::left_join(get_genes(), by = "entrez")
+  driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
   driver_results <- driver_results %>% dplyr::select(gene_id, tag_id, feature_id, mutation_code_id, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
   cat(crayon::blue("Built driver_results data."), fill = TRUE)

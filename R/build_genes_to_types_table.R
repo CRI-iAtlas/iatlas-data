@@ -12,19 +12,18 @@ build_genes_to_types_table <- function() {
   genes_to_types <- genes_to_types %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
-      hgnc = character(),
       gene_type = character()
     )) %>%
-    dplyr::distinct(entrez, hgnc, gene_type) %>%
+    dplyr::distinct(entrez, gene_type) %>%
     dplyr::filter(!is.na(entrez) & !is.na(gene_type)) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "gene_type")) %>%
-    dplyr::select(entrez, hgnc, gene_type) %>%
-    dplyr::arrange(entrez, hgnc, gene_type)
+    dplyr::select(entrez, gene_type) %>%
+    dplyr::arrange(entrez, gene_type)
   cat(crayon::blue("Ensured genes_to_types have all the correct columns and no dupes."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types data."), fill = TRUE)
   # This should be joined by entrez.
-  genes_to_types <- genes_to_types %>% dplyr::left_join(get_genes(), by = "entrez")
+  genes_to_types <- genes_to_types %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
   genes_to_types <- genes_to_types %>% dplyr::left_join(
     iatlas.data::read_table("gene_types") %>%

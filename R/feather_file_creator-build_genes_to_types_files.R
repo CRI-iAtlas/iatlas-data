@@ -25,14 +25,14 @@ build_genes_to_types_files <- function() {
     cat_genes_to_types_status("Get the genes from the genes table.")
     genes_to_types <- genes_to_types %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(gene_id = id, entrez, hgnc),
+        dplyr::select(gene_id = id, entrez),
       by = "gene_id"
     )
 
     cat_genes_to_types_status("Clean up the data set.")
     genes_to_types <- genes_to_types %>%
-      dplyr::distinct(entrez, hgnc, gene_type) %>%
-      dplyr::arrange(entrez, hgnc, gene_type)
+      dplyr::distinct(entrez, gene_type) %>%
+      dplyr::arrange(entrez, gene_type)
 
     cat_genes_to_types_status("Execute the query and return a tibble.")
     genes_to_types <- genes_to_types %>% dplyr::as_tibble()

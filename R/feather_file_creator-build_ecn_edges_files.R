@@ -13,6 +13,8 @@ build_ecn_edges_files <- function() {
 
   current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
+  genes <- current_pool %>% dplyr::tbl("genes") %>% dplyr::as_tibble() %>% dplyr::select(entrez, hgnc)
+
   fix_features <- function(df) {
     df %>%
       dplyr::rowwise() %>%
@@ -46,28 +48,60 @@ build_ecn_edges_files <- function() {
       )
   }
 
+  hgnc_to_entrez <- function(df) {
+    df <- df %>% dplyr::left_join(
+      genes, by = c("from" = "hgnc")
+    ) %>%
+      dplyr::bind_rows(dplyr::tibble(
+        entrez = numeric(),
+        from = character(),
+        to = character(),
+        tag = character(),
+        score = numeric()
+      )) %>%
+      dplyr::mutate(from = ifelse(!is.na(entrez), entrez %>% as.character(), from)) %>%
+      dplyr::select(-c("entrez"))
+
+    df %>% dplyr::left_join(
+      genes, by = c("to" = "hgnc")
+    ) %>%
+      dplyr::bind_rows(dplyr::tibble(
+        entrez = numeric(),
+        from = character(),
+        to = character(),
+        tag = character(),
+        score = numeric()
+      )) %>%
+      dplyr::mutate(to = ifelse(!is.na(entrez), entrez %>% as.character(), to)) %>%
+      dplyr::select(-c("entrez"))
+  }
+
   cat_ecn_edges_status("Creating the edges_TCGAImmune data.")
   edges_TCGAImmune <- feather::read_feather(apply_path("edges_TCGAImmune.feather")) %>%
     dplyr::distinct(from = From, to = To, tag = Group, score = ratioScore) %>%
     fix_features() %>%
+    hgnc_to_entrez() %>%
     dplyr::arrange(from, to, tag)
 
   cat_ecn_edges_status("Creating the edges_TCGAStudy_Immune data.")
   edges_TCGAStudy_Immune <- feather::read_feather(apply_path("edges_TCGAStudy_Immune.feather")) %>%
     dplyr::distinct(from = From, to = To, tag = Group, tag.01 = Immune, score = ratioScore) %>%
     fix_features() %>%
+    hgnc_to_entrez() %>%
     dplyr::arrange(from, to, tag, tag.01)
 
   cat_ecn_edges_status("Creating the edges_TCGAStudy data.")
   edges_TCGAStudy <- feather::read_feather(apply_path("edges_TCGAStudy.feather")) %>%
     dplyr::distinct(from = From, to = To, tag = Group, score = ratioScore) %>%
     fix_features() %>%
+    hgnc_to_entrez() %>%
     dplyr::arrange(from, to, tag)
 
   cat_ecn_edges_status("Creating the edges_TCGASubtype data.")
   edges_TCGASubtype <- feather::read_feather(apply_path("edges_TCGASubtype.feather")) %>%
     dplyr::distinct(from = From, to = To, tag = Group, score = ratioScore) %>%
     fix_features() %>%
+    hgnc_to_entrez() %>%
     dplyr::arrange(from, to, tag)
 
   pool::poolReturn(current_pool)

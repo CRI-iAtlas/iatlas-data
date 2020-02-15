@@ -25,7 +25,7 @@ build_driver_results_files <- function() {
     cat_results_status("Get genes related to the driver results.")
     driver_results <- driver_results %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(gene_id = id, entrez, hgnc),
+        dplyr::select(gene_id = id, entrez),
       by = "gene_id"
     )
 
@@ -44,7 +44,7 @@ build_driver_results_files <- function() {
     )
 
     cat_results_status("Clean up the data set.")
-    driver_results <- driver_results %>% dplyr::distinct(entrez, hgnc, feature, mutation_code, tag, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
+    driver_results <- driver_results %>% dplyr::distinct(entrez, feature, mutation_code, tag, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
 
     cat_results_status("Execute the query and return a tibble.")
     driver_results <- driver_results %>% dplyr::as_tibble()

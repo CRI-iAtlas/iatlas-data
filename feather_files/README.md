@@ -58,10 +58,6 @@ The conventions for the feather files in each folder are as follows:
 
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
-  - _hgnc_ (optional)
-
-    The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
-
   - _mutation_code_
 
     The mutation code associated with this driver result. These mutation codes MUST exist in data in the `mutation_codes` folder.
@@ -100,11 +96,11 @@ The conventions for the feather files in each folder are as follows:
 
   - _from_
 
-    The node the edge is starting from. This may be either a gene id (HGNC) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
+    The node the edge is starting from. This may be either a gene id (Entrez - NCBI Id) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
 
   - _to_
 
-    The node the edge is ending at. This may be either a gene id (HGNC) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
+    The node the edge is ending at. This may be either a gene id (Entrez - NCBI Id) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
 
   - _score_
 
@@ -165,7 +161,7 @@ The conventions for the feather files in each folder are as follows:
 
   #### Gene Column Names
 
-  - _entrez_
+  - _entrez_ (required)
 
     The entrez identifier of the gene. This is used through out the app to uniquely identify the gene. This is REQUIRED.
 
@@ -236,10 +232,6 @@ The conventions for the feather files in each folder are as follows:
   - _entrez_
 
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
-
-  - _hgnc_ (optional)
-
-    The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
 
   - _feature_
 
@@ -366,10 +358,6 @@ The conventions for the feather files in each folder are as follows:
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
-    - _hgnc_ (optional)
-
-      The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
-
     - _sample_
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
@@ -390,10 +378,6 @@ The conventions for the feather files in each folder are as follows:
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
-    - _hgnc_ (optional)
-
-      The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
-
     - _sample_
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
@@ -409,10 +393,6 @@ The conventions for the feather files in each folder are as follows:
     - _entrez_
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
-
-    - _hgnc_ (optional)
-
-      The HGNC or Hugo id of a gene. These genes MUST exist in data in the `genes` folder.
 
     - _gene_type_
 
