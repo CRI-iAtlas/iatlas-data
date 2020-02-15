@@ -245,4 +245,20 @@
     ))
   })
 
+  test_that("create_gene_expression_lookup returns the right values from the sample matrix",{
+    sample_matrix <- feather::read_feather("../test_data/RNASeqV2Sample.feather")
+    lookup <- create_gene_expression_lookup(sample_matrix)
+    expect_equal(lookup("A1CF","TCGA-OR-A5J2-01A-11R-A29S-07"), 0)
+    expect_equal(lookup("A2BP1","TCGA-OR-A5J2-01A-11R-A29S-07"), 5.6368)
+    expect_equal(lookup("AACS","TCGA-OR-A5JA-01A-11R-A29S-07"), 2354.6500)
+  })
+
+  test_that("create_gene_expression_lookup returns NA when gene_id or sample_id do not exist in the data",{
+    sample_matrix <- feather::read_feather("../test_data/RNASeqV2Sample.feather")
+    lookup <- create_gene_expression_lookup(sample_matrix)
+    expect_equal(lookup("ABCDEF","TCGA-OR-A5J2-01A-11R-A29S-07"), NA)
+    expect_equal(lookup("A2BP1","TCGA-OR-B5J9-01A-11R-A29S-07"), NA)
+    expect_equal(lookup("GENE_ID","SAMPLE_ID"), NA)
+  })
+
 })()
