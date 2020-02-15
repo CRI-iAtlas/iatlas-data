@@ -35,7 +35,7 @@ build_driver_results_table <- function() {
 
   driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_mutation_codes(), by = c("mutation_code" = "code"))
 
-  driver_results <- driver_results %>% dplyr::left_join(get_genes(), by = "entrez")
+  driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
   driver_results <- driver_results %>% dplyr::select(gene_id, tag_id, feature_id, mutation_code_id, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
   cat(crayon::blue("Built driver_results data."), fill = TRUE)
