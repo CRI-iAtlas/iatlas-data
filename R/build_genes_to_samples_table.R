@@ -13,15 +13,14 @@ build_genes_to_samples_table <- function() {
   genes_to_samples <- genes_to_samples %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = integer(),
-      hgnc = character(),
       sample = character(),
       rna_seq_expr = numeric()
     )) %>%
-    dplyr::distinct(entrez, hgnc, sample, rna_seq_expr) %>%
+    dplyr::distinct(entrez, sample, rna_seq_expr) %>%
     dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "sample")) %>%
-    dplyr::select(entrez, hgnc, sample, rna_seq_expr) %>%
-    dplyr::arrange(entrez, hgnc, sample)
+    dplyr::select(entrez, sample, rna_seq_expr) %>%
+    dplyr::arrange(entrez, sample)
   cat(crayon::blue("Ensured genes_to_samples have all the correct columns and no dupes."), fill = TRUE)
 
   # genes_to_samples data ---------------------------------------------------

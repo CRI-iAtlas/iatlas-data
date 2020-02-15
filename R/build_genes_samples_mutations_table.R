@@ -13,15 +13,14 @@ build_genes_samples_mutations_table <- function() {
   genes_samples_mutations <- genes_samples_mutations %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
-      hgnc = character(),
       mutation_code = character(),
       status = character()
     )) %>%
-    dplyr::distinct(entrez, hgnc, sample, mutation_code, status) %>%
+    dplyr::distinct(entrez, sample, mutation_code, status) %>%
     dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "sample", "mutation_code")) %>%
-    dplyr::select(entrez, hgnc, sample, mutation_code, status) %>%
-    dplyr::arrange(entrez, hgnc, sample, mutation_code)
+    dplyr::select(entrez, sample, mutation_code, status) %>%
+    dplyr::arrange(entrez, sample, mutation_code)
   cat(crayon::blue("Ensured genes_samples_mutations have all the correct columns and no dupes."), fill = TRUE)
 
   # genes_samples_mutations data ---------------------------------------------------

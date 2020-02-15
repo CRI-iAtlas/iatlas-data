@@ -10,7 +10,6 @@ build_nodes_tables <- function() {
   nodes <- nodes %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
-      hgnc = character(),
       feature = character(),
       tag = character(),
       score = numeric()
