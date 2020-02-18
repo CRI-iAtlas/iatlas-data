@@ -16,13 +16,17 @@ License: What license it uses
 Encoding: UTF-8
 LazyData: true
 Imports:
-    devtools,
-    covr,
-    testthat,
+    config,
     crayon,
-    tictoc,
-    stringi,
-    magrittr,
+    dplyr,
     feather,
+    janitor,
+    logging,
+    pool,
+    purrr,
+    rlang,
     RPostgres,
-    pool
+    stringi,
+    tibble,
+    tictoc,
+    tidyr
