@@ -22,11 +22,13 @@ Imports:
     feather,
     janitor,
     logging,
+    magrittr,
     pool,
     purrr,
     rlang,
     RPostgres,
     stringi,
+    testthat,
     tibble,
     tictoc,
     tidyr
