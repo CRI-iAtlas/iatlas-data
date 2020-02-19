@@ -2,11 +2,11 @@ build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL
 
   on.exit(finally)
 
-  option_equal <- function (a, b) {present(a) && present(b) && a == b}
+  option_equal <- function (a, b) {iatlas.data::present(a) && iatlas.data::present(b) && a == b}
 
   clear_globals <- function() {
-    if (present(.GlobalEnv$pipeline_stack_trace)) {rm(pipeline_stack_trace, pos = ".GlobalEnv")}
-    if (present(.GlobalEnv$resume)) {rm(resume, pos = ".GlobalEnv")}
+    if (iatlas.data::present(.GlobalEnv$pipeline_stack_trace)) {rm(pipeline_stack_trace, pos = ".GlobalEnv")}
+    if (iatlas.data::present(.GlobalEnv$resume)) {rm(resume, pos = ".GlobalEnv")}
   }
   clear_globals()
 

@@ -11,10 +11,10 @@
 #' @return nothing
 old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
-  option_equal <- function (a, b) {present(a) && present(b) && a == b}
+  option_equal <- function (a, b) {iatlas.data::present(a) && iatlas.data::present(b) && a == b}
   if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
-  if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
-  if (present(.GlobalEnv$iatlas_stack_trace)) {rm(iatlas_stack_trace, pos = ".GlobalEnv")}
+  if (iatlas.data::present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
+  if (iatlas.data::present(.GlobalEnv$iatlas_stack_trace)) {rm(iatlas_stack_trace, pos = ".GlobalEnv")}
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
@@ -66,13 +66,13 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   gcinfo(show_gc_info)
 
   # Reset the database so new data is not corrupted by any old data.
-  run_skippable_function(create_db, env, reset)
+  run_skippable_function(iatlas.data::create_db, env, reset)
 
   # Create a global variable to hold the pool DB connection.
   cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
 
-  set_feather_file_folder(feather_file_folder)
+  iatlas.data::set_feather_file_folder(feather_file_folder)
 
   run_skippable_function(old_build_features_tables)
   run_skippable_function(old_build_tags_tables)
@@ -90,14 +90,14 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   run_skippable_function(old_build_features_to_samples_table)
   run_skippable_function(old_build_genes_to_samples_table)
 
-  reset_results_cache()
+  iatlas.data::reset_results_cache()
 
   # Close the database connection.
   cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
   pool::poolClose(.GlobalEnv$pool)
   rm(pool, pos = ".GlobalEnv")
 
-  if (present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
+  if (iatlas.data::present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
 
   cat(crayon::bold(crayon::blue("\n================================================================================")), fill = TRUE)
   cat(crayon::bold(crayon::blue(paste0("SUCCESS! iAtlas DB created."))), fill = TRUE)

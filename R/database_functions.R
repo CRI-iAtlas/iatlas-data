@@ -1,7 +1,7 @@
 # Database helper functions.
 
 create_global_db_pool <- function() {
-  if (!present(.GlobalEnv$pool)) {
+  if (!iatlas.data::present(.GlobalEnv$pool)) {
     .GlobalEnv$pool <- iatlas.data::connect_to_db()
   } else {
     cat(crayon::yellow("WARNING-create_global_db_pool: global db pool already created\n"))
@@ -10,12 +10,12 @@ create_global_db_pool <- function() {
 }
 
 vivify_global_db_pool <- function() {
-  if (!present(.GlobalEnv$pool)) create_global_db_pool()
+  if (!iatlas.data::present(.GlobalEnv$pool)) create_global_db_pool()
   else .GlobalEnv$pool
 }
 
 release_global_db_pool <- function() {
-  if (present(.GlobalEnv$pool)) {
+  if (iatlas.data::present(.GlobalEnv$pool)) {
     pool::poolClose(.GlobalEnv$pool)
     rm(pool, pos = ".GlobalEnv")
   } else {
@@ -114,7 +114,7 @@ write_table_ts <- function(df, table_name) {
 validate_control_data <- function (data, table_name) {
   control_folder <- "./control_data/"
   control_file <- paste0(control_folder, table_name, ".feather")
-  if (present(.GlobalEnv$snapshot_control_data))
+  if (iatlas.data::present(.GlobalEnv$snapshot_control_data))
     rm(snapshot_control_data, pos = .GlobalEnv)
 
   if (file.exists(control_folder)) {

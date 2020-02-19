@@ -28,10 +28,10 @@ old_build_genes_to_samples_table <- function() {
 
   cat_genes_to_samples_status("Getting the correct RNA Seq Expr value.")
 
-  get_rna_seq_expr <- create_gene_expression_lookup(rna_seq_expr_matrix)
+  get_rna_seq_expr <- iatlas.data::create_gene_expression_lookup(rna_seq_expr_matrix)
 
   get_rna_value_from_matrix <- function(hgnc, barcode, patient_id, matrix)
-    if (present(patient_id)) get_rna_seq_expr(hgnc, barcode)
+    if (iatlas.data::present(patient_id)) get_rna_seq_expr(hgnc, barcode)
     else NA
 
   get_rna_value_from_matrix_v <- Vectorize(get_rna_value_from_matrix, vectorize.args = c("hgnc", "barcode", "patient_id"))
