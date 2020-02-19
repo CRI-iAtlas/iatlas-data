@@ -1,11 +1,11 @@
 resolve_df_dupes <- function(df, keys) {
 
       cat(crayon::blue(paste0("    ", nrow(df), " original records to check\n")))
-  timed(
+  iatlas.data::timed(
     before_message = paste0("resolving ", deparse(substitute(df)), " partial-duplicates...\n"),
     after_message = paste0("resolved ", deparse(substitute(df)), " partial-duplicates"),
     {
-      timed(
+      iatlas.data::timed(
         before_message = "  finding partial-duplicates\n",
         duplicated_records <- df %>% janitor::get_dupes(!!! rlang::syms(keys))
       )
@@ -18,7 +18,7 @@ resolve_df_dupes <- function(df, keys) {
 
         summarise_keys <- setdiff(names(df), keys)
 
-        timed(
+        iatlas.data::timed(
           before_message = "  flattening partial-duplicates\n",
           deduplicated_records <- duplicated_records %>%
             dplyr::group_by(!!! rlang::syms(keys)) %>%
@@ -27,7 +27,7 @@ resolve_df_dupes <- function(df, keys) {
 
         cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
 
-        timed(
+        iatlas.data::timed(
           before_message = "  removing old partial-duplicates",
           clean_records <- df %>% dplyr::anti_join(deduplicated_records, by = keys)
         )

@@ -11,11 +11,11 @@
 #' @return nothing
 build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
-  .GlobalEnv$create_db_en_env <- function() {create_db(env, reset)}
+  .GlobalEnv$create_db_en_env <- function() {iatlas.data::create_db(env, reset)}
 
-  set_feather_file_folder(feather_file_folder)
+  iatlas.data::set_feather_file_folder(feather_file_folder)
 
-  build_pipeline(
+  iatlas.data::build_pipeline(
     c(
       "create_db_en_env",
       "build_features_tables",
@@ -38,8 +38,8 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
     resume_at = resume_at,
     stop_at = stop_at,
     finally = {
-      reset_results_cache()
-      release_global_db_pool()
+      iatlas.data::reset_results_cache()
+      iatlas.data::release_global_db_pool()
     }
   )
 }
