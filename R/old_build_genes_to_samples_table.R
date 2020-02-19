@@ -1,4 +1,6 @@
 old_build_genes_to_samples_table <- function() {
+  default_mutation_code <- "(NS)"
+
   rna_seq_expr_matrix <- old_get_rna_seq_expr_matrix()
 
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
@@ -39,7 +41,8 @@ old_build_genes_to_samples_table <- function() {
 
   cat_genes_to_samples_status("Removing duplicates, second pass.")
   genes_to_samples <- genes_to_samples %>%
-    dplyr::distinct(sample, hgnc, code, status, rna_seq_expr)
+    dplyr::distinct(sample, hgnc, code, status, rna_seq_expr) %>%
+    dplyr::mutate(code = ifelse(is.na(code), default_mutation_code, code))
 
   cat_genes_to_samples_status("Joining gene_ids.")
   genes_to_samples <- genes_to_samples %>%
@@ -74,7 +77,6 @@ old_build_genes_to_samples_table <- function() {
     iatlas.data::replace_table("genes_to_samples")
 
   genes_to_samples %>%
-    dplyr::filter(!is.na(mutation_code_id)) %>%
     dplyr::distinct(sample_id, gene_id, mutation_code_id, status) %>%
     iatlas.data::replace_table("genes_samples_mutations")
 

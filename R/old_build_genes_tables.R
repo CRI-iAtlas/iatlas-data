@@ -1,4 +1,5 @@
 old_build_genes_tables <- function() {
+  default_mutation_code <- "(NS)"
 
   cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
   driver_mutations <- dplyr::bind_rows(
@@ -59,7 +60,9 @@ old_build_genes_tables <- function() {
     dplyr::distinct(gene) %>%
     dplyr::mutate(code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA)) %>%
     dplyr::filter(!is.na(code)) %>%
-    dplyr::distinct(code)
+    dplyr::add_row(code = default_mutation_code) %>%
+    dplyr::distinct(code) %>%
+    dplyr::arrange(code)
   cat(crayon::blue("Built mutation_codes data."), fill = TRUE)
 
   cat(crayon::magenta("Building mutation_codes table."), fill = TRUE)
