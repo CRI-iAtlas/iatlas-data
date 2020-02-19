@@ -9,9 +9,10 @@
   with_test_db_env({
     set_feather_file_folder(get_test_data_path("feather_files"))
 
-    test_that("create_db", {
+     test_that("create_db", {
       iatlas.data::create_db("test", "reset", '../scripts')
-      expect_equal("todo","todo")
+      dbinfo <- with_db_pool(pool::dbGetInfo)
+      expect_equal(dbinfo$dbname,"iatlas_test")
     })
 
     build_steps = c(

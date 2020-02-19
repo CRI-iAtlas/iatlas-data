@@ -80,8 +80,8 @@ if [ $reset == true ]; then
 
     # Copy the database SQL file into the docker container.
     docker cp $DIR/sql/$create_db_sql $docker_image:/$create_db_sql
-    # Copy the build tables SQL file into the docker container.
-    docker cp $DIR/sql/build_tables.sql $docker_image:/build_tables.sql
+    # Copy the create enums SQL file into the docker container.
+    docker cp $DIR/sql/create_enums.sql $docker_image:/create_enums.sql
 
     >&2 echo -e "${YELLOW}Postgres: creating tables and indexes...${NC}"
     # Run the database SQL script within the docker container using the docker container's psql.
