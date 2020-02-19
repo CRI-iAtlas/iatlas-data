@@ -265,6 +265,8 @@ sql_schema <- list(
         feature_id INTEGER,
         gene_id INTEGER,
         score NUMERIC,
+        x NUMERIC,
+        y NUMERIC,
         PRIMARY KEY (id)
       );",
     addSchema = c(

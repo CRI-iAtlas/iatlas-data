@@ -1,4 +1,7 @@
 build_mutation_codes_to_gene_types_files <- function() {
+  default_mutation_code <- "(NS)"
+  default_gene_type <- "driver_mutation"
+
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -13,7 +16,9 @@ build_mutation_codes_to_gene_types_files <- function() {
     cat(crayon::magenta(paste0("Get mutation_codes_to_gene_types")), fill = TRUE)
 
     cat_mutation_codes_to_gene_types_status("Get the initial values from the mutation_codes_to_gene_types table.")
-    mutation_codes_to_gene_types <- current_pool %>% dplyr::tbl("mutation_codes_to_gene_types")
+
+    mutation_codes_to_gene_types <- current_pool %>%
+      dplyr::tbl("mutation_codes_to_gene_types")
 
     cat_mutation_codes_to_gene_types_status("Get the gene types from the gene_types table.")
     mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>% dplyr::left_join(
@@ -32,11 +37,13 @@ build_mutation_codes_to_gene_types_files <- function() {
     cat_mutation_codes_to_gene_types_status("Clean up the data set.")
     mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>%
       dplyr::distinct(gene_type, code) %>%
-      dplyr::filter(!is.na(gene_type) & !is.na(code)) %>%
-      dplyr::arrange(gene_type, code)
+      dplyr::filter(!is.na(gene_type) & !is.na(code))
 
     cat_mutation_codes_to_gene_types_status("Execute the query and return a tibble.")
-    mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>% dplyr::as_tibble()
+    mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>%
+      dplyr::as_tibble() %>%
+      dplyr::add_row(code = default_mutation_code, gene_type = default_gene_type) %>%
+      dplyr::arrange(gene_type, code)
 
     pool::poolReturn(current_pool)
 
