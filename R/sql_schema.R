@@ -44,6 +44,8 @@ sql_schema <- list(
         node_1_id INTEGER NOT NULL,
         node_2_id INTEGER NOT NULL,
         score NUMERIC,
+        x INTEGER,
+        y INTEGER,
         PRIMARY KEY (id)
       );",
     addSchema = c(
