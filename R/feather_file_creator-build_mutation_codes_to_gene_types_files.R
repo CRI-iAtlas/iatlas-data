@@ -71,9 +71,9 @@ build_mutation_codes_to_gene_types_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(mutation_codes_to_gene_types_01, pos = ".GlobalEnv")
-  # rm(mutation_codes_to_gene_types_02, pos = ".GlobalEnv")
-  # rm(mutation_codes_to_gene_types_03, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_01, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_02, pos = ".GlobalEnv")
+  rm(mutation_codes_to_gene_types_03, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
