@@ -12,7 +12,9 @@ build_nodes_tables <- function() {
       entrez = numeric(),
       feature = character(),
       tag = character(),
-      score = numeric()
+      score = numeric(),
+      x = numeric(),
+      y = numeric()
     )) %>%
     dplyr::distinct() %>%
     dplyr::arrange(entrez, feature)
@@ -32,7 +34,7 @@ build_nodes_tables <- function() {
   # nodes table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes table."), fill = TRUE)
   table_written <- nodes %>%
-    dplyr::select(id = node_id, feature_id, gene_id, score) %>%
+    dplyr::select(id = node_id, feature_id, gene_id, score, x, y) %>%
     iatlas.data::replace_table("nodes")
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
