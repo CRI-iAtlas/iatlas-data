@@ -1,4 +1,5 @@
 old_build_driver_results_tables <- function() {
+  default_mutation_code <- "(NS)"
 
   all_driver_results <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_results*.feather")
 
@@ -7,11 +8,17 @@ old_build_driver_results_tables <- function() {
   results <- all_driver_results %>%
     dplyr::mutate(gene_mutation = iatlas.data::driver_results_label_to_hgnc(label)) %>%
     tidyr::separate(gene_mutation, into = c("hgnc", "code"), sep = "\\s", remove = TRUE) %>%
-    dplyr::left_join(old_read_features(), by = "feature") %>%
-    dplyr::left_join(old_read_genes(), by = "hgnc") %>%
-    dplyr::left_join(old_read_tags(), by = c("group" = "tag")) %>%
-    dplyr::left_join(old_read_mutation_codes(), by = "code") %>%
-    dplyr::select(
+    dplyr::mutate(code = ifelse(is.na(code), default_mutation_code, code))
+
+  results <- results %>% dplyr::left_join(old_read_features(), by = "feature")
+
+  results <- results %>% dplyr::left_join(old_read_genes(), by = "hgnc")
+
+  results <- results %>% dplyr::left_join(old_read_tags(), by = c("group" = "tag"))
+
+  results <- results %>% dplyr::left_join(old_read_mutation_codes(), by = "code")
+
+  results <- results %>% dplyr::select(
       gene_id,
       mutation_code_id,
       feature_id,
