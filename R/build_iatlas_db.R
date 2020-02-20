@@ -11,6 +11,8 @@
 #' @return nothing
 build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
 
+  load_config(env)
+
   .GlobalEnv$create_db_en_env <- function() {iatlas.data::create_db(env, reset)}
 
   iatlas.data::set_feather_file_folder(feather_file_folder)
