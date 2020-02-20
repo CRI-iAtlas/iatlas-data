@@ -1,4 +1,4 @@
-build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL, finally = NULL) {
+build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL, finally = NULL, build_only = NULL) {
 
   on.exit(finally)
 
@@ -10,7 +10,10 @@ build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL
   }
   clear_globals()
 
-  running_is_on <- is.null(resume_at)
+  if (present(build_only)) {
+    resume_at <- stop_at <- build_pipeline
+  }
+  running_is_on <- !present(resume_at)
   stopped <- FALSE
 
   num_skippable_steps <- length(step_function_names)
