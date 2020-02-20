@@ -1,8 +1,17 @@
-# sage-iatlas-data
+# iAtlas-Data
 
-Data for the iAtlas app.
+The iAtlas app is an interactive web portal that provides multiple analysis modules to visualize and explore immune response characterizations across cancer types. The app is hosted on shinyapps.io at [https://isb-cgc.shinyapps.io/shiny-iatlas/](https://isb-cgc.shinyapps.io/shiny-iatlas/) and can also be accessed via the main CRI iAtlas page at [http://www.cri-iatlas.org/](http://www.cri-iatlas.org/).
 
-Shiny-iAtlas is an interactive web portal that provides multiple analysis modules to visualize and explore immune response characterizations across cancer types. The app is hosted on shinyapps.io at [https://isb-cgc.shinyapps.io/shiny-iatlas/](https://isb-cgc.shinyapps.io/shiny-iatlas/) and can also be accessed via the main CRI iAtlas page at [http://www.cri-iatlas.org/](http://www.cri-iatlas.org/).
+This repository contains the source data for building the database iAtlas uses. The code in this repository consumes the source data, partially-verifies it and builds the database.
+
+## iAtlas-App and iAtlas-Data
+
+This app is spit into two repositories:
+
+- [iatlas-app](https://github.com/CRI-iAtlas/iatlas-app) - for all the shiny-app R
+- [iatlas-data](https://github.com/CRI-iAtlas/iatlas-data) - for all the iatlas-related data, DB-creation and DB-populating code (this coderepository)
+
+Follow the instructions below to create and populate your local database. Then, if you want to also run the iatlas-app, clone that repository and follow it's README to get started.
 
 ## Install
 
