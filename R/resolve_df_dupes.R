@@ -11,21 +11,6 @@
 #   }
 # }
 
-
-# build_a <- function(keys, lag_lead = "lag") {
-#   keys %>% purrr::map(~ paste0("present_equal(", .x, ", lag(", .x, "))"))
-# }
-
-# build_b <- function(keys) {
-#   paste0(
-#     "sorted %>% dplyr::transmute(id = id, duplicate = (",
-#       paste(keys %>% purrr::map(~ paste0("present_equal(", .x, ", lag(", .x, "))")), collapse = ' & '),
-#     ") | (",
-#       paste(keys %>% purrr::map(~ paste0("present_equal(", .x, ", lead(", .x, "))")), collapse = ' & '),
-#     "))"
-#   )
-# }
-
 # get_dupes_true_vector uses some metaprogramming to create our custom.duplicated operation.
 # Basically, it takes the keys and creates tests to compare each row with the lagging and leading row (prev/next respectively)
 # and see if they are duplicates for the given key values.
