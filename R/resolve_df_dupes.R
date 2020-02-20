@@ -1,5 +1,5 @@
 
-resolve_df_dupes <- function(df, keys) {
+resolve_df_dupes <- function(df, keys, verbose = TRUE) {
 
   iatlas.data::timed(
     before_message = crayon::blue(paste0("Resolving partial-duplicates (", nrow(df), " records)...\n")),
@@ -12,7 +12,7 @@ resolve_df_dupes <- function(df, keys) {
 
       number_duplicates <- nrow(duplicated_records)
 
-      cat(crayon::blue(paste0("  found ", number_duplicates, " duplicate records\n")))
+      if (verbose) cat(crayon::blue(paste0("  found ", number_duplicates, " duplicate records\n")))
 
       # If there are no duplicates, don't do further processing.
       if (number_duplicates > 0) {
@@ -25,21 +25,21 @@ resolve_df_dupes <- function(df, keys) {
             dplyr::summarise_at(dplyr::vars(summarise_keys), iatlas.data::flatten_dupes)
         )
 
-        cat(crayon::blue(paste0("  ", nrow(deduplicated_records), " de-duplicated records\n")))
+        if (verbose) cat(crayon::blue(paste0("  ", nrow(deduplicated_records), " de-duplicated records\n")))
 
         iatlas.data::timed(
           before_message = "  removing old partial-duplicates",
           clean_records <- df %>% dplyr::anti_join(deduplicated_records, by = keys)
         )
 
-        cat(crayon::blue(paste0("  ", nrow(clean_records), " original records where not duplicated\n")))
+        if (verbose) cat(crayon::blue(paste0("  ", nrow(clean_records), " original records where not duplicated\n")))
 
         output <- clean_records %>% dplyr::bind_rows(deduplicated_records)
       } else {
         output <- df
       }
 
-      cat(crayon::blue(paste0("  ", nrow(output), " resulting records\n")))
+      if (verbose) cat(crayon::blue(paste0("  ", nrow(output), " resulting records\n")))
 
       return(output)
     }

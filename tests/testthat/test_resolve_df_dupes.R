@@ -30,7 +30,7 @@
         value_01 = c(2, 42),
         value_02 = c(2, 42)
     )
-    expect_equal(resolve_df_dupes(df, c("key")), expected)
+    expect_equal(resolve_df_dupes(df, c("key"), verbose=F), expected)
   })
   test_that("resolve_df_dupes fails when multiple values are passed.", {
     df <- dplyr::tibble(
@@ -38,7 +38,7 @@
         value_01 = c(3, 42, 2),
         value_02 = c(2, 42, NA)
     )
-    expect_error(resolve_df_dupes(df, c("key")), "DIRTY DATA\\!")
+    expect_error(resolve_df_dupes(df, c("key"), verbose=F), "DIRTY DATA\\!")
   })
 
   # flatten_dupes

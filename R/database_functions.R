@@ -45,17 +45,8 @@ timed_with_db_pool <- function(context, f, slow = FALSE) {
   )
 }
 
-delete_rows <- function(table_name)
-  timed_with_db_pool(
-    paste0("dbSendQuery: DELETE-FROM ", table_name),
-    function(connection) pool::dbSendQuery(connection, paste0("DELETE FROM ", table_name))
-  )
-
 table_exists <- function(table_name)
   with_db_pool(function(connection) pool::dbExistsTable(connection, table_name))
-
-db_get_query <- function(query)
-  with_db_pool(function(connection) pool::dbGetQuery(connection, query))
 
 read_table <- function(table_name)
   with_db_pool(function(connection) pool::dbReadTable(connection, table_name))
@@ -71,45 +62,6 @@ db_execute <- function(query, ...)
     function(connection) pool::dbExecute(connection, query),
     ...
   )
-
-write_table_ts <- function(df, table_name) {
-  validate_control_data(df, table_name)
-  if (nrow(df) >= 100000) {
-    cat(crayon::yellow(paste0("ATTENTION: The table '", table_name, "' should probably be created with replace_table, not write_table_ts")))
-  }
-  tictoc::tic(paste0("dbWriteTable: ", table_name, " (", nrow(df), " rows)"))
-  result <- pool::poolWithTransaction(.GlobalEnv$pool, function(connection) {
-    # Disable table_name's indexes.
-    connection %>% pool::dbExecute(paste0(
-      "UPDATE pg_index ",
-      "SET indisready=false ",
-      "WHERE indrelid = (",
-      "SELECT oid ",
-      "FROM pg_class ",
-      "WHERE relname='", table_name, "'",
-      ");"
-    ))
-
-    connection %>% pool::dbWriteTable(table_name, df, append = TRUE, copy = TRUE)
-
-    # Re-enable table_name's indexes.
-    connection %>% pool::dbExecute(paste0(
-      "UPDATE pg_index ",
-      "SET indisready=true ",
-      "WHERE indrelid = (",
-      "SELECT oid ",
-      "FROM pg_class ",
-      "WHERE relname='", table_name, "'",
-      ");"
-    ))
-
-    # Reindex the table
-    connection %>% pool::dbExecute(paste0("REINDEX TABLE ", table_name, ";"))
-  })
-  tictoc::toc()
-
-  return(result)
-}
 
 validate_control_data <- function (data, table_name) {
   control_folder <- "./control_data/"
