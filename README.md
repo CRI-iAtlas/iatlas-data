@@ -68,20 +68,54 @@ To build the database locally:
 
 When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
+
 ## Testing
 
-After completing installation, open the Rproj and run:
+The test suite defined in tests/* unit-tests all the support functions and does an integration test across the whole build process using a subset of the real data.
+
+The primary way to run test is:
 
 ```R
-# run tests:
 devtools::test()
+```
 
-# run interactively:
+You can run only test-files matching a regex expression:
+
+```R
+devtools::test(filter = '_db?_')
+```
+
+You can also run the tests interactively - i.e. have the tests auto re-run whenver you make a change:
+
+```R
 testthat::auto_test_package()
+```
 
-# get code coverage report:
+You can view code-coverage with:
+
+```R
 covr::report()
 ```
+
+### Testing with Control Data
+
+> If `control_data/` exists in the root of your project, you'll get control-data valiations automatically when you run build_iatlas_db()
+
+If you are altering code but not data, and you don't expect the data output to change, and you want to test it against the real data... this is section is for you.
+
+Before you make your changes, create a folder in the root of the project called "control_data", then run build_iatlas_db() with the known-good code. This will generate copies of all the output data in the control_data (currently about 400 megabytes of feather files). Then you can make your changes and re-run build_iatlas_db(). The second and subsequence passes will validate their output against the existing data in control_data.
+
+Here are the steps:
+
+1. `shell> mkdir control_data`
+2. `R> build_iatlas_db() # builds control data first pass`
+3. Make changes
+4. Re-run, build_iatlas_db(), possibly using resume_at or build_only options
+
+If output mismatches the build will abort with a nice message. It will provide a function in the global namespace to overwrite and update the control_data if the new code is considered correct. Otherwise, you can re-run your code once you fix the discrepancy with `build_iatlas_db(resume = "auto")`
+
+> Note: `control_data/` is not checked in with the git repo. To reset your control_data, simply delete all the files in the folder. To disable control-data validation, remove the folder entirely.
+
 
 ## Data
 
