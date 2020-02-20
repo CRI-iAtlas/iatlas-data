@@ -3,6 +3,21 @@
   library('feather')
   source('./lib_test_data.R')
 
+  test_that("get_dupes", {
+    df <- dplyr::tibble(
+        key       = c(1, 2, 1),
+        value_01  = c(NA, 42, 2),
+        value_02  = c(2, 42, NA)
+    )
+    expected <- dplyr::tibble(
+        key       = c(1, 1),
+        value_01  = c(NA, 2),
+        value_02  = c(2, NA)
+    )
+    expect_equal(iatlas.data::get_dupes(df, c("key")), expected)
+
+  })
+
   # resolve_df_dupes
   test_that("resolve_df_dupes returns an object with duplicates resolved.", {
     df <- dplyr::tibble(

@@ -1,21 +1,36 @@
+get_dupes <- function(df, keys) {
+  # return duplicated_records <- df %>% janitor::get_dupes(!!! rlang::syms(keys))
+  selected <-
+    df %>%
+    dplyr::select(!!! rlang::syms(keys))
+
+  if (anyDuplicated(selected) > 0) {
+    first_pass <- selected %>% duplicated()
+    second_pass <- selected %>% duplicated(fromLast = TRUE)
+
+    df %>% subset(first_pass | second_pass)
+  } else {
+    dplyr::tibble()
+  }
+}
+
 resolve_df_dupes <- function(df, keys) {
 
-      cat(crayon::blue(paste0("    ", nrow(df), " original records to check\n")))
   iatlas.data::timed(
-    before_message = paste0("resolving ", deparse(substitute(df)), " partial-duplicates...\n"),
-    after_message = paste0("resolved ", deparse(substitute(df)), " partial-duplicates"),
+    before_message = crayon::blue(paste0("Resolving partial-duplicates (", nrow(df), " records)...\n")),
+    after_message = crayon::blue(paste0("Resolved partial-duplicates (", nrow(df), " records)")),
     {
       iatlas.data::timed(
         before_message = "  finding partial-duplicates\n",
-        duplicated_records <- df %>% janitor::get_dupes(!!! rlang::syms(keys))
+        duplicated_records <- df %>% get_dupes(keys)
       )
 
       number_duplicates <- nrow(duplicated_records)
 
+      cat(crayon::blue(paste0("  found ", number_duplicates, " duplicate records\n")))
+
       # If there are no duplicates, don't do further processing.
       if (number_duplicates > 0) {
-        cat(crayon::blue(paste0("    ", number_duplicates, " duplicate records\n")))
-
         summarise_keys <- setdiff(names(df), keys)
 
         iatlas.data::timed(
@@ -25,7 +40,7 @@ resolve_df_dupes <- function(df, keys) {
             dplyr::summarise_at(dplyr::vars(summarise_keys), iatlas.data::flatten_dupes)
         )
 
-        cat(crayon::blue(paste0("    ", nrow(deduplicated_records), " de-duplicated records\n")))
+        cat(crayon::blue(paste0("  ", nrow(deduplicated_records), " de-duplicated records\n")))
 
         iatlas.data::timed(
           before_message = "  removing old partial-duplicates",

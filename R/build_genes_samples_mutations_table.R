@@ -16,8 +16,12 @@ build_genes_samples_mutations_table <- function() {
       mutation_code = character(),
       status = character()
     )) %>%
-    dplyr::distinct(entrez, sample, mutation_code, status) %>%
     dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
+    dplyr::distinct(entrez, sample, mutation_code, status)
+
+  gc()
+
+  genes_samples_mutations <- genes_samples_mutations %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "sample", "mutation_code")) %>%
     dplyr::select(entrez, sample, mutation_code, status) %>%
     dplyr::arrange(entrez, sample, mutation_code)
