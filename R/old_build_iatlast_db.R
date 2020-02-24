@@ -1,0 +1,109 @@
+#' build_iatlas_db
+#'
+#' Build the full iAtlas database from source feather=files
+#'
+#' @param env
+#' @param reset "reset" or "create" or NULL
+#' @param resume_at = NULL or step-name-string - will skip all steps until the specified step, which will be executed as well as all following steps
+#' resume_at can also == "auto" and it will resume at the previous fail-point, or, if none, it will start at the top
+#'
+#' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
+#' @return nothing
+old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FALSE, resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files") {
+
+  option_equal <- function (a, b) {iatlas.data::present(a) && iatlas.data::present(b) && a == b}
+  if (option_equal(resume_at, "auto")) {resume_at = .GlobalEnv$resume_at;}
+  if (iatlas.data::present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
+  if (iatlas.data::present(.GlobalEnv$iatlas_stack_trace)) {rm(iatlas_stack_trace, pos = ".GlobalEnv")}
+  running_is_on <- is.null(resume_at)
+  stopped <- FALSE
+
+  num_skippable_steps <- 12 # search this file and count for run_skippable_function calls
+  skippable_step_count <- 1
+
+
+
+  tictoc::tic(paste0("Time taken to build iAtlas DB"))
+
+  run_skippable_function <- function(f, ...) {
+    function_name <- as.character(substitute(f))
+    on.exit(skippable_step_count <<- skippable_step_count + 1)
+    if (option_equal(resume_at, function_name)) running_is_on <<- TRUE;
+    if (running_is_on) {
+      cat(crayon::green("\n--------------------------------------------------------------------------------"), fill = TRUE)
+      cat(crayon::green(paste0("START: ", function_name, " (build_iatlas_db step ", skippable_step_count, "/", num_skippable_steps, ")")), fill = TRUE)
+      tictoc::tic(paste0(function_name, " took"))
+
+      withCallingHandlers({
+        .GlobalEnv$resume_at <- function_name
+        f(...)
+        gc()
+      }, error = function(e) {
+        .GlobalEnv$iatlas_stack_trace <- sys.calls()
+        cat(crayon::red(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
+
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 1: resume from last failure automatically: old_build_iatlas_db(resume_at = 'auto')"))), fill = TRUE)
+        cat(crayon::magenta(crayon::bold(paste0("OPTION 2: resume exactly this step:               old_build_iatlas_db(resume_at = '", function_name, "')"))), fill = TRUE)
+        cat(paste0("NOTEs:\n  * If you change code, you can run ", crayon::bold("source('./.RProfile')")," and then use one of the resume-options above.\n  * The error's stack trace is available at: ", crayon::bold("iatlas_stack_trace")), fill = TRUE)
+        running_is_on <<- FALSE
+        stop(e)
+      })
+      cat(crayon::green(paste0("\nSUCCESS: ", function_name)), fill = TRUE)
+      tictoc::toc()
+    } else if (stopped) {
+      cat(crayon::yellow(paste0("STOPPED. SKIPPING: '", function_name, "' (as requested by stop_at option)" )), fill = TRUE)
+    } else {
+      cat(crayon::yellow(paste0("SKIPPING: '", function_name, "' (as requested by resume_at options)" )), fill = TRUE)
+    }
+    if (option_equal(stop_at, function_name)) {
+      cat(crayon::bold(crayon::yellow(paste0("STOPPING AFTER: '", function_name, "' (as requested by stop_at = '",function_name, "')"))), fill = TRUE)
+      stopped <<- TRUE
+      running_is_on <<- FALSE;
+    }
+  }
+
+  # Show garbage collection info
+  gcinfo(show_gc_info)
+
+  # Reset the database so new data is not corrupted by any old data.
+  run_skippable_function(iatlas.data::create_db, env, reset)
+
+  # Create a global variable to hold the pool DB connection.
+  cat(crayon::green("OPEN: DB connection..."), fill = TRUE)
+  .GlobalEnv$pool <- iatlas.data::connect_to_db()
+
+  iatlas.data::set_feather_file_folder(feather_file_folder)
+
+  run_skippable_function(old_build_features_tables)
+  run_skippable_function(old_build_tags_tables)
+  run_skippable_function(old_build_genes_tables)
+
+  run_skippable_function(old_build_patients_table)
+  run_skippable_function(old_build_samples_table)
+
+  run_skippable_function(old_build_slides_table)
+
+  run_skippable_function(old_build_driver_results_tables)
+  run_skippable_function(old_build_nodes_tables)
+
+  run_skippable_function(old_build_samples_to_tags_table)
+  run_skippable_function(old_build_features_to_samples_table)
+  run_skippable_function(old_build_genes_to_samples_table)
+
+  iatlas.data::reset_results_cache()
+
+  # Close the database connection.
+  cat(crayon::green("CLOSE: DB connection..."), fill = TRUE)
+  pool::poolClose(.GlobalEnv$pool)
+  rm(pool, pos = ".GlobalEnv")
+
+  if (iatlas.data::present(.GlobalEnv$resume_at)) {rm(resume_at, pos = ".GlobalEnv")}
+
+  cat(crayon::bold(crayon::blue("\n================================================================================")), fill = TRUE)
+  cat(crayon::bold(crayon::blue(paste0("SUCCESS! iAtlas DB created."))), fill = TRUE)
+  tictoc::toc()
+
+  # Don't show garbage collection details any longer.
+  gcinfo(FALSE)
+  invisible(NULL);
+}
