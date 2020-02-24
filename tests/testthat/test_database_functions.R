@@ -4,6 +4,9 @@
   source('./lib_test_data.R')
 
   with_test_db_env({
+    # Ensure the database has been created.
+    testthat::setup(iatlas.data::create_db(env = "test", reset = "reset", script_path = "../scripts"))
+
     test_that("create_global_db_pool and release_global_db_pool", {
       expect_false(present(.GlobalEnv$pool))
       create_global_db_pool()
