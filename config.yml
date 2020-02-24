@@ -13,7 +13,7 @@ dev:
   database:
     name:     iatlas_dev
 
-shinyapps:
+prod:
   database:
     name:     xxx
     host:     xxx
