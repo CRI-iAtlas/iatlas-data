@@ -3,7 +3,7 @@
 # If "prod" is passed as the env argument, the shell script will NOT be executed.
 # reset may be "create", "reset", or NULL. If NULL is passed, it won't rebuild the DB and tables.
 # NOTE: If "create" or "reset" are passed, the DB and tables will be built, wiping out any existing DB and tables.
-create_db <- function(env = "dev", reset = NULL, script_path = 'scripts') {
+create_db <- function(env = "dev", reset = NULL, script_path = "scripts") {
   if (env != "prod") {
     system(paste(
       "bash",

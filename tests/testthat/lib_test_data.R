@@ -1,6 +1,6 @@
 test_data_folder <- "../test_data"
 
-copyEnv <- function(from, to, names=ls(from, all.names=TRUE)) {
+copyEnv <- function(from, to, names = ls(from, all.names = TRUE)) {
   mapply(
     assign,
     names,
