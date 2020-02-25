@@ -1,5 +1,6 @@
 old_build_nodes_tables <- function() {
 
+  # nodes feather files ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
   all_nodes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/nodes") %>%
     dplyr::distinct(node = Node, tag.01 = Group, tag.02 = Immune, score = UpBinRatio) %>%
@@ -20,6 +21,7 @@ old_build_nodes_tables <- function() {
     dplyr::arrange(node, tag.01, tag.02, score)
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
 
+  # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
   gene_nodes <- all_nodes %>% dplyr::left_join(
     iatlas.data::old_read_genes() %>%
@@ -42,14 +44,15 @@ old_build_nodes_tables <- function() {
     tibble::add_column(node_id = 1:nrow(nodes), .before = "node")
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
 
+  # nodes table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes table."), fill = TRUE)
   table_written <- nodes %>%
     dplyr::select(id = node_id, gene_id, feature_id, score) %>%
     iatlas.data::replace_table("nodes")
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
+  # nodes_to_tags data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags data."), fill = TRUE)
-
   node_set_group <- nodes %>%
     dplyr::left_join(
       old_read_tags() %>% dplyr::select(tag_id, tag.01 = tag),
@@ -69,10 +72,12 @@ old_build_nodes_tables <- function() {
     dplyr::distinct(node_id, tag_id)
   cat(crayon::blue("Built the nodes_to_tags data."), fill = TRUE)
 
+  # nodes_to_tags table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags table.\n\t(There are", nrow(nodes_to_tags), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- nodes_to_tags %>% iatlas.data::replace_table("nodes_to_tags")
   cat(crayon::blue("Built the nodes_to_tags table. (", nrow(nodes_to_tags), "rows )"), fill = TRUE, sep = " ")
 
+  # edges feather files ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
   edges <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/edges") %>%
     dplyr::distinct(From, To, tag.01 = Group, tag.02 = Immune, score = ratioScore) %>%
@@ -108,6 +113,7 @@ old_build_nodes_tables <- function() {
     dplyr::arrange(From, To, tag.01, tag.02)
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
 
+  # edges data ---------------------------------------------------
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>% dplyr::left_join(
     nodes %>% dplyr::select(node_1_id = node_id, node, tag.01, tag.02),
@@ -124,8 +130,24 @@ old_build_nodes_tables <- function() {
     dplyr::arrange(node_1_id, node_2_id, score)
   cat(crayon::blue("Built the edges data."), fill = TRUE)
 
+  # edges table ---------------------------------------------------
   cat(crayon::magenta("Building the edges table.\n\t(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- edges %>% iatlas.data::replace_table("edges")
   cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE, sep = " ")
 
+  # edges_to_tags data ---------------------------------------------------
+  cat(crayon::magenta("Building the edges_to_tags data."), fill = TRUE)
+  edges_to_tags <- iatlas.data::read_table("edges") %>% dplyr::as_tibble() %>% dplyr::select(edge_id = id)
+
+  edges_to_tags <- edges_to_tags %>% dplyr::mutate(tag = "cytokine_network")
+
+  edges_to_tags <- edges_to_tags %>% dplyr::left_join(iatlas.data::old_read_tags(), by = "tag")
+
+  edges_to_tags <- edges_to_tags %>% dplyr::select(edge_id, tag_id) %>% dplyr::arrange(edge_id)
+  cat(crayon::blue("Built the edges_to_tags data."), fill = TRUE)
+
+  # edges_to_tags table ---------------------------------------------------
+  cat(crayon::magenta("Building the edges_to_tags table.\n\t(There are", nrow(edges_to_tags), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
+  table_written <- edges_to_tags %>% iatlas.data::replace_table("edges_to_tags")
+  cat(crayon::blue("Built the edges_to_tags table. (", nrow(edges_to_tags), "rows )"), fill = TRUE, sep = " ")
 }

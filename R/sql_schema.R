@@ -37,6 +37,19 @@ sql_schema <- list(
       "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
     )
   ),
+  edges_to_tags = list(
+    create = "
+      CREATE TABLE edges_to_tags (
+        edge_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (edge_id, tag_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX edge_to_tag_tag_id_index ON edges_to_tags (tag_id);",
+      "ALTER TABLE edges_to_tags ADD FOREIGN KEY (edge_id) REFERENCES edges;",
+      "ALTER TABLE edges_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
   edges = list (
     create = "
       CREATE TABLE edges (

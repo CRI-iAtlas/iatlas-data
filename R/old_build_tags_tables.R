@@ -1,9 +1,12 @@
 old_build_tags_tables <- function() {
+
+  # tags feather files ----
   cat(crayon::magenta("Importing feather file for tags."), fill = TRUE)
   initial_tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/groups.feather") %>%
     dplyr::rename(name = group, display = group_name)
   cat(crayon::blue("Imported feather file for tags."), fill = TRUE)
 
+  # tags data ----
   cat(crayon::magenta("Building tags data"), fill = TRUE)
   parents <- initial_tags %>%
     dplyr::filter(!is.na(parent_group)) %>%
@@ -15,16 +18,19 @@ old_build_tags_tables <- function() {
     dplyr::select(name = subtype_group, display = subtype_group_display)
   tags <- parents %>%
     dplyr::bind_rows(initial_tags, subtype) %>%
+    dplyr::add_row(name = "cytokine_network", display = "Cytokine Network") %>%
     dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Built tags data"), fill = TRUE)
 
+  # tags table ----
   cat(crayon::magenta("Building tags table."), fill = TRUE)
   table_written <- tags %>%
     dplyr::select(name, characteristics, display, color) %>%
     iatlas.data::replace_table("tags")
   cat(crayon::blue("Built tags table. (", nrow(tags), "rows )"), fill = TRUE, sep = " ")
 
+  # tags_to_tags data ----
   cat(crayon::magenta("Building tags_to_tags data."), fill = TRUE)
   tags_db <- old_read_tags()
   all_tags_with_tag_ids <- tags %>%
@@ -44,6 +50,7 @@ old_build_tags_tables <- function() {
     dplyr::distinct(tag_id, related_tag_id)
   cat(crayon::magenta("Built tags_to_tags data."), fill = TRUE)
 
+  # tags_to_tags table ----
   cat(crayon::magenta("Building tags_to_tags table."), fill = TRUE)
   table_written <- tags_to_tags %>% iatlas.data::replace_table("tags_to_tags")
   cat(crayon::magenta("Built tags_to_tags table. (", nrow(tags_to_tags), "rows )"), fill = TRUE, sep = " ")
