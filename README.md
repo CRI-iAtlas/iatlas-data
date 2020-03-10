@@ -17,7 +17,7 @@ Follow the instructions below to create and populate your local database. Then, 
 
 ### Requirements
 
-**IMPORTANT**: For the smoothest installation, install git-lfs BEFORE cloning this repository.
+**IMPORTANT**: For the smoothest installation, install git-lfs and call `git lfs install` BEFORE cloning this repository.
 
 > If you've already cloned, you may be able to do a `git pull` after installing git-lfs to fetch the large files (unverified).
 
