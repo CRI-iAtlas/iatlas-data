@@ -44,7 +44,7 @@ build_mutation_types_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  # rm(driver_mutation, pos = ".GlobalEnv")
+  rm(driver_mutation, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
