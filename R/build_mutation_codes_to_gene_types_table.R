@@ -1,3 +1,5 @@
+# NOTE: This is deprecated and should be removed when the frontend is no longer accessing it.
+
 build_mutation_codes_to_gene_types_table <- function() {
 
   # mutation_codes_to_gene_types import ---------------------------------------------------
@@ -28,7 +30,8 @@ build_mutation_codes_to_gene_types_table <- function() {
   )
 
   mutation_codes_to_gene_types <- mutation_codes_to_gene_types %>%
-    dplyr::select(mutation_code_id, type_id)
+    dplyr::select(mutation_code_id, type_id) %>%
+    dplyr::filter(!is.na(mutation_code_id) & !is.na(type_id))
   cat(crayon::blue("Built mutation_codes_to_gene_types data. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
   # mutation_codes_to_gene_types table ---------------------------------------------------

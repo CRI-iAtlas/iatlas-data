@@ -245,7 +245,7 @@ sql_schema <- list(
         id SERIAL,
         gene_id INTEGER NOT NULL,
         mutation_code_id INTEGER NOT NULL,
-        mutation_type_id INTEGER NOT NULL,
+        mutation_type_id INTEGER,
         PRIMARY KEY (id)
       );",
     addSchema = c(
