@@ -22,15 +22,15 @@ build_features_to_samples_files <- function() {
     cat_features_to_samples_status("Get the features from the features table.")
     features_to_samples <- features_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("features") %>%
-        dplyr::select(id, feature = name),
-      by = c("feature_id" = "id")
+        dplyr::select(feature_id = id, feature = name),
+      by = "feature_id"
     )
 
     cat_features_to_samples_status("Get the samples from the samples table.")
     features_to_samples <- features_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(id, sample = name),
-      by = c("sample_id" = "id")
+        dplyr::select(sample_id = id, sample = name),
+      by = "sample_id"
     )
 
     cat_features_to_samples_status("Clean up the data set.")

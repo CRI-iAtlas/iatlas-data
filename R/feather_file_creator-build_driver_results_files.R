@@ -39,8 +39,8 @@ build_driver_results_files <- function() {
     cat_results_status("Get tags related to the driver results.")
     driver_results <- driver_results %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(id, tag = name),
-      by = c("tag_id" = "id")
+        dplyr::select(tag_id = id, tag = name),
+      by = "tag_id"
     )
 
     cat_results_status("Clean up the data set.")

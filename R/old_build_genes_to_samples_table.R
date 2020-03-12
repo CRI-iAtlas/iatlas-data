@@ -7,7 +7,7 @@ old_build_genes_to_samples_table <- function() {
 
   genes_to_samples <- old_get_all_samples_with_patient_ids()
 
-  cat_genes_to_samples_status <- function (message)
+  cat_genes_to_samples_status <- function(message)
     cat(crayon::cyan(paste0(" - ", message, " (", nrow(genes_to_samples), ")\n")))
 
   cat_genes_to_samples_status("Removing records missing gene or sample")
@@ -51,35 +51,60 @@ old_build_genes_to_samples_table <- function() {
   cat_genes_to_samples_status("Joining mutation_code_ids.")
   genes_to_samples <- genes_to_samples %>% dplyr::left_join(old_read_mutation_codes(), by = "code")
 
-  # cat_genes_to_samples_status("Ensuring no duplicates.")
+  cat_genes_to_samples_status("Building mutations data.")
+  mutations <- genes_to_samples %>%
+    dplyr::distinct(gene_id, mutation_code_id) %>%
+    dplyr::filter(!is.na(mutation_code_id)) %>%
+    dplyr::mutate(mutation_type_id = 1) %>%
+    dplyr::arrange(mutation_type_id, gene_id, mutation_code_id)
+  cat(crayon::blue("Built mutations data. (", nrow(mutations), "rows )"), fill = TRUE)
+
+  cat_genes_to_samples_status("Building mutations table.")
+  table_written <- mutations %>% iatlas.data::replace_table("mutations")
+  cat(crayon::blue("Built mutations table. (", nrow(mutations), "rows )"), fill = TRUE, sep = " ")
+
+  cat_genes_to_samples_status("Limit the columns.")
   genes_to_samples <- genes_to_samples %>% dplyr::select(sample, gene_id, mutation_code_id, status, rna_seq_expr)
 
   cat_genes_to_samples_status("Joining samples to get ids.")
   genes_to_samples <- genes_to_samples %>%
     dplyr::left_join(old_read_samples(), by = "sample")
 
-  # cat_genes_to_samples_status("Ensuring no duplicates.")
+  cat_genes_to_samples_status("Limit the columns.")
   genes_to_samples <- genes_to_samples %>% dplyr::select(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
 
-  cat_genes_to_samples_status("Rename id to sample_id and arrange.")
+  cat_genes_to_samples_status("Arrange the data nicely.")
   genes_to_samples <- genes_to_samples %>%
     dplyr::arrange(sample_id, gene_id, mutation_code_id, status, rna_seq_expr)
 
   genes_to_samples <- genes_to_samples %>%
     iatlas.data::resolve_df_dupes(keys = c("sample_id", "gene_id", "mutation_code_id"))
-  cat_genes_to_samples_status("Built genes_to_samples data.")
+  cat(crayon::blue("Built genes_to_samples data."), fill = TRUE)
 
-  # genes_to_samples <- feather::read_feather("./genes_to_samples.feather")
+  # samples_to_mutations data ---------------------------------------------------
+  cat(crayon::magenta("Building samples_to_mutations data."), fill = TRUE)
+  samples_to_mutations <- genes_to_samples %>% dplyr::left_join(
+      iatlas.data::read_table("mutations") %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(mutation_id = id, gene_id, mutation_code_id),
+      by = c("gene_id", "mutation_code_id")
+  )
+  samples_to_mutations <- samples_to_mutations %>%
+    dplyr::distinct(sample_id, mutation_id, status) %>%
+    dplyr::arrange(sample_id, mutation_id)
+  cat(crayon::blue("Built samples_to_mutations data. (", nrow(samples_to_mutations), "rows )"), fill = TRUE)
+
+  # samples_to_mutations table ---------------------------------------------------
+  cat(crayon::magenta("Building samples_to_mutations table."), fill = TRUE)
+  samples_to_mutations %>% iatlas.data::replace_table("samples_to_mutations")
+  cat(crayon::blue("Built samples_to_mutations table. (", nrow(samples_to_mutations), "rows )"), fill = TRUE)
 
   # genes_to_samples table ---------------------------------------------------
+  genes_to_samples <- genes_to_samples %>%
+    dplyr::distinct(sample_id, gene_id, rna_seq_expr)
   genes_to_samples %>%
-    dplyr::distinct(sample_id, gene_id, rna_seq_expr) %>%
     iatlas.data::replace_table("genes_to_samples")
 
-  genes_to_samples %>%
-    dplyr::distinct(sample_id, gene_id, mutation_code_id, status) %>%
-    iatlas.data::replace_table("genes_samples_mutations")
-
-  cat(crayon::blue("Built genes_to_samples table."))
+  cat(crayon::blue("Built genes_to_samples table. (", nrow(genes_to_samples), "rows )"))
 
 }
