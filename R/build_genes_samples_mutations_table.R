@@ -1,3 +1,5 @@
+# NOTE: This is deprecated and should be removed when the frontend is no longer accessing it.
+
 build_genes_samples_mutations_table <- function() {
 
   # genes_samples_mutations import ---------------------------------------------------
@@ -49,6 +51,6 @@ build_genes_samples_mutations_table <- function() {
   # genes_samples_mutations table ---------------------------------------------------
   cat(crayon::magenta("Building genes_samples_mutations table."), fill = TRUE)
   table_written <- genes_samples_mutations %>% iatlas.data::replace_table("genes_samples_mutations")
-  cat(crayon::blue("Built genes_samples_mutations table."), fill = TRUE)
+  cat(crayon::blue("Built genes_samples_mutations table. (", nrow(genes_samples_mutations), "rows )"), fill = TRUE)
 
 }
