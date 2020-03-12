@@ -162,6 +162,22 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX gene_function_name_index ON gene_functions (\"name\");"
     )
   ),
+  genes_samples_mutations = list(
+    create = "
+      CREATE TABLE genes_samples_mutations (
+        gene_id INTEGER NOT NULL,
+        sample_id INTEGER NOT NULL,
+        mutation_code_id INTEGER NOT NULL,
+        \"status\" STATUS_ENUM,
+        PRIMARY KEY (gene_id, sample_id, mutation_code_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX gene_sample_mutation_sample_id_index ON genes_samples_mutations (sample_id, gene_id);",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (sample_id) REFERENCES samples;",
+      "ALTER TABLE genes_samples_mutations ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
+    )
+  ),
   gene_types = list(
     create = "
       CREATE TABLE gene_types (
@@ -249,11 +265,25 @@ sql_schema <- list(
         PRIMARY KEY (id)
       );"
   ),
+  mutation_codes_to_gene_types = list (
+    create = "
+      CREATE TABLE mutation_codes_to_gene_types (
+        mutation_code_id INTEGER,
+        type_id INTEGER,
+        PRIMARY KEY (mutation_code_id, type_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX mutation_codes_to_gene_type_type_id_index ON mutation_codes_to_gene_types (type_id);",
+      "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
+      "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (type_id) REFERENCES gene_types;"
+    )
+  ),
   mutation_types = list (
     create = "
       CREATE TABLE mutation_types (
         id SERIAL,
-        name VARCHAR NOT NULL,
+        \"name\" VARCHAR NOT NULL,
+        display VARCHAR,
         PRIMARY KEY (id)
       );"
   ),
