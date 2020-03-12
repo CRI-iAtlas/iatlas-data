@@ -33,10 +33,6 @@ build_gene_types_files <- function() {
   }
 
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_mutation <- "driver_mutation" %>%
-    get_type %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/gene_types/driver_mutation_gene_type.feather"))
-
   .GlobalEnv$ecn <- "extra_cellular_network" %>%
     get_type %>%
     feather::write_feather(paste0(getwd(), "/feather_files/gene_types/ecn_gene_type.feather"))
@@ -56,7 +52,6 @@ build_gene_types_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(driver_mutation, pos = ".GlobalEnv")
   rm(ecn, pos = ".GlobalEnv")
   rm(immunomodulator, pos = ".GlobalEnv")
   rm(io_target, pos = ".GlobalEnv")
