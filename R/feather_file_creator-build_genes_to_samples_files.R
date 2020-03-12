@@ -18,15 +18,15 @@ build_genes_to_samples_files <- function() {
     cat_genes_to_samples_status("Get the gene entrezs from the genes table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(id, entrez),
-      by = c("gene_id" = "id")
+        dplyr::select(gene_id = id, entrez),
+      by = "gene_id"
     )
 
     cat_genes_to_samples_status("Get the samples from the samples table.")
     genes_to_samples <- genes_to_samples %>% dplyr::left_join(
       current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(id, sample = name),
-      by = c("sample_id" = "id")
+        dplyr::select(sample_id = id, sample = name),
+      by = "sample_id"
     )
 
     cat_genes_to_samples_status("Clean up the data set.")
