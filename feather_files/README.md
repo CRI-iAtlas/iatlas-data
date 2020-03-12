@@ -24,14 +24,18 @@ Within the `feather_file` folder, data files should be segregated into folders a
 - `gene_types`
 - `genes`
 - `mutation_codes`
+- `mutation_types`
+- `mutations`
 - `nodes`
 - `patients`
 - `relationships`
+  - `edges_to_tags`
   - `features_to_samples`
-  - `genes_samples_mutations`
+  - `genes_samples_mutations` (DEPRECATED)
   - `genes_to_samples`
   - `genes_to_types`
-  - `mutation_codes_to_gene_types`
+  - `mutation_codes_to_gene_types` (DEPRECATED)
+  - `samples_to_mutations`
   - `samples_to_tags`
   - `tags_to_tags`
 - `samples`
@@ -223,6 +227,34 @@ The conventions for the feather files in each folder are as follows:
 
     The mutation code. This is REQUIRED.
 
+- ### `mutation_types`
+
+  #### Mutation Type Column Names
+
+  - _name_
+
+    The name of the mutation type.
+
+  - _display_
+
+    A friendly display name for the mutation type.
+
+- ### `mutations`
+
+  #### Mutation Column Names
+
+  - _entrez_ (required)
+
+    The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+  - _mutation_code_ (required)
+
+    The code (name) of a mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
+
+  - _mutation_type_
+
+    The name of a mutation type. These mutation types MUST exist in data in the `mutation_types` folder.
+
 - ### `nodes`
 
   #### Node Column Names
@@ -336,7 +368,7 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `features_to_samples`
 
-    #### Feature to Sample Column Names
+    ##### Feature to Sample Column Names
 
     - _feature_
 
@@ -352,7 +384,9 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `genes_samples_mutations`
 
-    #### Gene to Mutation Code to Sample Column Names
+    (This is DEPRECATED. Please do not populate this relationsship.)
+
+    ##### Gene to Sample to Mutation Code Column Names
 
     - _entrez_
 
@@ -364,7 +398,7 @@ The conventions for the feather files in each folder are as follows:
 
     - _mutation_code_ (optional - may be NA)
 
-      The name of the sample. These samples MUST exist in data in the `samples` folder.
+      The code (name) of the mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
 
     - _status_
 
@@ -372,7 +406,7 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `genes_to_samples`
 
-    #### Gene to Sample Column Names
+    ##### Gene to Sample Column Names
 
     - _entrez_
 
@@ -388,7 +422,7 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `genes_to_types`
 
-    #### Gene to Gene Type Column Names
+    ##### Gene to Gene Type Column Names
 
     - _entrez_
 
@@ -400,7 +434,9 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `mutation_codes_to_gene_types`
 
-    #### Mutation Code to Gene Type Column Names
+    (This is DEPRECATED. Please do not populate this relationship.)
+
+    ##### Mutation Code to Gene Type Column Names
 
     - _code_
 
@@ -410,9 +446,35 @@ The conventions for the feather files in each folder are as follows:
 
       The type of gene this specific gene is related to. These gene types MUST exist in data in the `gene_types` folder.
 
+  - #### `samples_to_mutations`
+
+    (This is DEPRECATED. Please do not populate this relationsship.)
+
+    ##### Sample to Mutation Code Column Names
+
+    - _sample_ (required)
+
+      The name of the sample. These samples MUST exist in data in the `samples` folder.
+
+    - _entrez_ (required)
+
+      The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+    - _mutation_code_ (optional - may be NA)
+
+      The code (name) of the mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
+
+    - _mutation_type_ (optional - may be NA)
+
+      The name of the mutation type. These mutation types MUST exist in data in the `mutation_types` folder.
+
+    - _status_
+
+      The status of the gene in this psecific relationship. My be `Wt` (Wild Type) or `Mut` (Mutant).
+
   - #### `samples_to_tags`
 
-    #### Sample to Tag Column Names
+    ##### Sample to Tag Column Names
 
     - _sample_
 
@@ -424,7 +486,7 @@ The conventions for the feather files in each folder are as follows:
 
   - #### `tags_to_tags`
 
-    #### Tag to Tag Column Names
+    ##### Tag to Tag Column Names
 
     - _tag_
 

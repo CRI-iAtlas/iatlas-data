@@ -37,6 +37,19 @@ sql_schema <- list(
       "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
     )
   ),
+  edges_to_tags = list(
+    create = "
+      CREATE TABLE edges_to_tags (
+        edge_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (edge_id, tag_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX edge_to_tag_tag_id_index ON edges_to_tags (tag_id);",
+      "ALTER TABLE edges_to_tags ADD FOREIGN KEY (edge_id) REFERENCES edges;",
+      "ALTER TABLE edges_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
   edges = list (
     create = "
       CREATE TABLE edges (
@@ -226,6 +239,24 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX method_tag_name_index ON method_tags (\"name\");"
     )
   ),
+  mutations = list(
+    create = "
+      CREATE TABLE mutations (
+        id SERIAL,
+        gene_id INTEGER NOT NULL,
+        mutation_code_id INTEGER NOT NULL,
+        mutation_type_id INTEGER,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX mutation_gene_id_mutation_code_id_mutation_type_id_index ON mutations (gene_id, mutation_code_id, mutation_type_id);",
+      "CREATE INDEX mutation_mutation_code_id_index ON mutations (mutation_code_id);",
+      "CREATE INDEX mutation_mutation_type_id_index ON mutations (mutation_type_id);",
+      "ALTER TABLE mutations ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE mutations ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
+      "ALTER TABLE mutations ADD FOREIGN KEY (mutation_type_id) REFERENCES mutation_types;"
+    )
+  ),
   mutation_codes = list (
     create = "
       CREATE TABLE mutation_codes (
@@ -246,6 +277,15 @@ sql_schema <- list(
       "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
       "ALTER TABLE mutation_codes_to_gene_types ADD FOREIGN KEY (type_id) REFERENCES gene_types;"
     )
+  ),
+  mutation_types = list (
+    create = "
+      CREATE TABLE mutation_types (
+        id SERIAL,
+        \"name\" VARCHAR NOT NULL,
+        display VARCHAR,
+        PRIMARY KEY (id)
+      );"
   ),
   node_types = list(
     create = "
@@ -335,6 +375,20 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX sample_name_index ON samples (\"name\");",
       "CREATE INDEX sample_patient_index ON samples (patient_id);",
       "ALTER TABLE samples ADD FOREIGN KEY (patient_id) REFERENCES patients;"
+    )
+  ),
+  samples_to_mutations = list(
+    create = "
+      CREATE TABLE samples_to_mutations (
+        sample_id INTEGER NOT NULL,
+        mutation_id INTEGER NOT NULL,
+        \"status\" STATUS_ENUM,
+        PRIMARY KEY (sample_id, mutation_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX sample_to_mutation_mutation_id_index ON samples_to_mutations (mutation_id);",
+      "ALTER TABLE samples_to_mutations ADD FOREIGN KEY (sample_id) REFERENCES samples;",
+      "ALTER TABLE samples_to_mutations ADD FOREIGN KEY (mutation_id) REFERENCES mutations;"
     )
   ),
   samples_to_tags = list(
