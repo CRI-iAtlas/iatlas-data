@@ -18,7 +18,7 @@ old_build_iatlas_db <- function(env = "dev", reset = "reset", show_gc_info = FAL
   running_is_on <- is.null(resume_at)
   stopped <- FALSE
 
-  num_skippable_steps <- 12 # search this file and count for run_skippable_function calls
+  num_skippable_steps <- 11 # search this file and count for run_skippable_function calls
   skippable_step_count <- 1
 
 

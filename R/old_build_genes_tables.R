@@ -69,6 +69,14 @@ old_build_genes_tables <- function() {
   table_written <- mutation_codes %>% iatlas.data::replace_table("mutation_codes")
   cat(crayon::blue("Built mutation_codes table. (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
 
+  cat(crayon::magenta("Building mutation_types data."), fill = TRUE)
+  mutation_types <- dplyr::tibble(name = "driver_mutation", display = "Driver Mutation")
+  cat(crayon::blue("Built mutation_types data."), fill = TRUE)
+
+  cat(crayon::magenta("Building mutation_types table."), fill = TRUE)
+  table_written <- mutation_types %>% iatlas.data::replace_table("mutation_types")
+  cat(crayon::blue("Built mutation_types table. (", nrow(mutation_types), "rows )"), fill = TRUE, sep = " ")
+
   cat(crayon::magenta("Binding gene expr data."), fill = TRUE)
   all_genes_expr <- driver_mutations %>%
     dplyr::bind_rows(immunomodulator_expr, io_target_expr) %>%
@@ -115,25 +123,14 @@ old_build_genes_tables <- function() {
 
   cat(crayon::magenta("Building gene_types data."), fill = TRUE)
   gene_types <- dplyr::tibble(
-    name = c("immunomodulator", "io_target", "driver_mutation", "extra_cellular_network"),
-    display = c("Immunomodulator", "IO Target", "Driver Mutation", "Extra Cellular Network")
+    name = c("immunomodulator", "io_target", "extra_cellular_network"),
+    display = c("Immunomodulator", "IO Target", "Extra Cellular Network")
   )
   cat(crayon::blue("Built gene_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building gene_types table."), fill = TRUE)
   table_written <- gene_types %>% iatlas.data::replace_table("gene_types")
   cat(crayon::blue("Built gene_types table. (", nrow(gene_types), "rows )"), fill = TRUE, sep = " ")
-
-  cat(crayon::magenta("Building mutation_codes_to_gene_types data."), fill = TRUE)
-  mutation_codes_to_gene_types <- old_read_mutation_codes() %>%
-    tibble::add_column(type = "driver_mutation" %>% as.character()) %>%
-    dplyr::left_join(iatlas.data::read_table("gene_types"), by = c("type" = "name")) %>%
-    dplyr::distinct(mutation_code_id, type_id = id)
-  cat(crayon::blue("Built mutation_codes_to_gene_types data (", nrow(mutation_codes), "rows )"), fill = TRUE, sep = " ")
-
-  cat(crayon::magenta("Building mutation_codes_to_gene_types table."), fill = TRUE)
-  table_written <- mutation_codes_to_gene_types %>% iatlas.data::replace_table("mutation_codes_to_gene_types")
-  cat(crayon::blue("Built mutation_codes_to_gene_types table. (", nrow(mutation_codes_to_gene_types), "rows )"), fill = TRUE, sep = " ")
 
   cat(crayon::magenta("Building gene_families data."), fill = TRUE)
   gene_families <- all_genes %>% iatlas.data::rebuild_gene_relational_data("gene_family", "name")
@@ -235,19 +232,17 @@ old_build_genes_tables <- function() {
   gene_types <- iatlas.data::read_table("gene_types")
 
   # Collect the ids of the 3 gene_types.
-  driver_mutation_id <- gene_types %>% dplyr::filter(name == "driver_mutation") %>% .[["id"]]
   immunomodulator_id <- gene_types %>% dplyr::filter(name == "immunomodulator") %>% .[["id"]]
   io_target_id <- gene_types %>% dplyr::filter(name == "io_target") %>% .[["id"]]
   ecn_id <- gene_types %>% dplyr::filter(name == "extra_cellular_network") %>% .[["id"]]
 
-  driver_mutations <- driver_mutations %>% tibble::add_column(type_id = driver_mutation_id %>% as.integer)
   ecns <- ecns %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = ecn_id %>% as.integer)
   immunomodulator_expr <- immunomodulator_expr %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
   immunomodulators <- immunomodulators %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
   io_target_expr <- io_target_expr %>% tibble::add_column(type_id = io_target_id %>% as.integer)
 
-  genes_to_types <- driver_mutations %>%
-    dplyr::bind_rows(ecns, immunomodulators, immunomodulator_expr, io_target_expr) %>%
+  genes_to_types <- ecns %>%
+    dplyr::bind_rows(immunomodulators, immunomodulator_expr, io_target_expr) %>%
     dplyr::mutate(hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)) %>%
     dplyr::left_join(old_read_genes(), by = "hgnc") %>%
     dplyr::distinct(gene_id, type_id) %>%
