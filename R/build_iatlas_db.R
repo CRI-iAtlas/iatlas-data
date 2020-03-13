@@ -28,7 +28,6 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
       "build_mutation_codes_table",
       "build_mutation_types_table",
       "build_mutations_table",
-      "build_mutation_codes_to_gene_types_table",
       "build_patients_table",
       "build_slides_table",
       "build_samples_table",
@@ -36,7 +35,6 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
       "build_samples_to_tags_table",
       "build_features_to_samples_table",
       "build_genes_to_samples_table",
-      "build_genes_samples_mutations_table",
       "build_driver_results_table",
       "build_nodes_tables"
     ),
