@@ -19,15 +19,40 @@ When miniconda installation finishes, you will be asked to activate the minicond
 foo@bar:~$ conda activate r-reticulate
 ```
 
-## Synapseclient
+If `conda activate r-reticulate` is unable to locate the environment:
 
-If the following error comes up:
+1. In the R console: use conda_list() to get the list of current conda environments
 
-```R
-Error in py_module_import(module, convert = convert) :
-  ModuleNotFoundError: No module named 'synapseclient'
+   ```R
+   reticulate::conda_list()
+   ```
+
+1. Look for the "r-reticulate" environment path, should look like:
+
+   ```dataframe
+   /<path-to-the-project-folder>/renv/python/r-reticulate/bin/python
+   ```
+
+1. Copy the env folder path of "r-reticulate" (note: leave off the `/bin/python`):
+
+   ```dataframe
+   /<path-to-the-project-folder>/renv/python/r-reticulate
+   ```
+
+1. Activate the r-reticulate environment:
+
+   ```console
+   foo@bar:~$ conda activate /<path-to-the-project-folder>/renv/python/r-reticulate
+   ```
+
+1. Inside the r-reticulate environment now, run:
+
+```console
+(/<path-to-the-project-folder>/renv/python/r-reticulate)@user:~$ pip install synapseclient
 ```
 
-Use these steps to resolve it:
+1. The previous error should now be gone.
 
-To be continued....
+## Synapseclient Credentials
+
+For the login to Synapse to work correctly, there must be a `.synapseCofig` file in your user directory. An example file is located in the root of the application. Please see [https://python-docs.synapse.org/build/html/Credentials.html](https://python-docs.synapse.org/build/html/Credentials.html) for more details.
