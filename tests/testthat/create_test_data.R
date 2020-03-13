@@ -1,7 +1,7 @@
 load_save_n_random_records <- function(src_feathers, dst_feathers, file, n_records = 100) {
-  feather::read_feather(paste0(src_feathers, "/", file)) %>%
-  dplyr::sample_n(n_records) %>%
-  feather::write_feather(paste0(dst_feathers, "/", file))
+  feather::read_feather(paste0(getwd(), src_feathers, "/", file)) %>%
+    dplyr::sample_n(n_records) %>%
+    feather::write_feather(paste0(getwd(), dst_feathers, "/", file))
 }
 
 create_test_data <- function () {
@@ -23,13 +23,13 @@ create_test_data <- function () {
     "./relationships/samples_to_tags/samples_to_tags_03.feather",
     "./relationships/samples_to_tags/samples_to_tags_01.feather",
 
-    "./relationships/genes_samples_mutations/genes_samples_mutations_03.feather",
-    "./relationships/genes_samples_mutations/genes_samples_mutations_02.feather",
-    "./relationships/genes_samples_mutations/genes_samples_mutations_01.feather"
+    "./relationships/samples_to_mutations/samples_to_mutations_03.feather",
+    "./relationships/samples_to_mutations/samples_to_mutations_02.feather",
+    "./relationships/samples_to_mutations/samples_to_mutations_01.feather"
   )
 
   for(file in files) {
     cat(paste0("converting: ", file, "\n"))
-    load_save_n_random_records('./feather_files', './tests/test_data/feather_files', file)
+    load_save_n_random_records('/feather_files', '/tests/test_data/feather_files', file)
   }
 }
