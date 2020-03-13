@@ -1,7 +1,7 @@
 
-pcawg_synapse_id    <- "syn18234582"
-tcga_sample_id      <- "syn18234560"
-rna_id              <- "syn18134933"
+pcawg_synapse_id      <- "syn18234582"
+tcga_sample_synpse_id <- "syn18234560"
+pcawg_rna_synapse_id  <- "syn18134933"
 
 old_load_all_samples <- function(feather_file_folder) {
   cat(crayon::magenta("Importing feather files for samples and combining all the sample data."), fill = TRUE)
@@ -34,4 +34,18 @@ old_read_samples <- function() result_cached("samples", iatlas.data::read_table(
 old_get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", iatlas.data::load_rna_seq_expr(.GlobalEnv$feather_file_folder, old_read_genes()))
 old_get_all_samples <- function() result_cached("all_samples", old_load_all_samples(.GlobalEnv$feather_file_folder))
 old_get_all_samples_with_patient_ids <- function() result_cached("all_samples_with_patient_ids", old_get_all_samples() %>% dplyr::left_join(old_read_patients(), by = c("sample" = "barcode")))
-old_get_pcawg_samples_synapse <- function() result_cached("all_pcawg_samples_synapse", pcawg_synapse_id %>% .GlobalEnv$synapse$get() %>% .$path %>%  read.csv(sep = "\t", stringsAsFactors = F))
+
+old_get_all_pcawg_samples_synapse <- function(){
+  create_global_synapse_connection()
+  result_cached("all_pcawg_samples_synapse", pcawg_synapse_id %>% .GlobalEnv$synapse$get() %>% .$path %>%  read.csv(sep = "\t", stringsAsFactors = F))
+}
+
+old_get_tcga_samples_synapse <- function(){
+  create_global_synapse_connection()
+  result_cached("tcga_sample_ids", tcga_sample_synpse_id %>% .GlobalEnv$synapse$get() %>% .$path %>% read.csv(sep = "\t", stringsAsFactors = F) %>%  dplyr::pull(icgc_sample_id))
+}
+
+old_get_pcawg_samples_synapse <- function(){
+  create_global_synapse_connection()
+  result_cached("tcga_pcawg_samples_synapse", get_pcawg_samples_synapse())
+}
