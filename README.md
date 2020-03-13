@@ -77,10 +77,9 @@ To build the database locally:
 
 When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
-
 ## Testing
 
-The test suite defined in tests/* unit-tests all the support functions and does an integration test across the whole build process using a subset of the real data.
+The test suite defined in tests/\* unit-tests all the support functions and does an integration test across the whole build process using a subset of the real data.
 
 The primary way to run test is:
 
@@ -125,7 +124,6 @@ If output mismatches the build will abort with a nice message. It will provide a
 
 > Note: `control_data/` is not checked in with the git repo. To reset your control_data, simply delete all the files in the folder. To disable control-data validation, remove the folder entirely.
 
-
 ## Data
 
 ### Data Model
@@ -138,54 +136,4 @@ Information on the data structure can be found in the `feather_files` folder whi
 
 ### Data Sources
 
-Input data for the Shiny-iAtlas portal was accessed from multiple remote sources, including **Synapse**, the **ISB Cancer Genomics Cloud**, and **Google Drive**. The feather files derived from this data and used to populate the database are stored in the `feather_files` folder:
-
-- `edges >`
-  - `edges_TCGAImmune.feather`
-  - `edges_TCGAStudy_Immune.feather`
-  - `edges_TCGAStudy.feather`
-  - `edges_TCGASubtype.feather`
-- `features >`
-- `gene_ids.feather`
-- `genes >`
-  - `driver_mutation_genes.feather`
-  - `driver_mutation_genes.feather`
-  - `immunomodulator_genes.feather`
-  - `io_target_genes.feather`
-- `nodes >`
-  - `nodes_TCGAImmune.feather`
-  - `nodes_TCGAStudy_Immune.feather`
-  - `nodes_TCGAStudy.feather`
-  - `nodes_TCGASubtype.feather`
-- `patients >`
-- `relationships >`
-  - `features_to_samples >`
-  - `genes_to_samples >`
-  - `nodes_to_tags >`
-  - `samples_to_tags >`
-  - `tags_to_tags >`
-- `results >`
-- `samples >`
-  - `immune_subtype_samples.feather`
-  - `tcga_study_samples.feather`
-  - `tcga_subtype_samples.feather`
-- `SQLite_data >`
-  - `driver_mutations1.feather`
-  - `driver_mutations2.feather`
-  - `driver_mutations3.feather`
-  - `driver_mutations4.feather`
-  - `driver_mutations5.feather`
-  - `driver_results1.feather`
-  - `driver_results2.feather`
-  - `feature_values_long.feather`
-  - `features.feather`
-  - `groups.feather`
-  - `immunomodulator_expr.feather`
-  - `immunomodulators.feather`
-  - `io_target_expr1.feather`
-  - `io_target_expr2.feather`
-  - `io_target_expr3.feather`
-  - `io_target_expr4.feather`
-  - `io_targets.feather`
-  - `til_image_links.feather`
-- `tags >`
+Input data for the Shiny-iAtlas portal was accessed from multiple remote sources, including **Synapse**, the **ISB Cancer Genomics Cloud**, and **Google Drive**. The feather files derived from this data and used to populate the database are stored in the `feather_files` folder. Please see the Feather File [README.md](./feather_files/README.md) for more info on these files.
