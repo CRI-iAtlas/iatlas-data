@@ -88,7 +88,7 @@ The sub tables are:
 
   - #### gene_types
 
-    Each row describes an individual gene type. The current gene types are "immunomodulator", "io_target", "driver_mutation", and "extra_cellular_network".
+    Each row describes an individual gene type. The current gene types are "immunomodulator", "io_target", and "extra_cellular_network".
 
   - #### immune_checkpoints
 

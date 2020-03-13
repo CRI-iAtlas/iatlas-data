@@ -31,10 +31,8 @@ Within the `feather_file` folder, data files should be segregated into folders a
 - `relationships`
   - `edges_to_tags`
   - `features_to_samples`
-  - `genes_samples_mutations` (DEPRECATED)
   - `genes_to_samples`
   - `genes_to_types`
-  - `mutation_codes_to_gene_types` (DEPRECATED)
   - `samples_to_mutations`
   - `samples_to_tags`
   - `tags_to_tags`
@@ -382,28 +380,6 @@ The conventions for the feather files in each folder are as follows:
 
       The numeric value of the feature to sample relationship. The unit of the value is expressed in the [features](#features) data.
 
-  - #### `genes_samples_mutations`
-
-    (This is DEPRECATED. Please do not populate this relationsship.)
-
-    ##### Gene to Sample to Mutation Code Column Names
-
-    - _entrez_
-
-      The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
-
-    - _sample_
-
-      The name of the sample. These samples MUST exist in data in the `samples` folder.
-
-    - _mutation_code_ (optional - may be NA)
-
-      The code (name) of the mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
-
-    - _status_
-
-      The status of the gene in this psecific relationship. My be `Wt` (Wild Type) or `Mut` (Mutant).
-
   - #### `genes_to_samples`
 
     ##### Gene to Sample Column Names
@@ -427,20 +403,6 @@ The conventions for the feather files in each folder are as follows:
     - _entrez_
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
-
-    - _gene_type_
-
-      The type of gene this specific gene is related to. These gene types MUST exist in data in the `gene_types` folder.
-
-  - #### `mutation_codes_to_gene_types`
-
-    (This is DEPRECATED. Please do not populate this relationship.)
-
-    ##### Mutation Code to Gene Type Column Names
-
-    - _code_
-
-      The unique string for of a mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
 
     - _gene_type_
 
