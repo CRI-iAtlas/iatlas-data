@@ -1,6 +1,4 @@
 pcawg_synapse_id               <- "syn18234582"
-tcga_sample_synpse_id          <- "syn18234560"
-pcawg_rna_synapse_id           <- "syn18268621"
 
 get_all_pcawg_samples_synapse_cached <- function(){
   iatlas.data::create_global_synapse_connection()
@@ -17,7 +15,7 @@ get_tcga_samples_synapse_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "tcga_sample_ids",
-    tcga_sample_synpse_id %>%
+    "syn18234560" %>%
       .GlobalEnv$synapse$get() %>%
       .$path %>%
       read.csv(sep = "\t", stringsAsFactors = F) %>%
@@ -73,5 +71,23 @@ get_pcawg_feature_values_cached <- function(){
   )
 }
 
-
+get_pcawg_tag_values_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "pcawg_tag_values",
+    "syn20717211" %>%
+      .GlobalEnv$synapse$get() %>%
+      purrr::pluck("path") %>%
+      read.table(stringsAsFactors = F, header = T, sep = "\t") %>%
+      dplyr::as_tibble() %>%
+      dplyr::inner_join(
+        get_pcawg_samples_synapse_cached(),
+        by = c("sample" = "aliquot_id")
+      ) %>%
+      dplyr::select(sample = icgc_donor_id, subtype, dcc_project_code) %>%
+      dplyr::mutate(dataset = "PCAWG") %>%
+      tidyr::pivot_longer(-sample, values_to = "tag") %>%
+      dplyr::select(-name)
+  )
+}
 

@@ -1,7 +1,7 @@
 get_pcawg_rnaseq_synapse <- function(){
   gene_trans_tbl <- feather::read_feather("feather_files/gene_ids.feather")
   name_trans_tbl <- get_pcawg_samples_synapse_cached()
-  pcawg_rna_synapse_id %>%
+  "syn18268621" %>%
     .GlobalEnv$synapse$get() %>%
     .$path %>%
     read.table(stringsAsFactors = F, header = T, sep = "\t") %>%
