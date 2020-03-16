@@ -8,7 +8,7 @@ pcawg_build_tags_files <- function() {
 
     cat(crayon::magenta(paste0("Get PCAWG tags.")), fill = TRUE)
 
-    cat_tags_status("Get initial data from Synapse.")
+    cat_tags_status("Build tags data.")
     tags <- dplyr::tibble(
       name = "PCAWG",
       display = "PCAWG"
