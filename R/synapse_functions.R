@@ -12,13 +12,15 @@ create_global_synapse_connection <- function() {
     syn <- iatlas.data::attempt_instantiate()
     if (!is.null(syn) & is.null(syn$username)) {
       syn$login()
-      return(.GlobalEnv$synapse <- syn)
     } else if (is.null(syn)) {
       cat(crayon::green("NOT Logged into Synapse\n"))
       return(NA)
     }
+    .GlobalEnv$synapse <- syn
+    cat(crayon::green("Logged into Synapse\n"))
+  } else {
+    cat(crayon::green("Already logged into Synapse\n"))
   }
-  cat(crayon::green("Logged into Synapse\n"))
   return(.GlobalEnv$synapse)
 }
 
