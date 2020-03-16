@@ -9,16 +9,12 @@ pcawg_build_features_files <- function() {
     cat(crayon::magenta(paste0("Get features")), fill = TRUE)
 
     cat_features_status("Get the initial values from Synapse.")
-    features <- iatlas.data::get_pcawg_feature_values_cached()
+    features <- iatlas.data::get_pcawg_features_cached()
 
-    # Workflow output »  Deconvolution »  MCPCounter » SP101526.tsv
-    # sample should match to sample name. Each additional column should be a feature.
-    # name should be mpc_counter_<feature_name_no_spaces>
-    # display should be as the column name
-
-    # Samples_to_features can be captued from these files as well.
-
-    # class ==  MCPCounter or Epic (depending on the folder)
+    cat_features_status("Clean up the data set.")
+    features <- features %>%
+      dplyr::distinct(feature, sample, value) %>%
+      dplyr::arrange(feature, sample)
 
     return(features)
   }
