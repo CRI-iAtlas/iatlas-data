@@ -1,4 +1,4 @@
-build_genes_files <- function() {
+pcawg_build_genes_files <- function() {
 
   cat_genes_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
