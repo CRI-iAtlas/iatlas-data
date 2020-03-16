@@ -1,4 +1,4 @@
-build_slides_files <- function() {
+tcga_build_slides_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
