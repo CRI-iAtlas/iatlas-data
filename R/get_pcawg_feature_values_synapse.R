@@ -1,14 +1,21 @@
+get_pcawg_fature_values_synapse <- function(){
+  dplyr::bind_rows(
+    get_pcawg_cibersort_synapse(),
+    get_pcawg_mcpcounter_synapse(),
+    get_pcawg_mitcr_synapse()
+  ) %>%
+    tidyr::drop_na()
+}
+
 get_pcawg_cibersort_synapse <- function(){
   names_tbl <- get_pcawg_samples_synapse_cached()
-  deconvolution_table_synapse_id %>%
-    paste0(
-      "select id, ICGC_Donor_ID, ICGC_Specimen_ID from ",
-      .,
-      " where method = 'cibersort'"
+  paste0(
+      "select id, ICGC_Donor_ID, ICGC_Specimen_ID from syn20583414 ",
+      "where method = 'cibersort'"
     ) %>%
     .GlobalEnv$synapse$tableQuery(includeRowIdAndRowVersion = F) %>%
     .$filepath %>%
-    data.table::fread() %>%
+    read.csv(stringsAsFactors = F) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(ICGC_Specimen_ID %in% names_tbl$icgc_specimen_id) %>%
     dplyr::mutate(tbl = purrr::map(id, synapse_id_to_tbl)) %>%
@@ -21,15 +28,13 @@ get_pcawg_cibersort_synapse <- function(){
 
 get_pcawg_mcpcounter_synapse <- function(){
   names_tbl <- get_pcawg_samples_synapse_cached()
-  deconvolution_table_synapse_id %>%
-    paste0(
-      "select id, ICGC_Donor_ID, ICGC_Specimen_ID from ",
-      .,
-      " where method = 'mcpcounter'"
+  paste0(
+      "select id, ICGC_Donor_ID, ICGC_Specimen_ID from syn20583414 ",
+      "where method = 'mcpcounter'"
     ) %>%
     .GlobalEnv$synapse$tableQuery(includeRowIdAndRowVersion = F) %>%
     .$filepath %>%
-    data.table::fread() %>%
+    read.csv(stringsAsFactors = F) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(ICGC_Specimen_ID %in% names_tbl$icgc_specimen_id) %>%
     dplyr::mutate(tbl = purrr::map(id, synapse_id_to_tbl)) %>%
@@ -43,10 +48,35 @@ get_pcawg_mcpcounter_synapse <- function(){
     dplyr::mutate(feature = paste0("epic_", feature))
 }
 
+get_pcawg_mitcr_synapse <- function(){
+  names_tbl <- get_pcawg_samples_synapse_cached() %>%
+    dplyr::select(icgc_sample_id, icgc_donor_id)
+  "select id from syn20693185" %>%
+    .GlobalEnv$synapse$tableQuery(includeRowIdAndRowVersion = F) %>%
+    .$filepath %>%
+    read.csv(stringsAsFactors = F) %>%
+    dplyr::as_tibble() %>%
+    dplyr::mutate(tbl = purrr::map(id, synapse_id_to_tbl2)) %>%
+    dplyr::select(tbl) %>%
+    tidyr::unnest(cols = tbl) %>%
+    dplyr::inner_join(names_tbl, by = c("sample" = "icgc_sample_id")) %>%
+    dplyr::select(-sample) %>%
+    dplyr::rename(sample = icgc_donor_id) %>%
+    tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature")
+}
+
 synapse_id_to_tbl <- function(id){
   id %>%
     .GlobalEnv$synapse$get() %>%
     purrr::pluck("path") %>%
-    data.table::fread() %>%
+    read.csv(sep = "\t", stringsAsFactors = F) %>%
+    dplyr::as_tibble()
+}
+
+synapse_id_to_tbl2 <- function(id){
+  id %>%
+    .GlobalEnv$synapse$get() %>%
+    purrr::pluck("path") %>%
+    jsonlite::fromJSON() %>%
     dplyr::as_tibble()
 }
