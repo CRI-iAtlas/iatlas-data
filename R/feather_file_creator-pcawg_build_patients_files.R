@@ -1,7 +1,4 @@
 build_patients_files <- function() {
-  # Create a global variable to hold the pool DB connection.
-  .GlobalEnv$pool <- iatlas.data::connect_to_db()
-  cat(crayon::green("Created DB connection."), fill = TRUE)
 
   cat_patients_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
@@ -12,7 +9,7 @@ build_patients_files <- function() {
     cat(crayon::magenta(paste0("Get patients.")), fill = TRUE)
 
     cat_samples_status("Get the initial values from Synapse.")
-    patients. <- dplyr::tibble(
+    patients <- dplyr::tibble(
       barcode = character(),
       age = character(),
       ethinicity = character(),
@@ -22,7 +19,7 @@ build_patients_files <- function() {
       weight = character()
     )
 
-    return(patients.)
+    return(patients)
   }
 
   # Setting these to the GlobalEnv just for development purposes.
