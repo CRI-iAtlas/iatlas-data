@@ -71,6 +71,21 @@ get_pcawg_feature_values_cached <- function(){
   )
 }
 
+get_pcawg_features_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "pcawg_features",
+    dplyr::tribble(
+      ~name,                              ~display,                ~unit,   ~class,
+      "mcpcounter_t_cells",               "T cells",               "score", "mcpcounter",
+      "mcpcounter_cd8_t_cells",           "DC8 T Cells",           "score", "mcpcounter",
+      "mcpcounter_cytotoxic_lymphocytes", "Cytotoxic Lymphocytes", "score", "mcpcounter",
+      "mcpcounter_nk_cells",              "NK cells",              "score", "mcpcounter",
+      "mcpcounter_b_lineage",             "B Lineage",             "score", "mcpcounter"
+    )
+  )
+}
+
 get_pcawg_tag_values_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(

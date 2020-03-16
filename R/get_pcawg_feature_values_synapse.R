@@ -45,7 +45,8 @@ get_pcawg_mcpcounter_synapse <- function(){
     tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature") %>%
     dplyr::mutate(feature = tolower(feature)) %>%
     dplyr::mutate(feature = stringr::str_replace_all(feature, " ", "_")) %>%
-    dplyr::mutate(feature = paste0("epic_", feature))
+    dplyr::mutate(feature = stringr::str_replace_all(feature, "\\.", "_")) %>%
+    dplyr::mutate(feature = paste0("mcpcounter_", feature))
 }
 
 get_pcawg_mitcr_synapse <- function(){
@@ -61,7 +62,9 @@ get_pcawg_mitcr_synapse <- function(){
     tidyr::unnest(cols = tbl) %>%
     dplyr::inner_join(names_tbl, by = c("sample" = "icgc_sample_id")) %>%
     dplyr::select(-sample) %>%
-    dplyr::rename(sample = icgc_donor_id) %>%
+    dplyr::select(
+      sample = icgc_donor_id, TCR_Shannon, TCR_Richness, TCR_Evenness
+    ) %>%
     tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature")
 }
 
