@@ -1,4 +1,4 @@
-build_tags_files <- function() {
+tcga_build_tags_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -14,6 +14,9 @@ build_tags_files <- function() {
 
     cat_tags_status("Get initial data from the tags table.")
     tags <- current_pool %>% dplyr::tbl("tags")
+
+    cat_tags_status("Ensure the TCGA tag exists.")
+    tags <- tags %>% dplyr::add_row(name = "TCGA", display = "TCGA")
 
     cat_tags_status("Clean up the data set.")
     tags <- tags %>%

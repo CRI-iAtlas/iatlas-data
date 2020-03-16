@@ -1,4 +1,4 @@
-build_ecn_genes <- function() {
+tcga_build_ecn_genes <- function() {
   gene_ids <- feather::read_feather(
     paste0(getwd(), "/feather_files/gene_ids.feather")
   ) %>%
