@@ -6,18 +6,12 @@ pcawg_build_samples_files <- function() {
 
   get_samples <- function() {
 
-    cat(crayon::magenta(paste0("Get samples.")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get PCAWG samples.")), fill = TRUE)
 
     cat_samples_status("Get the initial values from Synapse.")
-    samples <- dplyr::tibble(
-      name = character(),
-      patient_barcode = character()
-    )
-    # samples <- iatlas.data::old_get_all_pcawg_samples_synapse()
-    #
-    # samples <- iatlas.data::old_get_tcga_samples_synapse()
-    #
-    # samples <- iatlas.data::old_get_pcawg_samples_synapse()
+    samples <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
+      dplyr::select(patient_barcode = icgc_donor_id) %>%
+      dplyr::mutate(name = patient_barcode)
 
     return(samples)
   }
