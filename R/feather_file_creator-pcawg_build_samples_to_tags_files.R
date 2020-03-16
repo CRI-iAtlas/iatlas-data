@@ -6,10 +6,8 @@ pcawg_build_samples_to_tags_files <- function() {
 
   get_samples_to_tags <- function() {
 
-    cat_samples_to_tags_status("Get all PCAWG samples and tag them PCAWG.")
-    samples_to_pcawg <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
-      dplyr::select(sample = icgc_donor_id) %>%
-      dplyr::mutate(tag = "PCAWG")
+    cat_samples_to_tags_status("Get all PCAWG samples_to_tags from Synapse.")
+    samples_to_tags_pcawg <- iatlas.data::get_pcawg_tag_values_cached()
 
     cat_samples_to_tags_status("Get all PCAWG samples and tag them PCAWG_Study.")
     samples_to_pcawg_study <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
@@ -22,7 +20,7 @@ pcawg_build_samples_to_tags_files <- function() {
       dplyr::mutate(tag = "Immune_Subtype")
 
     cat_samples_to_tags_status("Bind the samples_to_tags dataframes together.")
-    samples_to_tags <- samples_to_pcawg %>%
+    samples_to_tags <- samples_to_tags_pcawg %>%
       dplyr::bind_rows(samples_to_pcawg_study, samples_to_immune_subtype)
 
     cat_samples_to_tags_status("Clean up the data set.")
