@@ -1,6 +1,7 @@
-pcawg_synapse_id      <- "syn18234582"
-tcga_sample_synpse_id <- "syn18234560"
-pcawg_rna_synapse_id  <- "syn18268621"
+pcawg_synapse_id               <- "syn18234582"
+tcga_sample_synpse_id          <- "syn18234560"
+pcawg_rna_synapse_id           <- "syn18268621"
+deconvolution_table_synapse_id <- "syn20583414"
 
 get_all_pcawg_samples_synapse_cached <- function(){
   iatlas.data::create_global_synapse_connection()
@@ -38,6 +39,22 @@ get_pcawg_rnaseq_synapse_cached <- function(){
   iatlas.data::result_cached(
     "pcawg_rnaseq",
     iatlas.data::get_pcawg_rnaseq_synapse()
+  )
+}
+
+get_pcawg_cibersort_values_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "pcawg_rnaseq",
+    iatlas.data::get_pcawg_cibersort_synapse()
+  )
+}
+
+get_pcawg_mcpcounter_values_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "pcawg_rnaseq",
+    iatlas.data::get_pcawg_mcpcounter_synapse()
   )
 }
 
