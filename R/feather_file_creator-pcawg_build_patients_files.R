@@ -1,4 +1,4 @@
-build_patients_files <- function() {
+pcawg_build_patients_files <- function() {
 
   cat_patients_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
@@ -6,18 +6,11 @@ build_patients_files <- function() {
 
   get_patients <- function() {
 
-    cat(crayon::magenta(paste0("Get patients.")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get PCAWG patients.")), fill = TRUE)
 
-    cat_samples_status("Get the initial values from Synapse.")
-    patients <- dplyr::tibble(
-      barcode = character(),
-      age = character(),
-      ethinicity = character(),
-      gender = character(),
-      height = character(),
-      race = character(),
-      weight = character()
-    )
+    cat_patients_status("Get the initial values from Synapse.")
+    patients <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
+      dplyr::select(barcode = icgc_donor_id)
 
     return(patients)
   }

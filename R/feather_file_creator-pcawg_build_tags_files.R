@@ -9,12 +9,12 @@ pcawg_build_tags_files <- function() {
     cat(crayon::magenta(paste0("Get PCAWG tags.")), fill = TRUE)
 
     cat_tags_status("Get initial data from Synapse.")
-    samples <- dplyr::tibble(
-      name = character(),
-      characteristics = character(),
-      display = character(),
-      color = character()
-    )
+    tags <- dplyr::tibble(
+      name = "PCAWG",
+      display = "PCAWG"
+    ) %>%
+      dplyr::add_row(name = "PCAWG_Study", display = "PCAWG Study") %>%
+      dplyr::add_row(name = "Immune_Subtype", display = "Immune Subtype")
 
     return(tags)
   }
@@ -22,9 +22,6 @@ pcawg_build_tags_files <- function() {
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$pcawg_tags <- get_tags() %>%
     feather::write_feather(paste0(getwd(), "/feather_files/tags/pcawg_tags.feather"))
-
-  # Log out of Synapse.
-  iatlas.data::synapse_logout()
 
   ### Clean up ###
   # Data
