@@ -6,25 +6,14 @@ pcawg_build_genes_files <- function() {
 
   get_genes <- function(gene_type) {
 
-    cat(crayon::magenta(paste0("Get pcawg genes")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get PCAWG genes")), fill = TRUE)
 
+    cat_genes_status("Get the inital values from Synapse.")
+    genes <- iatlas.data::get_pcawg_rnaseq_synapse_cached() %>%
+      dplyr::select(entrez, hgnc)
 
-    cat_genes_status("Get the initial values from Synapse.")
-    genes <- dplyr::tibble(
-      entrez = integer(),
-      hgnc = character(),
-      description = character(),
-      friendly_name = character(),
-      io_landscape_name = character(),
-      gene_family = character(),
-      gene_function = character(),
-      immune_checkpoint = character(),
-      node_type = character(),
-      pathway = character(),
-      super_category = character(),
-      therapy_type = character(),
-      references = character()
-    )
+    cat_genes_status("Clean up the data set.")
+    genes <- genes %>% dplyr::distinct(entrez, hgnc)
 
     return(genes)
   }
