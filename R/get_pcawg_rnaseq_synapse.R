@@ -4,7 +4,7 @@ get_pcawg_rnaseq_synapse <- function(){
   "syn18268621" %>%
     .GlobalEnv$synapse$get() %>%
     .$path %>%
-    read.table(stringsAsFactors = F, header = T, sep = "\t") %>%
+    read.csv(stringsAsFactors = F, header = T, sep = "\t", check.names = F) %>%
     dplyr::as_tibble() %>%
     dplyr::inner_join(gene_trans_tbl, by = c("hugo" = "hgnc")) %>%
     dplyr::select(-hugo) %>%
