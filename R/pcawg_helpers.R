@@ -77,11 +77,11 @@ get_pcawg_features_cached <- function(){
     "pcawg_features",
     dplyr::tribble(
       ~name,                              ~display,                ~unit,   ~class,
-      "mcpcounter_t_cells",               "T cells",               "score", "mcpcounter",
-      "mcpcounter_cd8_t_cells",           "DC8 T Cells",           "score", "mcpcounter",
-      "mcpcounter_cytotoxic_lymphocytes", "Cytotoxic Lymphocytes", "score", "mcpcounter",
-      "mcpcounter_nk_cells",              "NK cells",              "score", "mcpcounter",
-      "mcpcounter_b_lineage",             "B Lineage",             "score", "mcpcounter"
+      "mcpcounter_t_cells",               "T cells",               "score", "MPCCounter",
+      "mcpcounter_cd8_t_cells",           "DC8 T Cells",           "score", "MPCCounter",
+      "mcpcounter_cytotoxic_lymphocytes", "Cytotoxic Lymphocytes", "score", "MPCCounter",
+      "mcpcounter_nk_cells",              "NK cells",              "score", "MPCCounter",
+      "mcpcounter_b_lineage",             "B Lineage",             "score", "MPCCounter"
     )
   )
 }
