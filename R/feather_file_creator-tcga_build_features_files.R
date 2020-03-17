@@ -1,4 +1,4 @@
-build_features_files <- function() {
+tcga_build_features_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -31,12 +31,20 @@ build_features_files <- function() {
 
     cat_features_status("Clean up the data set.")
     features <- features %>%
-      dplyr::distinct(name, display, class, method_tag, order, unit) %>%
       dplyr::filter(!is.na(name)) %>%
+      dplyr::distinct(name, display, class, method_tag, order, unit) %>%
       dplyr::arrange(name)
 
     cat_features_status("Execute the query and return a tibble.")
     features <- features %>% dplyr::as_tibble()
+
+    cat_features_status("Ensure feature names use underscores instead of dots.")
+    features <- features %>% dplyr::mutate(name = stringr::str_replace_all(name, "[\\.]{1,}", "_"))
+
+    cat_features_status("Clean up the data set.")
+    features <- features %>%
+      dplyr::distinct(name, display, class, method_tag, order, unit) %>%
+      dplyr::arrange(name)
 
     pool::poolReturn(current_pool)
 

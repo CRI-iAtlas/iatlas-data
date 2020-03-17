@@ -11,6 +11,9 @@ pcawg_build_features_to_samples_files <- function() {
     cat_features_to_samples_status("Get the initial values from Synapse.")
     features_to_samples <- iatlas.data::get_pcawg_feature_values_cached()
 
+    cat_features_to_samples_status("Ensure features use underscores instead of dots.")
+    features_to_samples <- features_to_samples %>% dplyr::mutate(feature = stringr::str_replace_all(feature, "[\\.]", "_"))
+
     cat_features_to_samples_status("Clean up the data set.")
     features_to_samples <- features_to_samples %>%
       dplyr::distinct(feature, sample, value) %>%

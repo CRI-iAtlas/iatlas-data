@@ -13,8 +13,11 @@ pcawg_build_features_files <- function() {
     features_to_samples <- iatlas.data::get_pcawg_feature_values_cached() %>%
       dplyr::select(name = feature)
 
-    features <- features %>%
-      dplyr::bind_rows(features_to_samples)
+    cat_features_status("Bind all the features together.")
+    features <- features %>% dplyr::bind_rows(features_to_samples)
+
+    cat_features_status("Ensure feature names use underscores instead of dots.")
+    features <- features %>% dplyr::mutate(name = stringr::str_replace_all(name, "[\\.]", "_"))
 
     cat_features_status("Clean up the data set.")
     features <- features %>%

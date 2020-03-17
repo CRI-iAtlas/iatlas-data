@@ -24,7 +24,9 @@ get_pcawg_cibersort_synapse <- function(){
     dplyr::select(-sample) %>%
     dplyr::rename(sample = ICGC_Donor_ID) %>%
     tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature") %>%
-    dplyr::mutate(feature = stringr::str_remove_all(feature, ".Relative"))
+    dplyr::mutate(feature = stringr::str_remove_all(feature, ".Relative")) %>%
+    dplyr::mutate(feature = stringr::str_replace_all(feature, "\\.", "_")) %>%
+    dplyr::mutate(feature = stringr::str_replace_all(feature, "__", "_"))
 }
 
 get_pcawg_mcpcounter_synapse <- function(){
