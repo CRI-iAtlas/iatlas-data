@@ -23,7 +23,8 @@ get_pcawg_cibersort_synapse <- function(){
     tidyr::unnest(cols = tbl) %>%
     dplyr::select(-sample) %>%
     dplyr::rename(sample = ICGC_Donor_ID) %>%
-    tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature")
+    tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature") %>%
+    dplyr::mutate(feature = stringr::str_remove_all(feature, ".Relative"))
 }
 
 get_pcawg_mcpcounter_synapse <- function(){
