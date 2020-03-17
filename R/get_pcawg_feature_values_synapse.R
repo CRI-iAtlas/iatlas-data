@@ -17,6 +17,7 @@ get_pcawg_cibersort_synapse <- function(){
     .$filepath %>%
     read.csv(stringsAsFactors = F) %>%
     dplyr::as_tibble() %>%
+    dplyr::slice(1:2) %>%
     dplyr::filter(ICGC_Specimen_ID %in% names_tbl$icgc_specimen_id) %>%
     dplyr::mutate(tbl = purrr::map(id, synapse_id_to_tbl)) %>%
     dplyr::select(ICGC_Donor_ID, tbl) %>%
@@ -24,7 +25,9 @@ get_pcawg_cibersort_synapse <- function(){
     dplyr::select(-sample) %>%
     dplyr::rename(sample = ICGC_Donor_ID) %>%
     tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature") %>%
-    dplyr::mutate(feature = stringr::str_remove_all(feature, ".Relative"))
+    dplyr::mutate(feature = stringr::str_remove_all(feature, ".Relative")) %>%
+    dplyr::mutate(feature = stringr::str_replace_all(feature, "\\.", "_")) %>%
+    dplyr::mutate(feature = stringr::str_replace_all(feature, "__", "_"))
 }
 
 get_pcawg_mcpcounter_synapse <- function(){
