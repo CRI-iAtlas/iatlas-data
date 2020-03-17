@@ -32,12 +32,6 @@ tcga_build_samples_to_tags_files <- function() {
       by = "sample_id"
     )
 
-    cat_samples_to_tags_status("Ensure the samples are tagged 'TCGA'.")
-    samples <- samples %>%
-      dplyr::mutate(tag = "PCAWG") %>%
-      dplyr::select(sample, tag)
-    samples_to_tags <- samples_to_tags %>% dplyr::bind_rows(samples)
-
     cat_samples_to_tags_status("Clean up the data set.")
     samples_to_tags <- samples_to_tags %>%
       dplyr::distinct(sample, tag) %>%
@@ -45,6 +39,18 @@ tcga_build_samples_to_tags_files <- function() {
 
     cat_samples_to_tags_status("Execute the query and return a tibble.")
     samples_to_tags <- samples_to_tags %>% dplyr::as_tibble()
+
+    cat_samples_to_tags_status("Ensure the samples are tagged 'TCGA'.")
+    samples <- samples %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(tag = "TCGA") %>%
+      dplyr::select(sample, tag)
+    samples_to_tags <- samples_to_tags %>% dplyr::bind_rows(samples)
+
+    cat_samples_to_tags_status("Clean up the data set.")
+    samples_to_tags <- samples_to_tags %>%
+      dplyr::distinct(sample, tag) %>%
+      dplyr::arrange(sample, tag)
 
     pool::poolReturn(current_pool)
 
