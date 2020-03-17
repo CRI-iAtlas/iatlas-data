@@ -41,6 +41,14 @@ tcag_build_features_to_samples_files <- function() {
     cat_features_to_samples_status("Execute the query and return a tibble.")
     features_to_samples <- features_to_samples %>% dplyr::as_tibble()
 
+    cat_features_to_samples_status("Ensure features use underscores instead of dots.")
+    features_to_samples <- features_to_samples %>% dplyr::mutate(feature = stringr::str_replace_all(feature, "[\\.]", "_"))
+
+    cat_features_to_samples_status("Clean up the data set.")
+    features_to_samples <- features_to_samples %>%
+      dplyr::distinct(feature, sample, value) %>%
+      dplyr::arrange(feature, sample)
+
     pool::poolReturn(current_pool)
 
     return(features_to_samples)
