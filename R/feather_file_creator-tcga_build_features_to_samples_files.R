@@ -1,4 +1,4 @@
-build_features_to_samples_files <- function() {
+tcag_build_features_to_samples_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
