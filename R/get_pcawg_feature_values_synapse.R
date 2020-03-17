@@ -17,7 +17,6 @@ get_pcawg_cibersort_synapse <- function(){
     .$filepath %>%
     read.csv(stringsAsFactors = F) %>%
     dplyr::as_tibble() %>%
-    dplyr::slice(1:2) %>%
     dplyr::filter(ICGC_Specimen_ID %in% names_tbl$icgc_specimen_id) %>%
     dplyr::mutate(tbl = purrr::map(id, synapse_id_to_tbl)) %>%
     dplyr::select(ICGC_Donor_ID, tbl) %>%
