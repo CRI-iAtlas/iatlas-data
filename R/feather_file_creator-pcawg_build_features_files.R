@@ -10,11 +10,16 @@ pcawg_build_features_files <- function() {
 
     cat_features_status("Get the initial values from Synapse.")
     features <- iatlas.data::get_pcawg_features_cached()
+    features_to_samples <- iatlas.data::get_pcawg_feature_values_cached() %>%
+      dplyr::select(name = feature)
+
+    features <- features %>%
+      dplyr::bind_rows(features_to_samples)
 
     cat_features_status("Clean up the data set.")
     features <- features %>%
-      dplyr::distinct(feature, sample, value) %>%
-      dplyr::arrange(feature, sample)
+      dplyr::distinct(name, display, unit, class) %>%
+      dplyr::arrange(name)
 
     return(features)
   }
@@ -28,7 +33,7 @@ pcawg_build_features_files <- function() {
 
   ### Clean up ###
   # Data
-  # rm(pcawg_features, pos = ".GlobalEnv")
+  rm(pcawg_features, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
