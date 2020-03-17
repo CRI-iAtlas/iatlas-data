@@ -1,4 +1,4 @@
-build_samples_to_tags_files <- function() {
+tcga_build_samples_to_tags_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -22,12 +22,21 @@ build_samples_to_tags_files <- function() {
       by = c("tag_id" = "id")
     )
 
+    cat_samples_to_tags_status("Get the samples from the samples table")
+    samples <- current_pool %>% dplyr::tbl("samples") %>%
+      dplyr::select(sample_id = id, sample = name)
+
     cat_samples_to_tags_status("Get the sample names.")
     samples_to_tags <- samples_to_tags %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(id, sample = name),
-      by = c("sample_id" = "id")
+      samples,
+      by = "sample_id"
     )
+
+    cat_samples_to_tags_status("Ensure the samples are tagged 'TCGA'.")
+    samples <- samples %>%
+      dplyr::mutate(tag = "PCAWG") %>%
+      dplyr::select(sample, tag)
+    samples_to_tags <- samples_to_tags %>% dplyr::bind_rows(samples)
 
     cat_samples_to_tags_status("Clean up the data set.")
     samples_to_tags <- samples_to_tags %>%
