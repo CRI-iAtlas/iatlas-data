@@ -19,6 +19,8 @@ pcawg_build_features_files <- function() {
     cat_features_status("Ensure feature names use underscores instead of dots.")
     features <- features %>% dplyr::mutate(name = stringr::str_replace_all(name, "[\\.]", "_"))
 
+    features <- features %>% iatlas.data::resolve_df_dupes(keys = c("name"))
+
     cat_features_status("Clean up the data set.")
     features <- features %>%
       dplyr::distinct(name, display, unit, class) %>%
