@@ -20,9 +20,9 @@ sql_schema <- list(
         p_value NUMERIC,
         log10_p_value NUMERIC,
         t_stat INTEGER,
-        feature_id INTEGER,
-        gene_id INTEGER,
-        tag_id INTEGER,
+        feature_id INTEGER NOT NULL,
+        gene_id INTEGER NOT NULL,
+        tag_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
