@@ -14,7 +14,7 @@ sql_schema <- list(
     create = "
       CREATE TABLE copy_number_results (
         id SERIAL,
-        direction DIRECTION_ENUM,
+        direction DIRECTION_ENUM NOT NULL,
         mean_normal NUMERIC,
         mean_cnv NUMERIC,
         p_value NUMERIC,
