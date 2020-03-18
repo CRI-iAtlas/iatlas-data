@@ -76,12 +76,17 @@ get_pcawg_features_cached <- function(){
   iatlas.data::result_cached(
     "pcawg_features",
     dplyr::tribble(
-      ~name,                              ~display,                ~unit,   ~class,
-      "mcpcounter_t_cells",               "T cells",               "Score", "MPCCounter",
-      "mcpcounter_cd8_t_cells",           "DC8 T Cells",           "Score", "MPCCounter",
-      "mcpcounter_cytotoxic_lymphocytes", "Cytotoxic Lymphocytes", "Score", "MPCCounter",
-      "mcpcounter_nk_cells",              "NK cells",              "Score", "MPCCounter",
-      "mcpcounter_b_lineage",             "B Lineage",             "Score", "MPCCounter"
+      ~name,                                  ~display,                  ~unit,   ~class,
+      "mcpcounter_t_cells",                   "T cells",                 "Score", "MPCCounter",
+      "mcpcounter_cd8_t_cells",               "DC8 T Cells",             "Score", "MPCCounter",
+      "mcpcounter_cytotoxic_lymphocytes",     "Cytotoxic Lymphocytes",   "Score", "MPCCounter",
+      "mcpcounter_nk_cells",                  "NK cells",                "Score", "MPCCounter",
+      "mcpcounter_b_lineage",                 "B Lineage",               "Score", "MPCCounter",
+      "mcpcounter_endothelial_cells",         "Endothelial Cells",       "Score", "MPCCounter",
+      "mcpcounter_fibroblasts",               "Fibroblasts",             "Score", "MPCCounter",
+      "mcpcounter_monocytic_lineage",         "Monocytic Lineage",       "Score", "MPCCounter",
+      "mcpcounter_myeloid_dendritic_cells",   "Myeloid Dendritic Cells", "Score", "MPCCounter",
+      "mcpcounter_neutrophils",               "Neutrophils",             "Score", "MPCCounter"
     )
   )
 }
