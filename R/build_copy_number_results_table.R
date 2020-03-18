@@ -21,7 +21,6 @@ build_copy_number_results_table <- function() {
     )) %>%
     dplyr::distinct(entrez, tag, feature, direction, mean_normal, mean_cnv, p_value, log10_p_value, t_stat) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "tag", "feature")) %>%
-    dplyr::select(entrez, tag, feature, direction, mean_normal, mean_cnv, p_value, log10_p_value, t_stat) %>%
     dplyr::arrange(entrez, tag, feature)
   cat(crayon::blue("Ensured copy_number results have all the correct columns and no dupes."), fill = TRUE)
 
