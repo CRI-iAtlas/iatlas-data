@@ -12,8 +12,9 @@ build_samples_table <- function() {
       name = character(),
       patient_barcode = character()
     )) %>%
-    dplyr::distinct() %>%
     dplyr::filter(!is.na(name)) %>%
+    dplyr::distinct() %>%
+    iatlas.data::resolve_df_dupes(keys = c("name")) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Ensured samples have all the correct columns and no dupes."), fill = TRUE)
 
