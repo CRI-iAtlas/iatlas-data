@@ -24,11 +24,12 @@ build_genes_tables <- function() {
       super_category = character(),
       therapy_type = character()
     )) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::filter(!is.na(entrez)) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
-    dplyr::select(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
