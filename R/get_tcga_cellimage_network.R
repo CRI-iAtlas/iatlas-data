@@ -1,7 +1,7 @@
 get_tcga_cellimage_nodes <- function(){
   position_tbl <- iatlas.data::synapse_feather_id_to_tbl("syn21781366")
   nodes_tbl <- get_tcga_cytokine_nodes_cached()
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+  gene_ids <- iatlas.data::get_gene_ids() %>%
     tidyr::drop_na() %>%
     dplyr::group_by(hgnc) %>%
     dplyr::arrange(entrez) %>%
@@ -60,7 +60,7 @@ get_tcga_cellimage_nodes <- function(){
 
 get_tcga_cellimage_edges <- function(){
   edges_tbl <- get_tcga_cytokine_edges_cached()
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+  gene_ids <- iatlas.data::get_gene_ids() %>%
     tidyr::drop_na() %>%
     dplyr::group_by(hgnc) %>%
     dplyr::arrange(entrez) %>%

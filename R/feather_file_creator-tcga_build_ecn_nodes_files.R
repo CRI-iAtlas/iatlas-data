@@ -25,7 +25,7 @@ tcga_build_ecn_nodes_files <- function() {
           identical(node, "NK_cells") |
           identical(node, "T_cells_CD4") |
           identical(node, "T_cells_CD8"),
-        paste0(node, ".Aggregate2"),
+        paste0(node, "_Aggregate2"),
         node
       ))
   }
@@ -38,7 +38,8 @@ tcga_build_ecn_nodes_files <- function() {
       by = "node"
     ) %>%
       dplyr::filter(!is.na(feature_id)) %>%
-      dplyr::rename(feature = node)
+      dplyr::rename(feature = node) %>%
+      dplyr::mutate(feature = stringr::str_replace_all(feature, "[\\.]", "_"))
   }
 
   join_genes <- function(df) {

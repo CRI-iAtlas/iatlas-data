@@ -29,7 +29,7 @@ tcga_build_ecn_edges_files <- function() {
             identical(from, "NK_cells") |
             identical(from, "T_cells_CD4") |
             identical(from, "T_cells_CD8"),
-          paste0(from, ".Aggregate2"),
+          paste0(from, "_Aggregate2"),
           from
         ),
         to = ifelse(
@@ -42,7 +42,7 @@ tcga_build_ecn_edges_files <- function() {
             identical(to, "NK_cells") |
             identical(to, "T_cells_CD4") |
             identical(to, "T_cells_CD8"),
-          paste0(to, ".Aggregate2"),
+          paste0(to, "_Aggregate2"),
           to
         )
       )
