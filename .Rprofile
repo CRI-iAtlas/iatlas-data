@@ -10,7 +10,7 @@ if (file.exists("renv/activate.R")) {
   # Check to see if we're running in Gitlab
   IS_CI <- Sys.getenv("CI", unset = "")
 
-  if (IS_CI != "1" && (length(find.package("devtools", quiet=T)) == 0 || length(find.package("renv", quiet=T)) == 0)) {
+  if (IS_CI != "1" && (length(find.package("devtools", quiet = T)) == 0 || length(find.package("renv", quiet = T)) == 0)) {
     # prompt instead since RStudio won't show progress for slow .RProfile scripts...
     cat("TODO: Install package requirements. This may take up to an hour the first time.\n")
     cat("RUN: source('./install.R')\n")
