@@ -19,7 +19,7 @@ build_copy_number_results_table <- function() {
       log10_p_value = numeric(),
       t_stat = numeric()
     )) %>%
-    dplyr::filter(!is.na(entrez) & !is.na(tag) & !is.na(feature)) %>%
+    dplyr::filter(!is.na(entrez) & !is.na(tag) & !is.na(feature) & !is.na(direction)) %>%
     dplyr::distinct(entrez, tag, feature, direction, mean_normal, mean_cnv, p_value, log10_p_value, t_stat) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez", "tag", "feature")) %>%
     dplyr::arrange(entrez, tag, feature)
