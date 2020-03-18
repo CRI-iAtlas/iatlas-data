@@ -4,7 +4,12 @@ build_gene_ids <- function() {
     dplyr::as_tibble() %>%
     dplyr::select(gene_id) %>%
     tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
-    dplyr::mutate(hgnc = ifelse(hgnc == "?", NA, hgnc), entrez = ifelse(entrez == "?", NA, entrez))
+    dplyr::mutate(hgnc = ifelse(hgnc == "?", NA, hgnc), entrez = ifelse(entrez == "?", NA, entrez)) %>%
+  dplyr::mutate_at(dplyr::vars(entrez), as.numeric)
+
+  gene_ids <- gene_ids %>% dplyr::filter(entrez != 728661)
+
+  gene_ids <- gene_ids %>% dplyr::add_row(entrez = 728661, hgnc = "SLC35E2B")
 
   gene_ids %>% feather::write_feather(paste0(getwd(), "/feather_files/gene_ids.feather"))
 }
