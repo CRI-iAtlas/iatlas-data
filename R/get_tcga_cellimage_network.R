@@ -35,7 +35,7 @@ get_tcga_cellimage_nodes <- function(){
     dplyr::left_join(gene_ids, by = c("node" = "hgnc")) %>%
     dplyr::mutate(node = dplyr::if_else(
       !is.na(entrez),
-      entrez,
+      as.character(entrez),
       dplyr::if_else(
         node %in% cells,
         paste0(node, "_Aggregate2"),
@@ -49,6 +49,7 @@ get_tcga_cellimage_nodes <- function(){
     dplyr::select(-entrez)
 
   nodes_tbl1 <- nodes_tbl %>%
+    dplyr::mutate(gene = as.character(gene)) %>%
     dplyr::inner_join(cellimage_nodes, by = c("gene" = "node"))
 
   nodes_tbl2 <- nodes_tbl %>%
@@ -84,7 +85,7 @@ get_tcga_cellimage_edges <- function(){
     dplyr::left_join(gene_ids, by = c("from" = "hgnc")) %>%
     dplyr::mutate(from = dplyr::if_else(
       !is.na(entrez),
-      entrez,
+      as.character(entrez),
       dplyr::if_else(
         from %in% cells,
         paste0(from, "_Aggregate2"),
@@ -99,7 +100,7 @@ get_tcga_cellimage_edges <- function(){
     dplyr::left_join(gene_ids, by = c("to" = "hgnc")) %>%
     dplyr::mutate(to = dplyr::if_else(
       !is.na(entrez),
-      entrez,
+      as.character(entrez),
       dplyr::if_else(
         to %in% cells,
         paste0(to, "_Aggregate2"),

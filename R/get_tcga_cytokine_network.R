@@ -1,4 +1,7 @@
 get_tcga_cytokine_nodes <- function(){
+  labels   <- "syn21783989" %>%
+    synapse_feather_id_to_tbl() %>%
+    dplyr::select(node = Obj, label = Type)
   gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
     tidyr::drop_na() %>%
     dplyr::group_by(hgnc) %>%
@@ -27,7 +30,8 @@ get_tcga_cytokine_nodes <- function(){
       tag   = Group,
       score = UpBinRatio,
       tag.2 = Immune
-    )
+    ) %>%
+    dplyr::left_join(labels, by = "node")
 
   feature_node_tbl <- node_tbl %>%
     dplyr::filter(node %in% cells) %>%
@@ -54,6 +58,7 @@ get_tcga_cytokine_nodes <- function(){
 
   dplyr::bind_rows(feature_node_tbl, gene_node_tbl, tumor_node_tbl) %>%
     dplyr::filter(!is.na(tag))
+
 }
 
 get_tcga_cytokine_edges <- function(){
@@ -91,14 +96,14 @@ get_tcga_cytokine_edges <- function(){
     dplyr::mutate(from = dplyr::if_else(
       is.na(entrez),
       paste0(from, "_Aggregate2"),
-      entrez
+      as.character(entrez)
     )) %>%
     dplyr::select(-entrez) %>%
     dplyr::left_join(gene_ids, by = c("to" = "hgnc")) %>%
     dplyr::mutate(to = dplyr::if_else(
       is.na(entrez),
       paste0(to, "_Aggregate2"),
-      entrez
+      as.character(entrez)
     )) %>%
     dplyr::select(-entrez) %>%
     dplyr::filter(!is.na(tag))
