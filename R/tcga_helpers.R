@@ -14,6 +14,15 @@ get_tcga_cytokine_edges_cached <- function(){
   )
 }
 
+get_cellimage_nodes_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "tcga_cellimage_nodes_synapse",
+    iatlas.data::get_tcga_cellimage_nodes()
+  )
+}
+
+
 get_tcga_copynumber_results_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
