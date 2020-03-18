@@ -14,10 +14,9 @@ build_tags_tables <- function() {
       characteristics = character(),
       color = character()
     )) %>%
-    dplyr::distinct(name, characteristics, display, color) %>%
     dplyr::filter(!is.na(name)) %>%
+    dplyr::distinct(name, characteristics, display, color) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
-    dplyr::select(name, characteristics, display, color) %>%
     dplyr::arrange(name)
   cat(crayon::blue("Ensured tags have all the correct columns and no dupes."), fill = TRUE)
 
@@ -29,8 +28,8 @@ build_tags_tables <- function() {
   # tags_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags_to_tags."), fill = TRUE)
   tags_to_tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "relationships/tags_to_tags") %>%
-    dplyr::distinct(tag, related_tag) %>%
     dplyr::filter(!is.na(tag) & !is.na(related_tag)) %>%
+    dplyr::distinct(tag, related_tag) %>%
     dplyr::arrange(tag)
 
   tags_to_tags <- tags_to_tags %>% dplyr::left_join(iatlas.data::get_tags(), by = "tag")

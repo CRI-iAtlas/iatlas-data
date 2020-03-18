@@ -62,6 +62,15 @@
     expect_equal(nrow(results), nrow(first) + nrow(second))
   })
 
+  # load_feather_files ---------------------------------------------------
+  test_that("load_feather_files returns an empty data frame if the file or folder doesn't exist.", {
+    folder <- "not_a_folder_or_file"
+    result <- load_feather_files(Sys.glob(paste0(folder, "/*.feather")))
+    expect_that(is_df_empty(result), is_identical_to(TRUE))
+    result <- load_feather_files(Sys.glob(paste0(folder, "/*.feather")), join = TRUE)
+    expect_that(is_df_empty(result), is_identical_to(TRUE))
+  })
+
   # read_iatlas_data_file ---------------------------------------------------
   test_that("read_iatlas_data_file with directory", {
     first <- read_test_feather("load_feather_data_set/first.feather")

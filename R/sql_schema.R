@@ -29,7 +29,6 @@ sql_schema <- list(
       "CREATE INDEX copy_number_result_feature_id_index ON copy_number_results (feature_id);",
       "CREATE INDEX copy_number_result_gene_id_index ON copy_number_results (gene_id);",
       "CREATE INDEX copy_number_result_tag_id_index ON copy_number_results (tag_id);",
-      "CREATE INDEX copy_number_result_mutation_code_id_index ON copy_number_results (mutation_code_id);",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
@@ -55,6 +54,7 @@ sql_schema <- list(
       "CREATE INDEX driver_result_feature_id_index ON driver_results (feature_id);",
       "CREATE INDEX driver_result_gene_id_index ON driver_results (gene_id);",
       "CREATE INDEX driver_result_tag_id_index ON driver_results (tag_id);",
+      "CREATE INDEX driver_result_mutation_code_id_index ON driver_results (mutation_code_id);",
       "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",

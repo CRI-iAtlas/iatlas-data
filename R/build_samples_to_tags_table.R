@@ -6,8 +6,8 @@ build_samples_to_tags_table <- function() {
     iatlas.data::get_feather_file_folder(),
     "relationships/samples_to_tags"
   ) %>%
-    dplyr::distinct(sample, tag) %>%
     dplyr::filter(!is.na(sample) & !is.na(tag)) %>%
+    dplyr::distinct(sample, tag) %>%
     dplyr::arrange(sample, tag)
   cat(crayon::blue("Imported feather files for samples_to_tags."), fill = TRUE)
 

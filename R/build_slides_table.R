@@ -13,8 +13,8 @@ build_slides_table <- function() {
       description = character(),
       patient_barcode = character()
     )) %>%
-    dplyr::distinct(name, .keep_all = TRUE) %>%
     dplyr::filter(!is.na(name)) %>%
+    dplyr::distinct(name, .keep_all = TRUE) %>%
     iatlas.data::resolve_df_dupes(keys = c("name")) %>%
     dplyr::arrange(name)
 

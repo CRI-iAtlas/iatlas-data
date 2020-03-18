@@ -6,8 +6,8 @@ build_mutation_codes_table <- function() {
     iatlas.data::get_feather_file_folder(),
     "mutation_codes"
   ) %>%
-    dplyr::distinct(code) %>%
     dplyr::filter(!is.na(code)) %>%
+    dplyr::distinct(code) %>%
     dplyr::arrange(code)
   cat(crayon::blue("Imported feather files for mutation_codes."), fill = TRUE)
 
