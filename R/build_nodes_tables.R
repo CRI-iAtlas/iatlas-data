@@ -16,6 +16,7 @@ build_nodes_tables <- function() {
       x = numeric(),
       y = numeric()
     )) %>%
+    dplyr::filter(!is.na(entrez) | !is.na(feature)) %>%
     dplyr::distinct() %>%
     dplyr::arrange(entrez, feature)
   cat(crayon::blue("Ensured nodes have all the correct columns and no dupes."), fill = TRUE)
@@ -23,10 +24,13 @@ build_nodes_tables <- function() {
   # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
   nodes <- nodes %>%
-    dplyr::left_join(iatlas.data::get_genes() %>% dplyr::select(gene_id, entrez), by = "entrez")
+    dplyr::left_join(
+      iatlas.data::get_genes() %>%
+        dplyr::select(gene_id, entrez),
+      by = "entrez"
+    )
 
-  nodes <- nodes %>%
-    dplyr::left_join(iatlas.data::get_features(), by = "feature")
+  nodes <- nodes %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
   nodes <- nodes %>% tibble::add_column(node_id = 1:nrow(nodes), .before = "entrez")
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
@@ -46,14 +50,11 @@ build_nodes_tables <- function() {
     tidyr::pivot_longer(node_tag_column_names, names_to = "delete", values_to = "tag") %>%
     dplyr::select(-c("delete"))
 
-  nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(
-    iatlas.data::get_tags(),
-    by = "tag"
-  )
+  nodes_to_tags <- nodes_to_tags %>% dplyr::left_join(iatlas.data::get_tags(), by = "tag")
 
   nodes_to_tags <- nodes_to_tags %>%
-    dplyr::distinct(node_id, tag_id) %>%
-    dplyr::filter(!is.na(tag_id))
+    dplyr::filter(!is.na(tag_id)) %>%
+    dplyr::distinct(node_id, tag_id)
   cat(crayon::blue("Built the nodes_to_tags data."), fill = TRUE)
 
   # nodes_to_tags table ---------------------------------------------------
@@ -75,6 +76,7 @@ build_nodes_tables <- function() {
       tag = character(),
       score = numeric()
     )) %>%
+    dplyr::filter(!is.na(from) & !is.na(to)) %>%
     dplyr::distinct() %>%
     dplyr::arrange(from, to)
   cat(crayon::blue("Ensured edges have all the correct columns and no dupes."), fill = TRUE)

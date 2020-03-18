@@ -17,10 +17,9 @@ build_patients_table <- function() {
       race = character(),
       weight = numeric()
     )) %>%
-    dplyr::distinct(barcode, age, ethnicity, gender, height, race, weight) %>%
     dplyr::filter(!is.na(barcode)) %>%
+    dplyr::distinct(barcode, age, ethnicity, gender, height, race, weight) %>%
     iatlas.data::resolve_df_dupes(keys = c("barcode")) %>%
-    dplyr::select(barcode, age, ethnicity, gender, height, race, weight) %>%
     dplyr::arrange(barcode)
   cat(crayon::blue("Ensured patients have all the correct columns."), fill = TRUE)
 
