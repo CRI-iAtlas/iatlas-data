@@ -25,6 +25,7 @@ Imports:
     magrittr,
     pool,
     purrr,
+    reticulate,
     rlang,
     RPostgres,
     stringi,

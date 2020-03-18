@@ -10,6 +10,31 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX class_name_index ON classes (\"name\");"
     )
   ),
+  copy_number_results = list(
+    create = "
+      CREATE TABLE copy_number_results (
+        id SERIAL,
+        direction DIRECTION_ENUM,
+        mean_normal NUMERIC,
+        mean_cnv NUMERIC,
+        p_value NUMERIC,
+        log10_p_value NUMERIC,
+        t_stat INTEGER,
+        feature_id INTEGER,
+        gene_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE INDEX copy_number_result_feature_id_index ON copy_number_results (feature_id);",
+      "CREATE INDEX copy_number_result_gene_id_index ON copy_number_results (gene_id);",
+      "CREATE INDEX copy_number_result_tag_id_index ON copy_number_results (tag_id);",
+      "CREATE INDEX copy_number_result_mutation_code_id_index ON copy_number_results (mutation_code_id);",
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
   driver_results = list(
     create = "
       CREATE TABLE driver_results (
@@ -27,10 +52,9 @@ sql_schema <- list(
         PRIMARY KEY (id)
       );",
     addSchema = c(
-      "CREATE INDEX driver_results_feature_id_index ON driver_results (feature_id);",
-      "CREATE INDEX driver_results_gene_id_index ON driver_results (gene_id);",
-      "CREATE INDEX driver_results_tag_id_index ON driver_results (tag_id);",
-      "CREATE INDEX driver_results_mutation_code_id_index ON driver_results (mutation_code_id);",
+      "CREATE INDEX driver_result_feature_id_index ON driver_results (feature_id);",
+      "CREATE INDEX driver_result_gene_id_index ON driver_results (gene_id);",
+      "CREATE INDEX driver_result_tag_id_index ON driver_results (tag_id);",
       "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
