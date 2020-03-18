@@ -1,4 +1,4 @@
-build_genes_files <- function() {
+tcga_build_genes_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -105,10 +105,6 @@ build_genes_files <- function() {
   }
 
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_mutation_genes <- "driver_mutation" %>%
-    get_genes %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/genes/driver_mutation_genes.feather"))
-
   .GlobalEnv$extra_cellular_network_genes <- "extra_cellular_network" %>%
     get_genes %>%
     feather::write_feather(paste0(getwd(), "/feather_files/genes/extra_cellular_network_genes.feather"))
@@ -128,7 +124,6 @@ build_genes_files <- function() {
   ### Clean up ###
   # Data
   rm(pool, pos = ".GlobalEnv")
-  rm(driver_mutation_genes, pos = ".GlobalEnv")
   rm(extra_cellular_network_genes, pos = ".GlobalEnv")
   rm(immunomodulator_genes, pos = ".GlobalEnv")
   rm(io_target_genes, pos = ".GlobalEnv")

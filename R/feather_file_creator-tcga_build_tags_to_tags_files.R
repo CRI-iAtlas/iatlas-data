@@ -1,4 +1,4 @@
-build_tags_to_tags_files <- function() {
+tcga_build_tags_to_tags_files <- function() {
   # Create a global variable to hold the pool DB connection.
   .GlobalEnv$pool <- iatlas.data::connect_to_db()
   cat(crayon::green("Created DB connection."), fill = TRUE)
@@ -36,6 +36,16 @@ build_tags_to_tags_files <- function() {
 
     cat_tags_to_tags_status("Execute the query and return a tibble.")
     tags_to_tags <- tags_to_tags %>% dplyr::as_tibble()
+
+    cat_tags_to_tags_status("Ensure TCGA_Study is tagged to TCGA.")
+    tags_to_tags <- tags_to_tags %>%
+      dplyr::add_row(tag = "TCGA_Study", related_tag = "TCGA") %>%
+      dplyr::add_row(tag = "TCGA_Subtype", related_tag = "TCGA")
+
+    cat_tags_to_tags_status("Clean up the data set.")
+    tags_to_tags <- tags_to_tags %>%
+      dplyr::distinct(tag, related_tag) %>%
+      dplyr::arrange(tag, related_tag)
 
     pool::poolReturn(current_pool)
 
