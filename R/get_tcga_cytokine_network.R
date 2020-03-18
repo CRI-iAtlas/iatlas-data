@@ -1,5 +1,10 @@
 get_tcga_cytokine_nodes <- function(){
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather")
+  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+    tidyr::drop_na() %>%
+    dplyr::group_by(hgnc) %>%
+    dplyr::arrange(entrez) %>%
+    dplyr::slice(1) %>%
+    dplyr::ungroup()
 
   cells <- c(
     "B_cells",
