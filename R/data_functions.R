@@ -76,12 +76,15 @@ load_feather_data <- function(folder = "data/test", join = FALSE)
 load_feather_files <- function(file_names, join = FALSE) {
   df <- dplyr::tibble()
 
-  for (index in 1:length(file_names)) {
-    if (isFALSE(join) | is_df_empty(df)) {
-      df <- df %>% dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
-    } else {
-      file <- read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble()
-      df <- df %>% dplyr::full_join(file, by = intersect(names(df), names(file)))
+  length <- length(file_names)
+  if (length > 0) {
+    for (index in 1:length) {
+      if (isFALSE(join) | is_df_empty(df)) {
+        df <- df %>% dplyr::bind_rows(read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble())
+      } else {
+        file <- read_feather_with_info(file_names[[index]]) %>% dplyr::as_tibble()
+        df <- df %>% dplyr::full_join(file, by = intersect(names(df), names(file)))
+      }
     }
   }
   return(df)
