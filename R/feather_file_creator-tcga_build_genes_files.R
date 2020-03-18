@@ -90,13 +90,9 @@ tcga_build_genes_files <- function() {
 
     pool::poolReturn(current_pool)
 
-    cat_genes_status("Get the entrez.")
-    gene_ids <- feather::read_feather(paste0(getwd(), "/feather_files/gene_ids.feather")) %>%
-      dplyr::as_tibble()
-
     cat_genes_status("Add the entrez to the genes.")
     genes <- genes %>%
-      dplyr::left_join(gene_ids, by = "hgnc") %>%
+      dplyr::left_join(iatlas.data::get_gene_ids(), by = "hgnc") %>%
       tibble::add_column(entrez = NA %>% as.numeric, .before = "hgnc") %>%
       dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x) %>% as.numeric) %>%
       dplyr::select(-c(entrez.x, entrez.y))

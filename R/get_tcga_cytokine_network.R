@@ -2,7 +2,7 @@ get_tcga_cytokine_nodes <- function(){
   labels   <- "syn21783989" %>%
     synapse_feather_id_to_tbl() %>%
     dplyr::select(node = Obj, label = Type)
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+  gene_ids <- iatlas.data::get_gene_ids() %>%
     tidyr::drop_na() %>%
     dplyr::group_by(hgnc) %>%
     dplyr::arrange(entrez) %>%
@@ -62,7 +62,7 @@ get_tcga_cytokine_nodes <- function(){
 }
 
 get_tcga_cytokine_edges <- function(){
-  gene_ids <- feather::read_feather("feather_files/gene_ids.feather") %>%
+  gene_ids <- iatlas.data::get_gene_ids() %>%
     tidyr::drop_na() %>%
     dplyr::group_by(hgnc) %>%
     dplyr::arrange(entrez) %>%
