@@ -35,6 +35,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
       "build_samples_to_tags_table",
       "build_features_to_samples_table",
       "build_genes_to_samples_table",
+      "build_copy_number_results_table",
       "build_driver_results_table",
       "build_nodes_tables"
     ),
