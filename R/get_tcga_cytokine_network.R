@@ -1,6 +1,6 @@
 get_tcga_cytokine_nodes <- function() {
   labels <- "syn21783989" %>%
-    synapse_feather_id_to_tbl() %>%
+    iatlas.data::synapse_feather_id_to_tbl() %>%
     dplyr::select(node = Obj, label = Type)
 
   cytokine_cells <- c(
@@ -17,7 +17,7 @@ get_tcga_cytokine_nodes <- function() {
 
   node_tbl <-
     c("syn21781358", "syn21781359", "syn21781360", "syn21781362") %>%
-    purrr::map(synapse_feather_id_to_tbl) %>%
+    purrr::map(iatlas.data::synapse_feather_id_to_tbl) %>%
     dplyr::bind_rows() %>%
     dplyr::select(
       node  = Node,
@@ -51,7 +51,7 @@ get_tcga_cytokine_nodes <- function() {
 get_tcga_cytokine_edges <- function() {
   edge_tbl <-
     c("syn21781350", "syn21781351", "syn21781354", "syn21781357") %>%
-    purrr::map(synapse_feather_id_to_tbl) %>%
+    purrr::map(iatlas.data::synapse_feather_id_to_tbl) %>%
     dplyr::bind_rows() %>%
     dplyr::select(
       from  = From,
