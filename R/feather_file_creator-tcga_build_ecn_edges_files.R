@@ -31,8 +31,8 @@ tcga_build_ecn_edges_files <- function() {
 
   ### Clean up ###
   # Data
-  # rm(tcga_cytokine_edges, pos = ".GlobalEnv")
-  # rm(cellimage_edges, pos = ".GlobalEnv")
+  rm(tcga_cytokine_edges, pos = ".GlobalEnv")
+  rm(cellimage_edges, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
