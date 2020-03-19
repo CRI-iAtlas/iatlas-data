@@ -35,7 +35,7 @@ get_tcga_cytokine_nodes <- function() {
   tumor_node_tbl <- node_tbl %>%
     dplyr::filter(node == "Tumor_cell") %>%
     dplyr::select(-node) %>%
-    dplyr::mutate(feature = "Tumor_Fraction")
+    dplyr::mutate(feature = "Tumor_fraction")
 
   gene_node_tbl <- node_tbl %>%
     dplyr::filter(!node %in% cytokine_cells) %>%
