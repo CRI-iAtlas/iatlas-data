@@ -44,7 +44,8 @@ get_tcga_cellimage_nodes <- function() {
 
   gene_nodes <- nodes_tbl %>%
     dplyr::mutate(entrez = as.character(entrez)) %>%
-    dplyr::inner_join(cellimage_nodes, by = c("entrez" = "node"))
+    dplyr::inner_join(cellimage_nodes, by = c("entrez" = "node")) %>%
+    dplyr::mutate_at(dplyr::vars(entrez), as.numeric)
 
   feature_nodes <- nodes_tbl %>%
     dplyr::inner_join(cellimage_nodes, by = c("feature" = "node"))

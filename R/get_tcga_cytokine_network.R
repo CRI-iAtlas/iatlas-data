@@ -41,7 +41,8 @@ get_tcga_cytokine_nodes <- function() {
     dplyr::filter(!node %in% cytokine_cells) %>%
     dplyr::mutate(feature = NA) %>%
     dplyr::left_join(iatlas.data::get_gene_ids(), by = c("node" = "hgnc")) %>%
-    dplyr::select(-node)
+    dplyr::select(-node) %>%
+    dplyr::mutate_at(dplyr::vars(entrez), as.numeric)
 
   dplyr::bind_rows(feature_node_tbl, gene_node_tbl, tumor_node_tbl) %>%
     dplyr::filter(!is.na(tag))
