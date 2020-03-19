@@ -31,8 +31,8 @@ tcga_build_ecn_nodes_files <- function() {
 
   ### Clean up ###
   # Data
-  # rm(tcga_cytokine_nodes, pos = ".GlobalEnv")
-  # rm(cellimage_nodes, pos = ".GlobalEnv")
+  rm(tcga_cytokine_nodes, pos = ".GlobalEnv")
+  rm(cellimage_nodes, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

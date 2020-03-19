@@ -35,7 +35,7 @@ get_tcga_cellimage_nodes <- function() {
         paste0(node, "_Aggregate2"),
         dplyr::if_else(
           node == "Tumor_cell",
-          "Tumor_Fraction",
+          "Tumor_fraction",
           NA_character_
         )
       )
@@ -68,7 +68,7 @@ get_tcga_cellimage_edges <- function() {
         paste0(from, "_Aggregate2"),
         dplyr::if_else(
           from == "Tumor_cell",
-          "Tumor_Fraction",
+          "Tumor_fraction",
           NA_character_
         )
       )
@@ -83,7 +83,7 @@ get_tcga_cellimage_edges <- function() {
         paste0(to, "_Aggregate2"),
         dplyr::if_else(
           to == "Tumor_cell",
-          "Tumor_Fraction",
+          "Tumor_fraction",
           NA_character_
         )
       )
