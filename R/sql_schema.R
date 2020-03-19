@@ -19,7 +19,7 @@ sql_schema <- list(
         mean_cnv NUMERIC,
         p_value NUMERIC,
         log10_p_value NUMERIC,
-        t_stat INTEGER,
+        t_stat NUMERIC,
         feature_id INTEGER NOT NULL,
         gene_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
