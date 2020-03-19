@@ -1,6 +1,6 @@
 pcawg_synapse_id               <- "syn18234582"
 
-get_all_pcawg_samples_synapse_cached <- function(){
+get_all_pcawg_samples_synapse_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "all_pcawg_samples_synapse",
@@ -11,7 +11,7 @@ get_all_pcawg_samples_synapse_cached <- function(){
   )
 }
 
-get_tcga_samples_synapse_cached <- function(){
+get_tcga_samples_synapse_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "tcga_sample_ids",
@@ -23,7 +23,7 @@ get_tcga_samples_synapse_cached <- function(){
   )
 }
 
-get_pcawg_samples_synapse_cached <- function(){
+get_pcawg_samples_synapse_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_samples",
@@ -31,7 +31,7 @@ get_pcawg_samples_synapse_cached <- function(){
   )
 }
 
-get_pcawg_rnaseq_synapse_cached <- function(){
+get_pcawg_rnaseq_synapse_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_rnaseq",
@@ -39,7 +39,7 @@ get_pcawg_rnaseq_synapse_cached <- function(){
   )
 }
 
-get_pcawg_cibersort_values_cached <- function(){
+get_pcawg_cibersort_values_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_cibersort",
@@ -47,7 +47,7 @@ get_pcawg_cibersort_values_cached <- function(){
   )
 }
 
-get_pcawg_mcpcounter_values_cached <- function(){
+get_pcawg_mcpcounter_values_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_mcpcounter",
@@ -55,7 +55,7 @@ get_pcawg_mcpcounter_values_cached <- function(){
   )
 }
 
-get_pcawg_mitcr_values_cached <- function(){
+get_pcawg_mitcr_values_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_mitcr",
@@ -63,7 +63,7 @@ get_pcawg_mitcr_values_cached <- function(){
   )
 }
 
-get_pcawg_feature_values_cached <- function(){
+get_pcawg_feature_values_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_feature_values",
@@ -71,7 +71,7 @@ get_pcawg_feature_values_cached <- function(){
   )
 }
 
-get_pcawg_features_cached <- function(){
+get_pcawg_features_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_features",
@@ -91,7 +91,7 @@ get_pcawg_features_cached <- function(){
   )
 }
 
-get_pcawg_tag_values_cached <- function(){
+get_pcawg_tag_values_cached <- function() {
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_tag_values",

@@ -1,4 +1,4 @@
-get_pcawg_fature_values_synapse <- function(){
+get_pcawg_fature_values_synapse <- function() {
   dplyr::bind_rows(
     get_pcawg_cibersort_synapse(),
     get_pcawg_mcpcounter_synapse(),
@@ -7,7 +7,7 @@ get_pcawg_fature_values_synapse <- function(){
     tidyr::drop_na()
 }
 
-get_pcawg_cibersort_synapse <- function(){
+get_pcawg_cibersort_synapse <- function() {
   names_tbl <- get_pcawg_samples_synapse_cached()
   paste0(
       "select id, ICGC_Donor_ID, ICGC_Specimen_ID from syn20583414 ",
@@ -29,7 +29,7 @@ get_pcawg_cibersort_synapse <- function(){
     dplyr::mutate(feature = stringr::str_replace_all(feature, "__", "_"))
 }
 
-get_pcawg_mcpcounter_synapse <- function(){
+get_pcawg_mcpcounter_synapse <- function() {
   names_tbl <- get_pcawg_samples_synapse_cached()
   paste0(
       "select id, ICGC_Donor_ID, ICGC_Specimen_ID from syn20583414 ",
@@ -52,7 +52,7 @@ get_pcawg_mcpcounter_synapse <- function(){
     dplyr::mutate(feature = paste0("mcpcounter_", feature))
 }
 
-get_pcawg_mitcr_synapse <- function(){
+get_pcawg_mitcr_synapse <- function() {
   names_tbl <- get_pcawg_samples_synapse_cached() %>%
     dplyr::select(icgc_sample_id, icgc_donor_id)
   "select id from syn20693185" %>%
@@ -71,7 +71,7 @@ get_pcawg_mitcr_synapse <- function(){
     tidyr::pivot_longer(-sample, values_to = "value", names_to = "feature")
 }
 
-synapse_id_to_tbl <- function(id){
+synapse_id_to_tbl <- function(id) {
   id %>%
     .GlobalEnv$synapse$get() %>%
     purrr::pluck("path") %>%
@@ -79,7 +79,7 @@ synapse_id_to_tbl <- function(id){
     dplyr::as_tibble()
 }
 
-synapse_id_to_tbl2 <- function(id){
+synapse_id_to_tbl2 <- function(id) {
   id %>%
     .GlobalEnv$synapse$get() %>%
     purrr::pluck("path") %>%

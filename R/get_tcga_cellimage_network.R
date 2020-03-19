@@ -10,7 +10,7 @@ cellimage_cells <- c(
   "T_cells_CD8"
 )
 
-get_tcga_cellimage_nodes <- function(){
+get_tcga_cellimage_nodes <- function() {
   position_tbl <- iatlas.data::synapse_feather_id_to_tbl("syn21781366")
   nodes_tbl <- get_tcga_cytokine_nodes_cached()
 
@@ -44,7 +44,8 @@ get_tcga_cellimage_nodes <- function(){
 
   gene_nodes <- nodes_tbl %>%
     dplyr::mutate(entrez = as.character(entrez)) %>%
-    dplyr::inner_join(cellimage_nodes, by = c("entrez" = "node"))
+    dplyr::inner_join(cellimage_nodes, by = c("entrez" = "node")) %>%
+    dplyr::mutate_at(dplyr::vars(entrez), as.numeric)
 
   feature_nodes <- nodes_tbl %>%
     dplyr::inner_join(cellimage_nodes, by = c("feature" = "node"))
@@ -52,7 +53,7 @@ get_tcga_cellimage_nodes <- function(){
   gene_nodes %>% dplyr::bind_rows(feature_nodes)
 }
 
-get_tcga_cellimage_edges <- function(){
+get_tcga_cellimage_edges <- function() {
   edges_tbl <- get_tcga_cytokine_edges_cached()
 
   cellimage_edges <- "syn21782167" %>%
