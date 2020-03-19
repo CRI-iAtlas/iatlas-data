@@ -3,11 +3,16 @@ build_genes_tables <- function() {
   # genes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for genes."), fill = TRUE)
   genes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "genes")
+  # Get all the rest of the gene ids, but remove any that don't have an hgnc or an entrez.
+  gene_ids <- feather::read_feather(paste0(
+    iatlas.data::get_feather_file_folder(),
+    "/gene_ids.feather"
+  )) %>%
+    dplyr::filter(!is.na(entrez) & !is.na(hgnc))
   cat(crayon::blue("Imported feather files for genes."), fill = TRUE)
 
   # genes column fix ---------------------------------------------------
   cat(crayon::magenta("Ensuring genes have all the correct columns and no dupes."), fill = TRUE)
-  # TODO: This should depend on entrez.
   genes <- genes %>%
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
@@ -28,8 +33,13 @@ build_genes_tables <- function() {
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
-    iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez"))
+  # Get all the genes from gene_ids that don't have an entrez in genes. Then bind them with genes for a mor complete list.
+  genes <- gene_ids %>% dplyr::anti_join(genes, by = "entrez") %>%
+    dplyr::distinct(entrez, .keep_all = TRUE) %>%
+    dplyr::bind_rows(genes) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
