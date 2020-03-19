@@ -76,11 +76,3 @@ get_tcga_cytokine_edges <- function() {
     dplyr::select(-entrez) %>%
     dplyr::filter(!is.na(tag))
 }
-
-synapse_feather_id_to_tbl <- function(id){
-  id %>%
-    .GlobalEnv$synapse$get() %>%
-    purrr::pluck("path") %>%
-    feather::read_feather() %>%
-    dplyr::as_tibble()
-}
