@@ -1,4 +1,4 @@
-get_pcawg_samples_synapse <- function(){
+get_pcawg_samples_synapse <- function() {
   pcawg_synapse_id %>%
     .GlobalEnv$synapse$get() %>%
     .$path %>%

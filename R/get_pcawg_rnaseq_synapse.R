@@ -1,4 +1,4 @@
-get_pcawg_rnaseq_synapse <- function(){
+get_pcawg_rnaseq_synapse <- function() {
   name_trans_tbl <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
     dplyr::select(aliquot_id, sample = icgc_donor_id)
   # Get the data from Synapse.
