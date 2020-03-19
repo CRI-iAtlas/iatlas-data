@@ -11,6 +11,7 @@ build_nodes_tables <- function() {
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
       feature = character(),
+      label = character(),
       tag = character(),
       score = numeric(),
       x = numeric(),
@@ -73,6 +74,7 @@ build_nodes_tables <- function() {
     dplyr::bind_rows(dplyr::tibble(
       from = character(),
       to = character(),
+      label = character(),
       tag = character(),
       score = numeric()
     )) %>%
