@@ -83,6 +83,7 @@ build_nodes_tables <- function() {
     dplyr::arrange(from, to)
   cat(crayon::blue("Ensured edges have all the correct columns and no dupes."), fill = TRUE)
 
+  # edges data ---------------------------------------------------
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
   edges <- edges %>% dplyr::left_join(
     nodes %>%
@@ -125,6 +126,7 @@ build_nodes_tables <- function() {
     dplyr::arrange(node_1_id, node_2_id, score)
   cat(crayon::blue("Built the edges data."), fill = TRUE)
 
+  # edges table ---------------------------------------------------
   cat(crayon::magenta("Building the edges table.\n\t(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- edges %>% iatlas.data::replace_table("edges")
   cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE, sep = " ")
