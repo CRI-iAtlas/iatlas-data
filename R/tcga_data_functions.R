@@ -6,6 +6,14 @@ build_references <- function(reference) {
   ))
 }
 
+combine_references_and_links <- function(references = NA, link = NA) {
+  return(ifelse(
+    !is.na(references) & !is.na(link),
+    paste0("{", references %>% gsub("\\{(.+)\\}", "\\1", .), link %>% gsub("\\{(.+)\\}", "\\1", .), "}"),
+    ifelse(!is.na(link), link, references)
+  ))
+}
+
 driver_results_label_to_hgnc <- function(label) {
   hgnc <- label %>% stringi::stri_extract_first(regex = "^[\\w\\s\\(\\)\\*\\-_\\?\\=]{1,}(?!=;)")
   return(ifelse(
