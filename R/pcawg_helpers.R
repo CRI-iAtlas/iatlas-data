@@ -1,97 +1,91 @@
-pcawg_synapse_id               <- "syn18234582"
-
-get_all_pcawg_samples_synapse_cached <- function() {
+get_pcawg_sample_tbl_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
-    "all_pcawg_samples_synapse",
-    pcawg_synapse_id %>%
-      .GlobalEnv$synapse$get() %>%
-      .$path %>%
-      read.csv(sep = "\t", stringsAsFactors = F)
-  )
-}
-
-get_tcga_samples_synapse_cached <- function() {
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "tcga_sample_ids",
-    "syn18234560" %>%
+    "pcawg_sample_tbl",
+    "syn21785582" %>%
       .GlobalEnv$synapse$get() %>%
       .$path %>%
       read.csv(sep = "\t", stringsAsFactors = F) %>%
-      dplyr::pull(icgc_sample_id)
+      dplyr::as_tibble()
   )
 }
 
-get_pcawg_samples_synapse_cached <- function() {
-  iatlas.data::create_global_synapse_connection()
+get_pcawg_samples_cached <- function(){
   iatlas.data::result_cached(
-    "pcawg_samples",
-    iatlas.data::get_pcawg_samples_synapse()
+    "pcawg_sample_tbl",
+    get_pcawg_sample_tbl_cached() %>%
+      dplyr::select(sample = icgc_donor_id) %>%
+      plyr::mutate(patient = sample)
   )
 }
 
-get_pcawg_rnaseq_synapse_cached <- function() {
+get_pcawg_rnaseq_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_rnaseq",
-    iatlas.data::get_pcawg_rnaseq_synapse()
+    iatlas.data::get_pcawg_rnaseq_from_synapse()
   )
 }
 
-get_pcawg_cibersort_values_cached <- function() {
+get_pcawg_cibersort_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_cibersort",
-    iatlas.data::get_pcawg_cibersort_synapse()
+    iatlas.data::get_pcawg_cibersort_from_synapse()
   )
 }
 
-get_pcawg_mcpcounter_values_cached <- function() {
+get_pcawg_mcpcounter_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_mcpcounter",
-    iatlas.data::get_pcawg_mcpcounter_synapse()
+    iatlas.data::get_pcawg_mcpcounter_from_synapse()
   )
 }
 
-get_pcawg_mitcr_values_cached <- function() {
+get_pcawg_epic_cached <- function(){
+  iatlas.data::create_global_synapse_connection()
+  iatlas.data::result_cached(
+    "pcawg_epic",
+    iatlas.data::get_pcawg_epic_from_synapse()
+  )
+}
+
+get_pcawg_mitcr_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_mitcr",
-    iatlas.data::get_pcawg_mitcr_synapse()
+    iatlas.data::get_pcawg_mitcr_from_synapse()
   )
 }
 
-get_pcawg_feature_values_cached <- function() {
-  iatlas.data::create_global_synapse_connection()
+get_pcawg_feature_values_cached <- function(){
   iatlas.data::result_cached(
     "pcawg_feature_values",
-    iatlas.data::get_pcawg_fature_values_synapse()
+    iatlas.data::get_pcawg_feature_values_from_synapse()
   )
 }
 
-get_pcawg_features_cached <- function() {
+get_pcawg_features_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_features",
-    dplyr::tribble(
-      ~name,                                  ~display,                  ~unit,   ~class,
-      "mcpcounter_t_cells",                   "T cells",                 "Score", "MPCCounter",
-      "mcpcounter_cd8_t_cells",               "DC8 T Cells",             "Score", "MPCCounter",
-      "mcpcounter_cytotoxic_lymphocytes",     "Cytotoxic Lymphocytes",   "Score", "MPCCounter",
-      "mcpcounter_nk_cells",                  "NK cells",                "Score", "MPCCounter",
-      "mcpcounter_b_lineage",                 "B Lineage",               "Score", "MPCCounter",
-      "mcpcounter_endothelial_cells",         "Endothelial Cells",       "Score", "MPCCounter",
-      "mcpcounter_fibroblasts",               "Fibroblasts",             "Score", "MPCCounter",
-      "mcpcounter_monocytic_lineage",         "Monocytic Lineage",       "Score", "MPCCounter",
-      "mcpcounter_myeloid_dendritic_cells",   "Myeloid Dendritic Cells", "Score", "MPCCounter",
-      "mcpcounter_neutrophils",               "Neutrophils",             "Score", "MPCCounter"
-    )
+    list(
+      get_pcawg_epic_cached(),
+      get_pcawg_mcpcounter_cached()
+      ) %>%
+      dplyr::bind_rows() %>%
+      dplyr::select(name = feature) %>%
+      dplyr::distinct() %>%
+      dplyr::mutate(
+        display = stringr::str_replace_all(name, "_", " "),
+        class = stringr::str_match(name,  "^(\\w+?)_")[,2],
+        unit = dplyr::if_else(class == "MCPcounter", "score", "fraction")
+      )
   )
 }
 
-get_pcawg_tag_values_cached <- function() {
+get_pcawg_tag_values_cached <- function(){
   iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_tag_values",
@@ -101,7 +95,7 @@ get_pcawg_tag_values_cached <- function() {
       read.table(stringsAsFactors = F, header = T, sep = "\t") %>%
       dplyr::as_tibble() %>%
       dplyr::inner_join(
-        get_pcawg_samples_synapse_cached(),
+        get_pcawg_sample_tbl_cached(),
         by = c("sample" = "aliquot_id")
       ) %>%
       dplyr::select(sample = icgc_donor_id, subtype, dcc_project_code) %>%
