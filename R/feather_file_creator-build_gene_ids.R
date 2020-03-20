@@ -1,7 +1,7 @@
 build_gene_ids <- function() {
-  all_gene_ids <- feather::read_feather(paste0(getwd(), "/feather_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather"))
+  feather_file_folder <- "feather_files"
+  all_gene_ids <- iatlas.data::get_rna_seq_expr(feather_file_folder)
   gene_ids <- all_gene_ids %>%
-    dplyr::as_tibble() %>%
     dplyr::select(gene_id) %>%
     tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
     dplyr::mutate(hgnc = ifelse(hgnc == "?", NA, hgnc), entrez = ifelse(entrez == "?", NA, entrez)) %>%
@@ -15,5 +15,7 @@ build_gene_ids <- function() {
     ifelse(entrez == 728661, "SLC35E2B", hgnc)
   ))
 
-  gene_ids %>% feather::write_feather(paste0(getwd(), "/feather_files/gene_ids.feather"))
+  gene_ids %>% feather::write_feather(
+    paste0(getwd(), "/", feather_file_folder, "/gene_ids.feather")
+  )
 }
