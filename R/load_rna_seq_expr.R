@@ -5,9 +5,8 @@ load_rna_seq_expr <- function(feather_file_folder, genes) {
 
     get_rna_seq_expr(feather_file_folder) %>%
       tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
-      dplyr::select(-c(entrez)) %>%
-      dplyr::filter(hgnc != "?") %>%
-      dplyr::filter(hgnc %in% genes[["hgnc"]])
+      dplyr::select(-hgnc) %>%
+      dplyr::filter(entrez %in% genes$entrez)
   )
 }
 
