@@ -8,7 +8,7 @@ tcga_build_genes_to_types_files <- function() {
 
   get_genes_to_types <- function() {
 
-    cat(crayon::magenta(paste0("Get genes_to_types")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get TCGA genes_to_types")), fill = TRUE)
 
     # immunomodulator_expr ---------------------------------------------------
     cat_genes_to_types_status("Get the immunomodulators expr values from feather files.")
