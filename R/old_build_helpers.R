@@ -19,6 +19,19 @@ old_load_all_samples <- function(feather_file_folder) {
     )
 }
 
+old_load_rna_seq_expr <- function(feather_file_folder, genes) {
+  iatlas.data::timed(
+    before_message = crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and may take some time to open. Please be patient.)\n"),
+    after_message = crayon::blue("Imported HUGE RNA Seq Expr file."),
+
+    get_rna_seq_expr(feather_file_folder) %>%
+      tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
+      dplyr::select(-c(entrez)) %>%
+      dplyr::filter(hgnc != "?") %>%
+      dplyr::filter(hgnc %in% genes[["hgnc"]])
+  )
+}
+
 old_read_features <- function() result_cached("features", iatlas.data::read_table("features") %>% dplyr::as_tibble() %>% dplyr::select(feature_id = id, feature = name))
 old_read_tags <- function() result_cached("tags", iatlas.data::read_table("tags") %>% dplyr::as_tibble() %>% dplyr::select(tag_id = id, tag = name))
 old_read_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(gene_id = id, hgnc))
@@ -26,6 +39,6 @@ old_read_mutation_codes <- function() result_cached("mutation_codes", iatlas.dat
 old_read_patients <- function() result_cached("patients", iatlas.data::read_table("patients") %>% dplyr::select(patient_id = id, barcode))
 old_read_samples <- function() result_cached("samples", iatlas.data::read_table("samples") %>% dplyr::as_tibble() %>% dplyr::select(sample_id = id, sample = name))
 
-old_get_rna_seq_expr_matrix <- function() result_cached("rna_seq_expr_matrix", iatlas.data::load_rna_seq_expr(.GlobalEnv$feather_file_folder, old_read_genes()))
+old_get_rna_seq_expr_matrix <- function() result_cached("old_rna_seq_expr_matrix", old_load_rna_seq_expr(.GlobalEnv$feather_file_folder, old_read_genes()))
 old_get_all_samples <- function() result_cached("all_samples", old_load_all_samples(.GlobalEnv$feather_file_folder))
 old_get_all_samples_with_patient_ids <- function() result_cached("all_samples_with_patient_ids", old_get_all_samples() %>% dplyr::left_join(old_read_patients(), by = c("sample" = "barcode")))
