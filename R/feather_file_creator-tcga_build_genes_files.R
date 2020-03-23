@@ -75,14 +75,9 @@ tcga_build_genes_files <- function() {
 
   # ecn genes ---------------------------------------------------
   cat_genes_status("Import extra cellular network (ecn) feather files for genes")
-  ecn_values <- iatlas.data::read_iatlas_data_file(feather_file_folder, "network_node_label_friendly.feather")
-
-  ecn_genes <- ecn_values %>%
-    dplyr::rename(node_type = Type) %>%
-    dplyr::rename(hgnc = Obj) %>%
-    dplyr::left_join(human_gene_ids, by = "hgnc") %>%
-    dplyr::distinct(entrez, friendly_name = FriendlyName, node_type) %>%
+  ecn_genes <- iatlas.data::get_tcga_cytokine_nodes_cached() %>%
     dplyr::filter(!is.na(entrez)) %>%
+    dplyr::distinct(entrez, node_type = label) %>%
     dplyr::arrange(entrez)
 
   # Create feather files ---------------------------------------------------
@@ -97,6 +92,9 @@ tcga_build_genes_files <- function() {
     feather::write_feather(paste0(feather_file_folder, "/genes/tcga_ecn_genes.feather"))
 
   # Clean up ---------------------------------------------------
+  # Log out of Synapse.
+  iatlas.data::synapse_logout()
+
   # Data
   rm(human_gene_ids, pos = ".GlobalEnv")
   rm(tcga_genes, pos = ".GlobalEnv")
