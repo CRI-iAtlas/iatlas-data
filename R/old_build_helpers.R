@@ -32,6 +32,27 @@ old_load_rna_seq_expr <- function(feather_file_folder, genes) {
   )
 }
 
+#' old_create_gene_expression_lookup
+#'
+#' @param gen_exp is the large, 1.8gigabyte TCGA feather-file loaded via feather::read_feather
+#' @return lookup(), a function that takes (gene_id, sample_id) and returns the gene-expression or NULL if no match
+old_create_gene_expression_lookup <- function (gene_exp) {
+  gene_exp <- tibble::as_tibble(gene_exp)
+  gene_map <- vector_to_env(purrr::map(gene_exp[[1]], function(f) strsplit(f, "\\|")[[1]][[1]]))
+  sample_map <- vector_to_env(colnames(gene_exp))
+
+  function(gene_id, sample_id) {
+    if (
+      iatlas.data::present(sample_id) &&
+      iatlas.data::present(gene_id) &&
+      iatlas.data::present(col_num <- sample_map[[sample_id]]) &&
+      iatlas.data::present(row_num <- gene_map[[gene_id]])
+    )
+      return(gene_exp[[col_num]][[row_num]])
+    return(NA)
+  }
+}
+
 old_read_features <- function() result_cached("features", iatlas.data::read_table("features") %>% dplyr::as_tibble() %>% dplyr::select(feature_id = id, feature = name))
 old_read_tags <- function() result_cached("tags", iatlas.data::read_table("tags") %>% dplyr::as_tibble() %>% dplyr::select(tag_id = id, tag = name))
 old_read_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(gene_id = id, hgnc))
