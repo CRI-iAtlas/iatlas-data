@@ -1,71 +1,66 @@
 tcga_build_genes_to_types_files <- function() {
-  # Create a global variable to hold the pool DB connection.
-  .GlobalEnv$pool <- iatlas.data::connect_to_db()
-  cat(crayon::green("Created DB connection."), fill = TRUE)
 
   cat_genes_to_types_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_data_frame <- function() {
-    current_pool <- pool::poolCheckout(.GlobalEnv$pool)
+  feather_file_folder <- paste0(getwd(), "/feather_files")
+
+  get_genes_to_types <- function() {
 
     cat(crayon::magenta(paste0("Get genes_to_types")), fill = TRUE)
 
-    cat_genes_to_types_status("Get the initial values from the genes_to_types table.")
-    genes_to_types <- current_pool %>% dplyr::tbl("genes_to_types")
+    # immunomodulator_expr ---------------------------------------------------
+    cat_genes_to_types_status("Get the immunomodulators expr values from feather files.")
+    immunomodulator_expr <- iatlas.data::get_tcga_immunomodulator_exprs_cached() %>%
+      dplyr::distinct(entrez) %>%
+      dplyr::mutate(gene_type = "immunomodulator")
 
-    cat_genes_to_types_status("Get the gene types from the gene_types table.")
-    genes_to_types <- genes_to_types %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("gene_types") %>%
-        dplyr::select(type_id = id, gene_type = name),
-      by = "type_id"
-    )
+    # immunomodulators ---------------------------------------------------
+    cat_genes_to_types_status("Get the immunomodulators values from feather files.")
+    immunomodulators <- iatlas.data::get_tcga_immunomodulator_genes_cached() %>%
+      dplyr::distinct(entrez) %>%
+      dplyr::mutate(gene_type = "immunomodulator")
 
-    cat_genes_to_types_status("Get the genes from the genes table.")
-    genes_to_types <- genes_to_types %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(gene_id = id, entrez),
-      by = "gene_id"
-    )
+    # io_target_expr ---------------------------------------------------
+    cat_genes_to_types_status("Get the io target expr values from feather files.")
+    io_target_expr <- iatlas.data::get_tcga_io_target_exprs_cached() %>%
+      dplyr::distinct(entrez) %>%
+      dplyr::mutate(gene_type = "io_target")
 
-    cat_genes_to_types_status("Clean up the data set.")
-    genes_to_types <- genes_to_types %>%
+    # io_targets ---------------------------------------------------
+    cat_genes_to_types_status("Get the io targets values from feather files.")
+    io_targets <- iatlas.data::get_tcga_io_target_genes_cached() %>%
+      dplyr::distinct(entrez) %>%
+      dplyr::mutate(gene_type = "io_target")
+
+    # ecn genes ---------------------------------------------------
+    cat_genes_to_types_status("Import extra cellular network (ecn) feather files for genes")
+    ecn_genes <- iatlas.data::get_tcga_cytokine_nodes_cached() %>%
+      dplyr::filter(!is.na(entrez)) %>%
+      dplyr::distinct(entrez) %>%
+      dplyr::mutate(gene_type = "extra_cellular_network")
+
+    # genes_to_types data ---------------------------------------------------
+    genes_to_types <- immunomodulator_expr %>%
+      dplyr::bind_rows(immunomodulators, io_target_expr, io_targets, ecn_genes) %>%
       dplyr::distinct(entrez, gene_type) %>%
       dplyr::arrange(entrez, gene_type)
-
-    cat_genes_to_types_status("Execute the query and return a tibble.")
-    genes_to_types <- genes_to_types %>% dplyr::as_tibble()
-
-    pool::poolReturn(current_pool)
 
     return(genes_to_types)
   }
 
-  all_genes_to_types <- get_data_frame()
-  all_genes_to_types <- all_genes_to_types %>%
-    split(rep(1:3, each = ceiling(length(all_genes_to_types)/2.5)))
-
+  # Create feather files ---------------------------------------------------
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$genes_to_types_01 <- all_genes_to_types %>% .[[1]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_01.feather"))
+  .GlobalEnv$tcga_genes_to_types <- get_genes_to_types() %>%
+    feather::write_feather(paste0(feather_file_folder, "/relationships/genes_to_types/tcga_genes_to_types.feather"))
 
-  .GlobalEnv$genes_to_types_02 <- all_genes_to_types %>% .[[2]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_02.feather"))
+  # Clean up ---------------------------------------------------
+  # Log out of Synapse.
+  iatlas.data::synapse_logout()
 
-  .GlobalEnv$genes_to_types_03 <- all_genes_to_types %>% .[[3]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_types/genes_to_types_03.feather"))
-
-  # Close the database connection.
-  pool::poolClose(.GlobalEnv$pool)
-  cat(crayon::green("Closed DB connection."), fill = TRUE)
-
-  ### Clean up ###
   # Data
-  rm(pool, pos = ".GlobalEnv")
-  rm(genes_to_types_01, pos = ".GlobalEnv")
-  rm(genes_to_types_02, pos = ".GlobalEnv")
-  rm(genes_to_types_03, pos = ".GlobalEnv")
+  rm(tcga_genes_to_types, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
