@@ -26,6 +26,8 @@ get_human_gene_ids_cached <- function() {
   iatlas.data::result_cached("human_gene_ids", get_human_gene_ids()) %>% dplyr::distinct(entrez, hgnc)
 }
 
+get_rna_seq_expr_matrix <- function(genes) result_cached("rna_seq_expr_matrix", iatlas.data::load_rna_seq_expr(paste0(getwd(), "/feather_files"), genes))
+
 synapse_feather_id_to_tbl <- function(id) {
   id %>%
     .GlobalEnv$synapse$get() %>%
