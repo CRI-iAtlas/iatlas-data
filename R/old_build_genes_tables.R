@@ -2,13 +2,7 @@ old_build_genes_tables <- function() {
   default_mutation_code <- "(NS)"
 
   cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
-  driver_mutations <- dplyr::bind_rows(
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations1.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations2.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations3.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations4.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations5.feather")
-  ) %>%
+  driver_mutations <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations") %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
   cat(crayon::blue("Imported driver mutation feather files for genes"), fill = TRUE)
@@ -27,12 +21,7 @@ old_build_genes_tables <- function() {
   cat(crayon::blue("Imported immunomodulators feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing io_target feather files for genes"), fill = TRUE)
-  io_target_expr <- dplyr::bind_rows(
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr1.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr2.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr3.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr4.feather")
-  ) %>%
+  io_target_expr <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr") %>%
     dplyr::distinct(gene) %>%
     dplyr::arrange(gene)
 
