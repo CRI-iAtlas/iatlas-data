@@ -58,7 +58,7 @@ get_tcga_immunomodulator_exprs_cached <- function() {
         tcga_subtype = TCGA_Subtype,
         immune_subtype = Immune_Subtype,
         sample,
-        value
+        rna_seq_expr = value
       ) %>%
       dplyr::arrange(entrez, tcga_study, tcga_subtype, immune_subtype)
   )
@@ -94,7 +94,7 @@ get_tcga_io_target_exprs_cached <- function() {
         tcga_subtype = TCGA_Subtype,
         immune_subtype = Immune_Subtype,
         sample,
-        value
+        rna_seq_expr = value
       ) %>%
       dplyr::arrange(entrez, tcga_study, tcga_subtype, immune_subtype)
   )
