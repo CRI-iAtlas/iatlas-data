@@ -9,7 +9,7 @@ build_references <- function(reference) {
 combine_references_and_links <- function(references = NA, link = NA) {
   return(ifelse(
     !is.na(references) & !is.na(link),
-    paste0("{", references %>% gsub("\\{(.+)\\}", "\\1", .), link %>% gsub("\\{(.+)\\}", "\\1", .), "}"),
+    paste0("{", references %>% gsub("\\{(.+)\\}", "\\1", .), ",", link %>% gsub("\\{(.+)\\}", "\\1", .), "}"),
     ifelse(!is.na(link), link, references)
   ))
 }
