@@ -122,7 +122,7 @@ vector_to_env <- function(vec) {
 #' @return lookup(), a function that takes (gene_id, sample_id) and returns the gene-expression or NULL if no match
 create_gene_expression_lookup <- function (gene_exp) {
   gene_exp <- tibble::as_tibble(gene_exp)
-  gene_map <- vector_to_env(purrr::map(gene_exp[[1]], function(f) strsplit(f, "\\|")[[1]][[1]]))
+  gene_map <- vector_to_env(gene_exp[[1]])
   sample_map <- vector_to_env(colnames(gene_exp))
 
   function(gene_id, sample_id) {
@@ -130,7 +130,7 @@ create_gene_expression_lookup <- function (gene_exp) {
       iatlas.data::present(sample_id) &&
       iatlas.data::present(gene_id) &&
       iatlas.data::present(col_num <- sample_map[[sample_id]]) &&
-      iatlas.data::present(row_num <- gene_map[[gene_id]])
+      iatlas.data::present(row_num <- gene_map[[gene_id %>% as.character()]])
     )
       return(gene_exp[[col_num]][[row_num]])
     return(NA)
