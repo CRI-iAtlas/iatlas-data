@@ -1,71 +1,77 @@
 tcga_build_genes_to_samples_files <- function() {
-  # Create a global variable to hold the pool DB connection.
-  .GlobalEnv$pool <- iatlas.data::connect_to_db()
-  cat(crayon::green("Created DB connection."), fill = TRUE)
 
   cat_genes_to_samples_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
+  feather_file_folder <- paste0(getwd(), "/feather_files")
+
   get_genes_to_samples <- function() {
-    current_pool <- pool::poolCheckout(.GlobalEnv$pool)
 
-    cat(crayon::magenta(paste0("Get genes_to_samples.")), fill = TRUE)
+    cat(crayon::magenta(paste0("Get TCGA genes_to_samples.")), fill = TRUE)
 
-    cat_genes_to_samples_status("Get the initial values from the genes_to_samples table.")
-    genes_to_samples <- current_pool %>% dplyr::tbl("genes_to_samples")
+    # immunomodulator_expr ---------------------------------------------------
+    cat_genes_to_samples_status("Get the immunomodulators expr values from feather files.")
+    immunomodulator_expr <- iatlas.data::get_tcga_immunomodulator_exprs_cached() %>%
+      dplyr::distinct(entrez, sample, rna_seq_expr)
 
-    cat_genes_to_samples_status("Get the gene entrezs from the genes table.")
-    genes_to_samples <- genes_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(gene_id = id, entrez),
-      by = "gene_id"
-    )
+    # io_target_expr ---------------------------------------------------
+    cat_genes_to_samples_status("Get the io target expr values from feather files.")
+    io_target_expr <- iatlas.data::get_tcga_io_target_exprs_cached() %>%
+      dplyr::distinct(entrez, sample, rna_seq_expr)
 
-    cat_genes_to_samples_status("Get the samples from the samples table.")
-    genes_to_samples <- genes_to_samples %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("samples") %>%
-        dplyr::select(sample_id = id, sample = name),
-      by = "sample_id"
-    )
+    # Bind expression genes ---------------------------------------------------
+    cat_genes_to_samples_status("Bind expression genes.")
+    expr_genes <- immunomodulator_expr %>%
+      dplyr::bind_rows(io_target_expr) %>%
+      dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
+      dplyr::distinct(entrez, sample, rna_seq_expr)
 
-    cat_genes_to_samples_status("Clean up the data set.")
+    # driver_mutations ---------------------------------------------------
+    cat_genes_to_samples_status("Get the driver_mutation values from feather files.")
+    driver_mutations <- iatlas.data::get_tcga_driver_mutations_cached() %>%
+      dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
+      dplyr::distinct(entrez, sample)
+
+    # Bind genes ---------------------------------------------------
+    cat_genes_to_samples_status("Bind all genes.")
+    genes_to_samples <- expr_genes %>% dplyr::bind_rows(driver_mutations)
+
+    genes <- genes_to_samples %>% dplyr::distinct(entrez)
+
+    # correct rna_seq_expr ---------------------------------------------------
+    rna_seq_expr_matrix <- iatlas.data::get_rna_seq_expr_matrix(genes)
+    cat_genes_to_samples_status("Get the correct RNA Seq Expr value.")
+    get_rna_seq_expr <- iatlas.data::create_gene_expression_lookup(rna_seq_expr_matrix)
+
+    expr_matrix <- feather::read_feather("feather_files/expr_matrix.feather") %>%
+      dplyr::distinct(sample = ParticipantBarcode, barcode = Representative_Expression_Matrix_AliquotBarcode)
+
+    genes_to_samples <- genes_to_samples %>% dplyr::left_join(expr_matrix, by = "sample")
+
+    get_rna_value_from_matrix <- function(entrez, barcode) {
+      return(ifelse(iatlas.data::present(barcode), get_rna_seq_expr(entrez, barcode), NA))
+    }
+
+    get_rna_value_from_matrix_v <- Vectorize(get_rna_value_from_matrix, vectorize.args = c("entrez", "barcode"))
+
     genes_to_samples <- genes_to_samples %>%
-      dplyr::distinct(entrez, sample, rna_seq_expr) %>%
-      dplyr::arrange(entrez, sample)
-
-    cat_genes_to_samples_status("Execute the query and return a tibble.")
-    genes_to_samples <- genes_to_samples %>% dplyr::as_tibble()
-
-    pool::poolReturn(current_pool)
+      dplyr::mutate(rna_seq_expr = get_rna_value_from_matrix_v(entrez, barcode))
 
     return(genes_to_samples)
   }
 
-  all_genes_to_samples <- get_genes_to_samples()
-  all_genes_to_samples <- all_genes_to_samples %>%
-    split(rep(1:3, each = ceiling(length(all_genes_to_samples)/2.5)))
-
+  # Create feather files ---------------------------------------------------
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$genes_to_samples_01 <- all_genes_to_samples %>% .[[1]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/genes_to_samples_01.feather"))
+  .GlobalEnv$tcga_genes_to_samples <- get_genes_to_samples() %>%
+    feather::write_feather(paste0(feather_file_folder, "/relationships/genes_to_samples/tcga_genes_to_samples.feather"))
 
-  .GlobalEnv$genes_to_samples_02 <- all_genes_to_samples %>% .[[2]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/genes_to_samples_02.feather"))
+  # Clean up ---------------------------------------------------
+  # Log out of Synapse.
+  iatlas.data::synapse_logout()
 
-  .GlobalEnv$genes_to_samples_03 <- all_genes_to_samples %>% .[[3]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/genes_to_samples/genes_to_samples_03.feather"))
-
-  # Close the database connection.
-  pool::poolClose(.GlobalEnv$pool)
-  cat(crayon::green("Closed DB connection."), fill = TRUE)
-
-  ### Clean up ###
   # Data
-  rm(pool, pos = ".GlobalEnv")
-  rm(genes_to_samples_01, pos = ".GlobalEnv")
-  rm(genes_to_samples_02, pos = ".GlobalEnv")
-  rm(genes_to_samples_03, pos = ".GlobalEnv")
+  rm(tcga_genes_to_samples, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
