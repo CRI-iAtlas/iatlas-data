@@ -31,7 +31,6 @@ get_cellimage_edges_cached <- function() {
 }
 
 get_tcga_copynumber_results_cached <- function() {
-  iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "tcga_copynumber_results_synapse",
     iatlas.data::get_tcga_copynumber_results()
