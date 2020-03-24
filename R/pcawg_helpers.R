@@ -80,7 +80,7 @@ get_pcawg_features_cached <- function(){
       dplyr::mutate(
         display = stringr::str_replace_all(name, "_", " "),
         class = stringr::str_match(name,  "^(\\w+?)_")[,2],
-        unit = dplyr::if_else(class == "MCPcounter", "score", "fraction")
+        unit = dplyr::if_else(class == "MCPcounter", "Score", "Fraction")
       )
   )
 }
