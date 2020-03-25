@@ -11,8 +11,9 @@ cellimage_cells <- c(
 )
 
 get_tcga_cellimage_nodes <- function() {
+  iatlas.data::create_global_synapse_connection()
   position_tbl <- iatlas.data::synapse_feather_id_to_tbl("syn21781366")
-  nodes_tbl <- get_tcga_cytokine_nodes_cached()
+  nodes_tbl <- iatlas.data::get_tcga_cytokine_nodes_cached()
 
   cellimage_nodes <- "syn21782167" %>%
     iatlas.data::synapse_feather_id_to_tbl() %>%
@@ -26,7 +27,7 @@ get_tcga_cellimage_nodes <- function() {
     dplyr::select(node) %>%
     dplyr::distinct() %>%
     dplyr::full_join(position_tbl, by = c(node = "Variable")) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("node" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("node" = "hgnc")) %>%
     dplyr::mutate(node = dplyr::if_else(
       !is.na(entrez),
       as.character(entrez),
@@ -54,12 +55,13 @@ get_tcga_cellimage_nodes <- function() {
 }
 
 get_tcga_cellimage_edges <- function() {
-  edges_tbl <- get_tcga_cytokine_edges_cached()
+  edges_tbl <- iatlas.data::get_tcga_cytokine_edges_cached()
 
+  iatlas.data::create_global_synapse_connection()
   cellimage_edges <- "syn21782167" %>%
     iatlas.data::synapse_feather_id_to_tbl() %>%
     dplyr::select(from = From, to = To, label = interaction) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("from" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("from" = "hgnc")) %>%
     dplyr::mutate(from = dplyr::if_else(
       !is.na(entrez),
       as.character(entrez),
@@ -74,7 +76,7 @@ get_tcga_cellimage_edges <- function() {
       )
     )) %>%
     dplyr::select(-entrez) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("to" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("to" = "hgnc")) %>%
     dplyr::mutate(to = dplyr::if_else(
       !is.na(entrez),
       as.character(entrez),

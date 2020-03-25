@@ -1,4 +1,5 @@
 get_tcga_cytokine_nodes <- function() {
+  iatlas.data::create_global_synapse_connection()
   labels <- "syn21783989" %>%
     iatlas.data::synapse_feather_id_to_tbl() %>%
     dplyr::select(node = Obj, label = Type)
@@ -40,7 +41,7 @@ get_tcga_cytokine_nodes <- function() {
   gene_node_tbl <- node_tbl %>%
     dplyr::filter(!node %in% cytokine_cells) %>%
     dplyr::mutate(feature = NA) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("node" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("node" = "hgnc")) %>%
     dplyr::select(-node) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.numeric)
 
@@ -50,6 +51,7 @@ get_tcga_cytokine_nodes <- function() {
 }
 
 get_tcga_cytokine_edges <- function() {
+  iatlas.data::create_global_synapse_connection()
   edge_tbl <-
     c("syn21781350", "syn21781351", "syn21781354", "syn21781357") %>%
     purrr::map(iatlas.data::synapse_feather_id_to_tbl) %>%
@@ -61,14 +63,14 @@ get_tcga_cytokine_edges <- function() {
       tag   = Group,
       tag.2 = Immune
     ) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("from" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("from" = "hgnc")) %>%
     dplyr::mutate(from = dplyr::if_else(
       is.na(entrez),
       paste0(from, "_Aggregate2"),
       as.character(entrez)
     )) %>%
     dplyr::select(-entrez) %>%
-    dplyr::left_join(iatlas.data::get_gene_ids(), by = c("to" = "hgnc")) %>%
+    dplyr::left_join(iatlas.data::get_master_gene_ids_cached(), by = c("to" = "hgnc")) %>%
     dplyr::mutate(to = dplyr::if_else(
       is.na(entrez),
       paste0(to, "_Aggregate2"),

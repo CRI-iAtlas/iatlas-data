@@ -8,15 +8,15 @@ pcawg_build_genes_files <- function() {
 
     cat(crayon::magenta(paste0("Get PCAWG genes")), fill = TRUE)
 
-    cat_genes_status("Get human gene ids.")
-    human_gene_ids <- iatlas.data::get_human_gene_ids_cached()
+    # master_gene_ids ---------------------------------------------------
+    cat_genes_status("Get master gene ids (write a feather file).")
+    master_gene_ids <- iatlas.data::get_master_gene_ids_cached()
 
     cat_genes_status("Get the inital values from Synapse.")
-    genes <- iatlas.data::get_pcawg_rnaseq_cached() %>%
-      dplyr::distinct(entrez, hgnc)
+    genes <- iatlas.data::get_pcawg_rnaseq_cached() %>% dplyr::distinct(entrez, hgnc)
 
     cat_genes_status("Ensure hgnc.")
-    genes <- genes %>% dplyr::mutate(hgnc = ifelse(entrez %in% human_gene_ids$entrez, NA, hgnc))
+    genes <- genes %>% dplyr::mutate(hgnc = ifelse(entrez %in% master_gene_ids$entrez, NA, hgnc))
 
     cat_genes_status("Clean up the data set.")
     genes <- genes %>% dplyr::distinct(entrez, hgnc)

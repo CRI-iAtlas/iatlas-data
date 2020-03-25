@@ -5,7 +5,6 @@ pcawg_build_features_files <- function() {
   }
 
   get_features <- function() {
-
     cat(crayon::magenta(paste0("Get features")), fill = TRUE)
 
     cat_features_status("Get the initial values from Synapse.")

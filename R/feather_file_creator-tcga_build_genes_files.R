@@ -8,18 +8,9 @@ tcga_build_genes_files <- function() {
 
   cat(crayon::magenta(paste0("Get TCGA genes")), fill = TRUE)
 
-  # human_gene_ids ---------------------------------------------------
-  cat_genes_status("Get human gene ids from Synapse and write a feather file.")
-  human_gene_ids <- iatlas.data::get_human_gene_ids_cached()
-  gene_ids <- iatlas.data::get_gene_ids()
-  gene_ids_unique_entrez <- gene_ids %>%
-    dplyr::select(-hgnc) %>%
-    dplyr::left_join(human_gene_ids, by = "entrez") %>%
-    dplyr::filter(is.na(hgnc)) %>%
-    dplyr::select(-hgnc) %>%
-    dplyr::left_join(gene_ids, by = "entrez")
-  master_gene_ids <- human_gene_ids %>%
-    dplyr::bind_rows(gene_ids_unique_entrez)
+  # master_gene_ids ---------------------------------------------------
+  cat_genes_status("Get master gene ids (write a feather file).")
+  master_gene_ids <- iatlas.data::get_master_gene_ids_cached()
 
   # immunomodulator_expr ---------------------------------------------------
   cat_genes_status("Get the immunomodulators expr values from feather files.")

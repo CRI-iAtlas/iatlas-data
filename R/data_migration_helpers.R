@@ -26,6 +26,23 @@ get_human_gene_ids_cached <- function() {
   iatlas.data::result_cached("human_gene_ids", get_human_gene_ids()) %>% dplyr::distinct(entrez, hgnc)
 }
 
+get_master_gene_ids_cached <- function() {
+  iatlas.data::result_cached(
+    "gene_ids",
+    {
+      human_gene_ids <- iatlas.data::get_human_gene_ids_cached()
+      gene_ids <- iatlas.data::get_gene_ids()
+      gene_ids_unique_entrez <- gene_ids %>%
+        dplyr::select(-hgnc) %>%
+        dplyr::left_join(human_gene_ids, by = "entrez") %>%
+        dplyr::filter(is.na(hgnc)) %>%
+        dplyr::select(-hgnc) %>%
+        dplyr::left_join(gene_ids, by = "entrez")
+      human_gene_ids %>% dplyr::bind_rows(gene_ids_unique_entrez)
+    }
+  )
+}
+
 get_rna_seq_expr_matrix <- function(genes) result_cached("rna_seq_expr_matrix", iatlas.data::load_rna_seq_expr(paste0(getwd(), "/feather_files"), genes))
 
 synapse_feather_id_to_tbl <- function(id) {
