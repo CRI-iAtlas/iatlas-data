@@ -409,7 +409,7 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `tag_id` - The database identifier of the specific tag associated with this copy number result. Relates to the `id` field in a row in the [tags](#tags) main table. (an integer)
 
-  - `direction` - The direction of the node in the copy number result. (an DIRECTION_ENUM)
+  - `direction` - The direction of the copy number result. (a DIRECTION_ENUM)
 
   - `mean_normal` - The mean normal value of the copy number result. (a numeric value)
 
@@ -419,7 +419,7 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `log10_p_value` - The log base 10 representation of the p value of the copy number result. (a numeric value)
 
-  - `t_stat` - The t stat value the copy number result. (an integer)
+  - `t_stat` - The t stat value the copy number result. (a numeric value)
 
 - [features](#features)
 
@@ -491,6 +491,8 @@ The following are descriptions of each field in each table. This should be exhau
 
   - `feature_id` - The database identifier of a specific feature. Relates to the `id` field in a row in the [features](#features) main table. (an integer)
 
+  - `label` - The label of the specific node. (a string)
+
   - `score` - The score (value) of the specific node. (an integer)
 
   - `x` - The initial "x" position of the specific node. (a number)
@@ -510,6 +512,8 @@ The following are descriptions of each field in each table. This should be exhau
   - `node_1_id` - The database identifier of a specific node. Relates to the `id` field in a row in the [nodes](#nodes) main table. (an integer)
 
   - `node_2_id` - The database identifier of a specific node. Relates to the `id` field in a row in the [nodes](#nodes) main table. (an integer)
+
+  - `label` - The label of the specific edge. (a string)
 
   - `score` - The relationship value between the two nodes. (an integer)
 

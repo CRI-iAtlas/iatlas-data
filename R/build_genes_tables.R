@@ -33,16 +33,6 @@ build_genes_tables <- function() {
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
-  # entrez fix ---------------------------------------------------
-  cat(crayon::magenta("Ensure genes have the correct entrez.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
-  genes <- genes %>%
-    dplyr::left_join(
-      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather") %>%
-        dplyr::select(hgnc, real_entrez = entrez),
-      by = "hgnc"
-    ) %>%
-    dplyr::mutate(entrez = ifelse(!is.na(real_entrez), real_entrez, entrez))
-
   # gene_families data ---------------------------------------------------
   cat(crayon::magenta("Building gene_families data."), fill = TRUE)
   gene_families <- genes %>% iatlas.data::rebuild_gene_relational_data("gene_family")

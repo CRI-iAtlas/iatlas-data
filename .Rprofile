@@ -19,3 +19,5 @@ if (file.exists("renv/activate.R")) {
     source('./install.R')
   }
 }
+
+rm(IS_CI)

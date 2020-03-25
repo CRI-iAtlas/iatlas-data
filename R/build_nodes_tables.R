@@ -17,18 +17,30 @@ build_nodes_tables <- function() {
       y = numeric()
     )) %>%
     dplyr::filter(!is.na(entrez) | !is.na(feature)) %>%
+    dplyr::mutate_at(dplyr::vars(entrez), as.character()) %>%
+    replace(is.na(.), "NA") %>%
+    dplyr::mutate(
+      x = ifelse(x == "NA", NA, x),
+      y = ifelse(y == "NA", NA, y)
+    ) %>%
     dplyr::distinct() %>%
     dplyr::arrange(entrez, feature)
+
+    node_tag_column_names <- iatlas.data::get_tag_column_names(nodes)
+
+    nodes <- nodes %>%
+      iatlas.data::resolve_df_dupes(keys = c("entrez", "feature", node_tag_column_names)) %>%
+      replace(. == "NA", NA) %>%
+      dplyr::mutate_at(dplyr::vars(entrez, score, x, y), as.numeric)
   cat(crayon::blue("Ensured nodes have all the correct columns and no dupes."), fill = TRUE)
 
   # nodes data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes data."), fill = TRUE)
-  nodes <- nodes %>%
-    dplyr::left_join(
-      iatlas.data::get_genes() %>%
-        dplyr::select(gene_id, entrez),
-      by = "entrez"
-    )
+  nodes <- nodes %>% dplyr::left_join(
+    iatlas.data::get_genes() %>%
+      dplyr::select(gene_id, entrez),
+    by = "entrez"
+  )
 
   nodes <- nodes %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
@@ -44,8 +56,6 @@ build_nodes_tables <- function() {
 
   # nodes_to_tags data ---------------------------------------------------
   cat(crayon::magenta("Building the nodes_to_tags data."), fill = TRUE)
-  node_tag_column_names <- iatlas.data::get_tag_column_names(nodes)
-
   nodes_to_tags <- nodes %>%
     tidyr::pivot_longer(node_tag_column_names, names_to = "delete", values_to = "tag") %>%
     dplyr::select(-c("delete"))
@@ -74,55 +84,79 @@ build_nodes_tables <- function() {
       from = character(),
       to = character(),
       tag = character(),
+      label = character(),
       score = numeric()
     )) %>%
     dplyr::filter(!is.na(from) & !is.na(to)) %>%
+    replace(is.na(.), "NA") %>%
+    dplyr::mutate(label = ifelse(label == "NA", NA, label)) %>%
     dplyr::distinct() %>%
-    dplyr::arrange(from, to)
+    iatlas.data::resolve_df_dupes(keys = c("from", "to", node_tag_column_names)) %>%
+    replace(. == "NA", NA) %>%
+    dplyr::mutate(label = ifelse(label == "NA", NA, label)) %>%
+    dplyr::mutate_at(dplyr::vars(score), as.numeric) %>%
+    dplyr::arrange(from, to, tag, score)
   cat(crayon::blue("Ensured edges have all the correct columns and no dupes."), fill = TRUE)
 
+  # edges data ---------------------------------------------------
   cat(crayon::magenta("Building the edges data."), fill = TRUE)
-  edges <- edges %>% dplyr::left_join(
+
+  # Build node_1_id
+
+  all_edges <- edges %>% dplyr::left_join(
     nodes %>%
       dplyr::filter(!is.na(entrez)) %>%
-      dplyr::select(node_1_id = node_id, entrez, node_tag_column_names) %>%
-      dplyr::mutate(entrez = entrez %>% as.character()),
-    by = c("from" = "entrez", node_tag_column_names)
+      dplyr::select(node_1_id = node_id, from = entrez, node_tag_column_names) %>%
+      dplyr::mutate(from = from %>% as.character()),
+    by = c("from", node_tag_column_names)
   )
 
-  edges <- edges %>% dplyr::left_join(
-    nodes %>%
-      dplyr::filter(!is.na(feature)) %>%
-      dplyr::select(node_1_id = node_id, feature, node_tag_column_names),
-    by = c("from" = "feature", node_tag_column_names)
-  )
+  gene_edges <- all_edges %>% dplyr::filter(!is.na(node_1_id))
 
-  edges <- edges %>%
-    dplyr::mutate(node_1_id = ifelse(is.na(node_1_id.x), node_1_id.y, node_1_id.x)) %>%
-    dplyr::select(-c("node_1_id.y", "node_1_id.x"))
+  feature_edges <- all_edges %>% dplyr::filter(is.na(node_1_id)) %>% dplyr::select(-node_1_id)
 
-  edges <- edges %>% dplyr::left_join(
+  feature_edges <- feature_edges %>%
+    dplyr::left_join(
+      nodes %>%
+        dplyr::filter(!is.na(feature)) %>%
+        dplyr::select(node_1_id = node_id, from = feature, node_tag_column_names),
+      by = c("from", node_tag_column_names)
+    ) %>%
+    dplyr::filter(!is.na(node_1_id))
+
+  edges <- gene_edges %>% dplyr::bind_rows(feature_edges)
+
+  # Build node_2_id
+
+  all_edges <- edges %>% dplyr::left_join(
     nodes %>%
       dplyr::filter(!is.na(entrez)) %>%
-      dplyr::select(node_2_id = node_id, entrez, node_tag_column_names) %>%
-      dplyr::mutate(entrez = entrez %>% as.character()),
-    by = c("to" = "entrez", node_tag_column_names)
+      dplyr::select(node_2_id = node_id, to = entrez, node_tag_column_names) %>%
+      dplyr::mutate(to = to %>% as.character()),
+    by = c("to", node_tag_column_names)
   )
 
-  edges <- edges %>% dplyr::left_join(
+  gene_edges <- all_edges %>% dplyr::filter(!is.na(node_2_id))
+
+  feature_edges <- all_edges %>% dplyr::filter(is.na(node_2_id)) %>% dplyr::select(-node_2_id)
+
+  feature_edges <- feature_edges %>% dplyr::left_join(
     nodes %>%
       dplyr::filter(!is.na(feature)) %>%
-      dplyr::select(node_2_id = node_id, feature, node_tag_column_names),
-    by = c("to" = "feature", node_tag_column_names)
-  )
+      dplyr::select(node_2_id = node_id, to = feature, node_tag_column_names),
+    by = c("to", node_tag_column_names)
+  ) %>%
+    dplyr::filter(!is.na(node_2_id))
 
-  edges <- edges %>% dplyr::mutate(node_2_id = ifelse(is.na(node_2_id.x), node_2_id.y, node_2_id.x))
+  edges <- gene_edges %>% dplyr::bind_rows(feature_edges)
 
+  # clean up
   edges <- edges %>%
     dplyr::distinct(node_1_id, node_2_id, score) %>%
     dplyr::arrange(node_1_id, node_2_id, score)
   cat(crayon::blue("Built the edges data."), fill = TRUE)
 
+  # edges table ---------------------------------------------------
   cat(crayon::magenta("Building the edges table.\n\t(There are", nrow(edges), "rows to write, this may take a little while.)"), fill = TRUE, sep = " ")
   table_written <- edges %>% iatlas.data::replace_table("edges")
   cat(crayon::blue("Built the edges table. (", nrow(edges), "rows )"), fill = TRUE, sep = " ")

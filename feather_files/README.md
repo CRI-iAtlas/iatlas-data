@@ -18,27 +18,28 @@ All data (feather files) should be located in the `feather_file` folder.
 
 Within the `feather_file` folder, data files should be segregated into folders as follows:
 
-- `driver_results`
-- `edges`
-- `features`
-- `gene_types`
-- `genes`
-- `mutation_codes`
-- `mutation_types`
-- `mutations`
-- `nodes`
-- `patients`
-- `relationships`
-  - `edges_to_tags`
-  - `features_to_samples`
-  - `genes_to_samples`
-  - `genes_to_types`
-  - `samples_to_mutations`
-  - `samples_to_tags`
-  - `tags_to_tags`
-- `samples`
-- `slides`
-- `tags`
+- [`copy_number_results`](#copy_number_results)
+- [`driver_results`](#driver_results)
+- [`edges`](#edges)
+- [`features`](#features)
+- [`gene_types`](#gene_types)
+- [`genes`](#genes)
+- [`mutation_codes`](#mutation_codes)
+- [`mutation_types`](#mutation_types)
+- [`mutations`](#mutations)
+- [`nodes`](#nodes)
+- [`patients`](#patients)
+- [`relationships`](#relationships)
+  - [`edges_to_tags`](#edges_to_tags) <- in development
+  - [`features_to_samples`](#features_to_samples)
+  - [`genes_to_samples`](#genes_to_samples)
+  - [`genes_to_types`](#genes_to_types)
+  - [`samples_to_mutations`](#samples_to_mutations)
+  - [`samples_to_tags`](#samples_to_tags)
+  - [`tags_to_tags`](#tags_to_tags)
+- [`samples`](#samples)
+- [`slides`](#slides)
+- [`tags`](#tags)
 
 ## Feather File Structure
 
@@ -48,7 +49,65 @@ Column names MUST be spelled exactly as shown in this document.
 
 The conventions for the feather files in each folder are as follows:
 
-- ### `driver_results`
+- ### `copy_number_results`
+
+  #### Copy Number Results Column Names
+
+  - _feature_
+
+    The name of a feature. These unique names MUST exist in data in the `features` folder.
+
+    type - _(character)_
+
+  - _entrez_
+
+    The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+    type - _(numeric)_
+
+  - _tag_
+
+    The tag name associated with this copy number result. These tags MUST exist in data in the `tags` folder.
+
+    type - _(character)_
+
+  - _direction_
+
+    The direction of this copy number result.
+
+    type - _([DIRECTION_ENUM](../data_model/README.md#DIRECTION_ENUM))_
+
+  - _mean_normal_
+
+    The mean normal value this copy number result.
+
+    type - _(numeric)_
+
+  - _mean_cnv_
+
+    The mean normal cnv this copy number result.
+
+    type - _(numeric)_
+
+  - _p_value_
+
+    The p value associated with this copy number result.
+
+    type - _(numeric)_
+
+  - _log10_p_value_
+
+    The log10 p value associated with this copy number result.
+
+    type - _(numeric)_
+
+  - _t_stat_
+
+    The t stat value of this copy number result.
+
+    type - _(numeric)_
+
+  ### `driver_results`
 
   #### Driver Results Column Names
 
@@ -56,43 +115,63 @@ The conventions for the feather files in each folder are as follows:
 
     The name of a feature. These unique names MUST exist in data in the `features` folder.
 
+    type - _(character)_
+
   - _entrez_
 
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+    type - _(numeric)_
 
   - _mutation_code_
 
     The mutation code associated with this driver result. These mutation codes MUST exist in data in the `mutation_codes` folder.
 
+    type - _(character)_
+
   - _tag_
 
     The tag name associated with this driver result. These tags MUST exist in data in the `tags` folder.
+
+    type - _(character)_
 
   - _p_value_
 
     The p value associated with this driver result.
 
+    type - _(numeric)_
+
   - _fold_change_
 
     The fold change value associated with this driver result.
+
+    type - _(numeric)_
 
   - _log10_p_value_
 
     The log10 p value associated with this driver result.
 
+    type - _(numeric)_
+
   - _log10_fold_change_
 
     The log10 fold change value associated with this driver result.
+
+    type - _(numeric)_
 
   - _n_wt_
 
     The number of "Wild Type" genes associated with this driver result.
 
+    type - _(integer)_
+
   - _n_mut_
 
     The number of "Mutant" genes associated with this driver result.
 
-- ### `edges`
+    type - _(integer)_
+
+* ### `edges`
 
   #### Edges Column Names
 
@@ -100,18 +179,32 @@ The conventions for the feather files in each folder are as follows:
 
     The node the edge is starting from. This may be either a gene id (Entrez - NCBI Id) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
 
+    type - _(character)_
+
   - _to_
 
     The node the edge is ending at. This may be either a gene id (Entrez - NCBI Id) or a feature name. These unique names MUST exist in data in either the `genes` folder or the `features` folder.
+
+    type - _(character)_
+
+  - _label_
+
+    The label of the edge.
+
+    type - _(character)_
 
   - _score_
 
     The numeric value of the edge.
 
+    type - _(numeric)_
+
   - _tag_ (optional)
 
     The tag related to BOTH the from and to node. These tags MUST exist in data in the `tags` folder.\
     This column name and tag value MUST also exist in the _nodes_ data.
+
+    type - _(character)_
 
   - _tag.XX_ (optional)
 
@@ -119,7 +212,9 @@ The conventions for the feather files in each folder are as follows:
     The column name MUST start with `tag` but may be followed by a dot (`.`) and some additional descriptive text. ie `tag.second` or `tag.01`. There may be as many tag columns as needed.\
     This column name and tag value MUST also exist in the _nodes_ data.
 
-- ### `features`
+    type - _(character)_
+
+* ### `features`
 
   #### Features Column Names
 
@@ -127,27 +222,39 @@ The conventions for the feather files in each folder are as follows:
 
     The name of the feature.
 
+    type - _(character)_
+
   - _display_
 
     A friendly display name for the feature.
+
+    type - _(character)_
 
   - _class_
 
     The class of the feature. If the feature does not have a class, use `Miscellaneous`.
 
+    type - _(character)_
+
   - _method_tag_ (optional)
 
     The method tag of the feature.
+
+    type - _(character)_
 
   - _order_ (optional)
 
     The prefered order of priority for the feature.
 
+    type - _(integer)_
+
   - _unit_ (optional)
 
     The unit used for the value of the feature.
 
-- ### `gene_types`
+    type - _([UNIT_ENUM](../data_model/README.md#UNIT_ENUM))_
+
+* ### `gene_types`
 
   #### Gene Type Column Names
 
@@ -155,11 +262,15 @@ The conventions for the feather files in each folder are as follows:
 
     The name of the gene type.
 
+    type - _(character)_
+
   - _display_
 
     A friendly display name for the gene type.
 
-- ### `genes`
+    type - _(character)_
+
+* ### `genes`
 
   #### Gene Column Names
 
@@ -167,49 +278,73 @@ The conventions for the feather files in each folder are as follows:
 
     The entrez identifier of the gene. This is used through out the app to uniquely identify the gene. This is REQUIRED.
 
+    type - _(numeric)_
+
   - _hgnc_
 
     The Hugo Id of the gene.
+
+    type - _(character)_
 
   - _description_
 
     A description of the gene.
 
+    type - _(character)_
+
   - _friendly_name_ (optional)
 
     A human friendly display name for the gene.
+
+    type - _(character)_
 
   - _io_landscape_name_ (optional)
 
     The IO Landscape name for the gene.
 
+    type - _(character)_
+
   - _gene_family_ (optional)
 
     The gene family of the gene.
+
+    type - _(character)_
 
   - _gene_function_ (optional)
 
     The gene function of the gene.
 
+    type - _(character)_
+
   - _immune_checkpoint_ (optional)
 
     The immune checkpoint for the gene.
+
+    type - _(character)_
 
   - _node_type_ (optional)
 
     The node type of the gene.
 
+    type - _(character)_
+
   - _pathway_ (optional)
 
     The pathway of the gene.
+
+    type - _(character)_
 
   - _super_category_ (optional)
 
     The super category of the gene.
 
+    type - _(character)_
+
   - _therapy_type_ (optional)
 
     The therapy type of the gene.
+
+    type - _(character)_
 
   - _references_ (optional)
 
@@ -217,7 +352,9 @@ The conventions for the feather files in each folder are as follows:
     multiple references -> `{http://some-reference-url,https://another-reference-url}`\
     single reference -> `{http://some-reference-url}`
 
-- ### `mutation_codes`
+    type - _(character)_
+
+* ### `mutation_codes`
 
   #### Mutation Code Column Names
 
@@ -225,7 +362,9 @@ The conventions for the feather files in each folder are as follows:
 
     The mutation code. This is REQUIRED.
 
-- ### `mutation_types`
+    type - _(character)_
+
+* ### `mutation_types`
 
   #### Mutation Type Column Names
 
@@ -233,11 +372,15 @@ The conventions for the feather files in each folder are as follows:
 
     The name of the mutation type.
 
+    type - _(character)_
+
   - _display_
 
     A friendly display name for the mutation type.
 
-- ### `mutations`
+    type - _(character)_
+
+* ### `mutations`
 
   #### Mutation Column Names
 
@@ -245,15 +388,21 @@ The conventions for the feather files in each folder are as follows:
 
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
+    type - _(numeric)_
+
   - _mutation_code_ (required)
 
     The code (name) of a mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
+
+    type - _(character)_
 
   - _mutation_type_
 
     The name of a mutation type. These mutation types MUST exist in data in the `mutation_types` folder.
 
-- ### `nodes`
+    type - _(character)_
+
+* ### `nodes`
 
   #### Node Column Names
 
@@ -263,18 +412,32 @@ The conventions for the feather files in each folder are as follows:
 
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
+    type - _(numeric)_
+
   - _feature_
 
     The name of the feature. These features MUST exist in data in the `features` folder.
+
+    type - _(character)_
+
+  - _label_
+
+    The label of the edge.
+
+    type - _(character)_
 
   - _score_
 
     The numeric value of the node.
 
+    type - _(numeric)_
+
   - _tag_ (optional)
 
     The a tag related to the node. These tags MUST exist in data in the `tags` folder.\
     For a node to be used in edges, this column name MUST also exist in the _edges_ data.
+
+    type - _(character)_
 
   - _tag.XX_ (optional)
 
@@ -282,7 +445,9 @@ The conventions for the feather files in each folder are as follows:
     The column name MUST start with `tag` but may be followed by a dot (`.`) and some additional descriptive text. ie `tag.second` or `tag.01`. There may be as many tag columns as needed.\
     This column name MUST also exist in the _nodes_ data.
 
-- ### `patients`
+    type - _(character)_
+
+* ### `patients`
 
   #### Patients Column Names
 
@@ -290,31 +455,45 @@ The conventions for the feather files in each folder are as follows:
 
     The unique identifier representing a patient.
 
+    type - _(character)_
+
   - _age_ (optional)
 
     The age of the patient.
+
+    type - _(character)_
 
   - _ethinicity_ (optional)
 
     The ethinicity of the patient.
 
+    type - _(character)_
+
   - _gender_ (optional)
 
     The gender of the patient.
+
+    type - _(character)_
 
   - _height_ (optional)
 
     The height of the patient.
 
+    type - _(character)_
+
   - _race_ (optional)
 
     The race of the patient.
+
+    type - _(character)_
 
   - _weight_ (optional)
 
     The weight of the patient.
 
-- ### `samples`
+    type - _(character)_
+
+* ### `samples`
 
   #### Sample Column Names
 
@@ -322,11 +501,15 @@ The conventions for the feather files in each folder are as follows:
 
     The unique identifier representing the sample.
 
+    type - _(character)_
+
   - _patient_barcode_
 
     The unique identifier representing a patient related to the sample. The patient MUST exist in the data in the `patients` folder.
 
-- ### `slides`
+    type - _(character)_
+
+* ### `slides`
 
   #### Slide Column Names
 
@@ -334,11 +517,15 @@ The conventions for the feather files in each folder are as follows:
 
     The unique identifier representing the slide.
 
+    type - _(character)_
+
   - _patient_barcode_
 
     The unique identifier representing a patient related to the slide. The patient MUST exist in the data in the `patients` folder.
 
-- ### `tags`
+    type - _(character)_
+
+* ### `tags`
 
   #### Tag Column Names
 
@@ -348,19 +535,27 @@ The conventions for the feather files in each folder are as follows:
 
     The unique identifying name of the tag.
 
+    type - _(character)_
+
   - _characteristics_
 
     Any identifying characteristics of the tag.
+
+    type - _(character)_
 
   - _display_
 
     A human friendy display name for the tag.
 
+    type - _(character)_
+
   - _color_
 
     A specific hex value to represent the tag by color.
 
-- ### `relationships`
+    type - _(character)_
+
+* ### `relationships`
 
   Often data is about relationships. The following folders are for data relationships. Each relationship depends on the original dat pieces being represented in their respective folders.
 
@@ -372,13 +567,19 @@ The conventions for the feather files in each folder are as follows:
 
       The name of the feature. These features MUST exist in data in the `features` folder.
 
+    type - _(character)_
+
     - _sample_
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
 
+    type - _(character)_
+
     - _value_
 
       The numeric value of the feature to sample relationship. The unit of the value is expressed in the [features](#features) data.
+
+    type - _(numeric)_
 
   - #### `genes_to_samples`
 
@@ -388,13 +589,19 @@ The conventions for the feather files in each folder are as follows:
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
+      type - _(numeric)_
+
     - _sample_
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
 
+      type - _(character)_
+
     - _rna_seq_expr_
 
       The unique numeric RNA sequence expression of the relationship between the gene and the sample.
+
+      type - _(numeric)_
 
   - #### `genes_to_types`
 
@@ -404,13 +611,15 @@ The conventions for the feather files in each folder are as follows:
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
+      type - _(numeric)_
+
     - _gene_type_
 
       The type of gene this specific gene is related to. These gene types MUST exist in data in the `gene_types` folder.
 
-  - #### `samples_to_mutations`
+      type - _(character)_
 
-    (This is DEPRECATED. Please do not populate this relationsship.)
+  - #### `samples_to_mutations`
 
     ##### Sample to Mutation Code Column Names
 
@@ -418,21 +627,31 @@ The conventions for the feather files in each folder are as follows:
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
 
+      type - _(character)_
+
     - _entrez_ (required)
 
       The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
+
+      type - _(numeric)_
 
     - _mutation_code_ (optional - may be NA)
 
       The code (name) of the mutation code. These mutation codes MUST exist in data in the `mutation_codes` folder.
 
+      type - _(character)_
+
     - _mutation_type_ (optional - may be NA)
 
       The name of the mutation type. These mutation types MUST exist in data in the `mutation_types` folder.
 
+      type - _(character)_
+
     - _status_
 
       The status of the gene in this psecific relationship. My be `Wt` (Wild Type) or `Mut` (Mutant).
+
+      type - _([STATUS_ENUM](../data_model/README.md#status_ENUM))_
 
   - #### `samples_to_tags`
 
@@ -442,9 +661,13 @@ The conventions for the feather files in each folder are as follows:
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
 
+      type - _(character)_
+
     - _tag_
 
       The tag related to the sample. These tags MUST exist in data in the `tags` folder.
+
+      type - _(character)_
 
   - #### `tags_to_tags`
 
@@ -454,6 +677,10 @@ The conventions for the feather files in each folder are as follows:
 
       The name of the tag. These tags MUST exist in data in the `tags` folder.
 
+      type - _(character)_
+
     - _related_tag_
 
       The tag related to the initial tag. These tags MUST exist in data in the `tags` folder.
+
+      type - _(character)_
