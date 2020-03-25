@@ -147,7 +147,7 @@ sql_schema <- list(
       );",
     addSchema = c(
       "CREATE UNIQUE INDEX gene_entrez_index ON genes (entrez);",
-      "CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);",
+      "CREATE INDEX gene_hgnc_index ON genes (hgnc);",
       "CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);",
       "CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);",
       "CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);",
