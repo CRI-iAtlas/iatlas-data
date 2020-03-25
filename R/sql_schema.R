@@ -19,7 +19,7 @@ sql_schema <- list(
         mean_cnv NUMERIC,
         p_value NUMERIC,
         log10_p_value NUMERIC,
-        t_stat INTEGER,
+        t_stat NUMERIC,
         feature_id INTEGER NOT NULL,
         gene_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
@@ -78,6 +78,7 @@ sql_schema <- list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
+        label VARCHAR,
         node_1_id INTEGER NOT NULL,
         node_2_id INTEGER NOT NULL,
         score NUMERIC,
@@ -146,7 +147,7 @@ sql_schema <- list(
       );",
     addSchema = c(
       "CREATE UNIQUE INDEX gene_entrez_index ON genes (entrez);",
-      "CREATE UNIQUE INDEX gene_hgnc_index ON genes (hgnc);",
+      "CREATE INDEX gene_hgnc_index ON genes (hgnc);",
       "CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);",
       "CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);",
       "CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);",
@@ -299,6 +300,7 @@ sql_schema <- list(
         id SERIAL,
         feature_id INTEGER,
         gene_id INTEGER,
+        label VARCHAR,
         score NUMERIC,
         x NUMERIC,
         y NUMERIC,
