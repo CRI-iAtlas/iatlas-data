@@ -9,7 +9,8 @@ pcawg_build_tags_to_tags_files <- function() {
     cat(crayon::magenta(paste0("Get pcawg tags_to_tags.")), fill = TRUE)
 
     cat_tags_to_tags_status("Build tags_to_tags. data.")
-    tags_to_tags <- dplyr::tibble(tag = "PCAWG_Study", related_tag = "PCAWG")
+    tags_to_tags <- dplyr::tibble(tag = "PCAWG_Study", related_tag = "PCAWG") %>%
+      dplyr::add_row(tag = "Immune_Subtype", related_tag = "PCAWG")
 
     return(tags_to_tags)
   }
