@@ -16,7 +16,7 @@ pcawg_build_tags_to_tags_files <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$pcawg_tags_to_tags <- get_tags_to_tags() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/pcawg_tags_to_tags"))
+    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/pcawg_tags_to_tags.feather"))
 
   ### Clean up ###
   # Data
