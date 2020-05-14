@@ -10,12 +10,12 @@ pcawg_build_samples_to_tags_files <- function() {
     samples_to_tags_pcawg <- iatlas.data::get_pcawg_tag_values_cached()
 
     cat_samples_to_tags_status("Get all PCAWG samples and tag them PCAWG_Study.")
-    samples_to_pcawg_study <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
+    samples_to_pcawg_study <- iatlas.data::get_pcawg_samples_cached() %>%
       dplyr::select(sample = icgc_donor_id) %>%
       dplyr::mutate(tag = "PCAWG_Study")
 
     cat_samples_to_tags_status("Get all PCAWG samples and tag them Immune_Subtype.")
-    samples_to_immune_subtype <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
+    samples_to_immune_subtype <- iatlas.data::get_pcawg_samples_cached() %>%
       dplyr::select(sample = icgc_donor_id) %>%
       dplyr::mutate(tag = "Immune_Subtype")
 
