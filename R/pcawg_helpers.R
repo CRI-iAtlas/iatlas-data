@@ -86,20 +86,9 @@ get_pcawg_features_cached <- function(){
 }
 
 get_pcawg_tag_values_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_tag_values",
-    "syn20717211" %>%
-      .GlobalEnv$synapse$get() %>%
-      purrr::pluck("path") %>%
-      read.table(stringsAsFactors = F, header = T, sep = "\t") %>%
-      dplyr::as_tibble() %>%
-      dplyr::inner_join(
-        get_pcawg_sample_tbl_cached(),
-        by = c("sample" = "aliquot_id")
-      ) %>%
-      dplyr::select(sample = icgc_donor_id, subtype, dcc_project_code) %>%
-      dplyr::mutate(dataset = "PCAWG") %>%
+    get_pcawg_tags_from_synapse() %>%
       tidyr::pivot_longer(-sample, values_to = "tag") %>%
       dplyr::select(-name)
   )
