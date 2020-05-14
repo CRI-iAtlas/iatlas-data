@@ -12,6 +12,7 @@ pcawg_build_tags_files <- function() {
     tags <- iatlas.data::get_pcawg_tag_values_cached() %>%
       dplyr::select(name = tag) %>%
       dplyr::mutate(display = NA %>% as.character()) %>%
+      dplyr::add_row(name = "PCAWG", display = "PCAWG") %>%
       dplyr::add_row(name = "PCAWG_Study", display = "PCAWG Study") %>%
       dplyr::add_row(name = "Immune_Subtype", display = "Immune Subtype")
 
