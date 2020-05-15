@@ -9,7 +9,7 @@ pcawg_build_genes_files <- function() {
     cat(crayon::magenta(paste0("Get PCAWG genes")), fill = TRUE)
 
     cat_genes_status("Get the inital values from Synapse.")
-    genes <- iatlas.data::get_pcawg_rnaseq_synapse_cached() %>%
+    genes <- iatlas.data::get_pcawg_rnaseq_cached() %>%
       dplyr::select(entrez, hgnc)
 
     cat_genes_status("Clean up the data set.")
