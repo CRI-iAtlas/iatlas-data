@@ -20,43 +20,23 @@ get_pcawg_samples_cached <- function(){
 }
 
 get_pcawg_rnaseq_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "pcawg_rnaseq",
-    iatlas.data::get_pcawg_rnaseq_from_synapse()
-  )
+  iatlas.data::result_cached("pcawg_rnaseq", iatlas.data::get_pcawg_rnaseq_from_synapse())
 }
 
 get_pcawg_cibersort_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "pcawg_cibersort",
-    iatlas.data::get_pcawg_cibersort_from_synapse()
-  )
+  iatlas.data::result_cached("pcawg_cibersort", iatlas.data::get_pcawg_cibersort_from_synapse())
 }
 
 get_pcawg_mcpcounter_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "pcawg_mcpcounter",
-    iatlas.data::get_pcawg_mcpcounter_from_synapse()
-  )
+  iatlas.data::result_cached("pcawg_mcpcounter", iatlas.data::get_pcawg_mcpcounter_from_synapse())
 }
 
 get_pcawg_epic_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "pcawg_epic",
-    iatlas.data::get_pcawg_epic_from_synapse()
-  )
+  iatlas.data::result_cached("pcawg_epic",iatlas.data::get_pcawg_epic_from_synapse())
 }
 
 get_pcawg_mitcr_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
-  iatlas.data::result_cached(
-    "pcawg_mitcr",
-    iatlas.data::get_pcawg_mitcr_from_synapse()
-  )
+  iatlas.data::result_cached("pcawg_mitcr", iatlas.data::get_pcawg_mitcr_from_synapse())
 }
 
 get_pcawg_feature_values_cached <- function(){
@@ -67,7 +47,6 @@ get_pcawg_feature_values_cached <- function(){
 }
 
 get_pcawg_features_cached <- function(){
-  iatlas.data::create_global_synapse_connection()
   iatlas.data::result_cached(
     "pcawg_features",
     list(

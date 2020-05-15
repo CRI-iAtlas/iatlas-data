@@ -1,5 +1,6 @@
 get_pcawg_rnaseq_from_synapse <- function() {
-  # # Get the data from Synapse.
+  iatlas.data::create_global_synapse_connection()
+  # Get the data from Synapse.
   pcawg_rnaseq_synapse <- "syn21785590" %>%
       .GlobalEnv$synapse$get() %>%
       .$path %>%

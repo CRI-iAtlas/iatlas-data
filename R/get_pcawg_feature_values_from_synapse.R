@@ -9,18 +9,21 @@ get_pcawg_feature_values_from_synapse <- function() {
 }
 
 get_pcawg_cibersort_from_synapse <- function() {
+  iatlas.data::create_global_synapse_connection()
   "syn21785667" %>%
     synapse_id_to_tbl() %>%
     tidyr::pivot_longer(., -sample, values_to = "value", names_to = "feature")
 }
 
 get_pcawg_mcpcounter_from_synapse <- function() {
+  iatlas.data::create_global_synapse_connection()
   "syn21785753" %>%
     synapse_id_to_tbl() %>%
     tidyr::pivot_longer(., -sample, values_to = "value", names_to = "feature")
 }
 
 get_pcawg_epic_from_synapse <- function() {
+  iatlas.data::create_global_synapse_connection()
   "syn21785736" %>%
     synapse_id_to_tbl() %>%
     tidyr::pivot_longer(., -sample, values_to = "value", names_to = "feature")
