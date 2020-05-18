@@ -1,94 +1,85 @@
 tcga_build_genes_files <- function() {
-  # Create a global variable to hold the pool DB connection.
-  .GlobalEnv$pool <- iatlas.data::connect_to_db()
-  cat(crayon::green("Created DB connection."), fill = TRUE)
+  iatlas.data::set_feather_file_folder("feather_files")
 
   cat_genes_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
   get_genes <- function(gene_type) {
-    current_pool <- pool::poolCheckout(.GlobalEnv$pool)
+    cat(crayon::magenta(paste0("Get tcga genes.")), fill = TRUE)
 
-    cat(crayon::magenta(paste0("Get genes by `", gene_type, "`")), fill = TRUE)
+    cat_genes_status("Import driver mutation feather files for genes.")
+    driver_mutations <- iatlas.data::get_tcga_driver_mutation_genes()
 
-    cat_genes_status("Get the initial values from the genes table.")
-    genes <- current_pool %>% dplyr::tbl("genes")
+    cat_genes_status("Import immunomodulators feather files for genes.")
+    immunomodulator_expr <- iatlas.data::get_tcga_immunomodulator_expr_genes()
+    immunomodulators <- iatlas.data::get_tcga_immunodulator_genes()
 
-    cat_genes_status("Get all the gene type ids related to the genes in the table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("genes_to_types"),
-      by = c("id" = "gene_id")
+    cat_genes_status("Import io_target feather files for genes.")
+    io_target_expr <- iatlas.data::get_tcga_io_target_expr_genes()
+    io_targets <- iatlas.data::get_tcga_io_target_genes()
+
+    cat_genes_status("Import extra cellular network (ecn) feather files for genes.")
+    ecns <- iatlas.data::get_tcga_ecn_genes()
+
+    cat_genes_status("Bind gene expr data.")
+    all_genes_expr <- driver_mutations %>%
+      dplyr::bind_rows(immunomodulator_expr, io_target_expr) %>%
+      dplyr::mutate(hgnc = ifelse(!is.na(hgnc), iatlas.data::trim_hgnc(hgnc), NA)) %>%
+      dplyr::distinct(hgnc) %>%
+      dplyr::arrange(hgnc)
+
+    cat_genes_status("Bind ecn, immunomodulator, and io_target genes.")
+    immunomodulators <- immunomodulators %>% dplyr::anti_join(io_targets, by = "hgnc")
+    genes <- dplyr::bind_rows(immunomodulators, io_targets)
+    genes <- ecns %>%
+      dplyr::select(-c("type")) %>%
+      dplyr::full_join(genes, by = "hgnc", suffix = c("",".y")) %>%
+      dplyr::select(-dplyr::ends_with(".y")) %>%
+      dplyr::distinct(hgnc, .keep_all = TRUE)
+
+    cat_genes_status("Get copynumber results genes.")
+    copy_number_results_genes <- iatlas.data::get_tcga_copynumber_results_cached() %>%
+      dplyr::distinct(entrez)
+
+    cat_genes_status("Add hgnc to copynumber results genes.")
+    copy_number_results_genes <- iatlas.data::timed(
+      before_message = crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and may take some time to open. Please be patient.)\n"),
+      after_message = crayon::blue("Imported HUGE RNA Seq Expr file."),
+      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather") %>%
+        dplyr::as_tibble() %>%
+        tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
+        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
+        dplyr::select(entrez, hgnc) %>%
+        dplyr::filter(hgnc != "?") %>%
+        dplyr::filter(entrez %in% copy_number_results_genes[["entrez"]]) %>%
+        iatlas.data::resolve_hgnc_conflicts() %>%
+        dplyr::distinct(hgnc) %>%
+        dplyr::arrange(hgnc)
     )
 
-    cat_genes_status("Get all the related gene types from the gene_types table.")
+    cat_genes_status("Merge the copynumber results genes with the rest.")
+    genes <- genes %>% dplyr::full_join(copy_number_results_genes, by = "hgnc") %>%
+      dplyr::distinct(hgnc, .keep_all = TRUE) %>%
+      dplyr::arrange(hgnc)
+
+    cat_genes_status("Building all gene data.\n\t(Please be patient, this may take a little while.)")
+    genes <- all_genes_expr %>%
+      dplyr::full_join(genes, by = "hgnc") %>%
+      dplyr::arrange(hgnc)
     genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("gene_types") %>%
-        dplyr::select(type_id = id, type = name),
-      by = "type_id"
+      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
+      by = "hgnc"
     )
-
-    cat_genes_status("Filter the genese down to genes with only the passed gene type.")
-    genes <- genes %>% dplyr::filter(type == gene_type)
-
-    cat_genes_status("Get all the related gene families from the gene_families table.")
     genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("gene_families") %>%
-        dplyr::select(gene_family_id = id, gene_family = name),
-      by = "gene_family_id"
-    )
-
-    cat_genes_status("Get all the related gene funtions from the gene_functions table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("gene_functions") %>%
-        dplyr::select(gene_function_id = id, gene_function = name),
-      by = "gene_function_id"
-    )
-
-    cat_genes_status("Get all the related immune checkpoints from the immune_checkpoints table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("immune_checkpoints") %>%
-        dplyr::select(immune_checkpoint_id = id, immune_checkpoint = name),
-      by = "immune_checkpoint_id"
-    )
-
-    cat_genes_status("Get all the related node types from the node_types table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("node_types") %>%
-        dplyr::select(node_type_id = id, node_type = name),
-      by = "node_type_id"
-    )
-
-    cat_genes_status("Get all the related pathways from the pathways table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("pathways") %>%
-        dplyr::select(pathway_id = id, pathway = name),
-      by = "pathway_id"
-    )
-
-    cat_genes_status("Get all the related super categories from the super_categories table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("super_categories") %>%
-        dplyr::select(super_cat_id = id, super_category = name),
-      by = "super_cat_id"
-    )
-
-    cat_genes_status("Get all the related therapy types from the therapy_types table.")
-    genes <- genes %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("therapy_types") %>%
-        dplyr::select(therapy_type_id = id, therapy_type = name),
-      by = "therapy_type_id"
-    )
-
-    cat_genes_status("Clean up the data set.")
-    genes <- genes %>%
-      dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type, references) %>%
-      dplyr::arrange(entrez, hgnc)
-
-    cat_genes_status("Execute the query and return a tibble.")
-    genes <- genes %>% dplyr::as_tibble()
-
-    pool::poolReturn(current_pool)
+      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/missing_genes.feather"),
+      by = "hgnc"
+    ) %>%
+      dplyr::mutate(
+        description = ifelse(is.na(description.x), description.y, description.x),
+        entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x)
+      ) %>%
+      dplyr::select(-c("description.x", "description.y", "entrez.y", "entrez.x"))
 
     cat_genes_status("Add the entrez to the genes.")
     genes <- genes %>%
@@ -97,32 +88,18 @@ tcga_build_genes_files <- function() {
       dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x) %>% as.numeric) %>%
       dplyr::select(-c(entrez.x, entrez.y))
 
+    cat_genes_status("Replace any alias hgncs, with official hgncs.")
+    genes <- iatlas.data::resolve_hgnc_conflicts(genes)
+
     return(genes)
   }
 
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$extra_cellular_network_genes <- "extra_cellular_network" %>%
-    get_genes %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/genes/extra_cellular_network_genes.feather"))
-
-  .GlobalEnv$immunomodulator_genes <- "immunomodulator" %>%
-    get_genes %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/genes/immunomodulator_genes.feather"))
-
-  .GlobalEnv$io_target_genes <- "io_target" %>%
-    get_genes %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/genes/io_target_genes.feather"))
-
-  # Close the database connection.
-  pool::poolClose(.GlobalEnv$pool)
-  cat(crayon::green("Closed DB connection."), fill = TRUE)
+  .GlobalEnv$tcga_genes <- get_genes() %>%
+    feather::write_feather(paste0(getwd(), "/feather_files/genes/tcga_genes.feather"))
 
   ### Clean up ###
-  # Data
-  rm(pool, pos = ".GlobalEnv")
-  rm(extra_cellular_network_genes, pos = ".GlobalEnv")
-  rm(immunomodulator_genes, pos = ".GlobalEnv")
-  rm(io_target_genes, pos = ".GlobalEnv")
+  rm(tcga_genes, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
