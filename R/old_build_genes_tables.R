@@ -2,63 +2,29 @@ old_build_genes_tables <- function() {
   default_mutation_code <- "(NS)"
 
   cat(crayon::magenta("Importing driver mutation feather files for genes"), fill = TRUE)
-  driver_mutations <- dplyr::bind_rows(
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations1.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations2.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations3.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations4.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/driver_mutations5.feather")
-  ) %>%
-    dplyr::distinct(gene) %>%
-    dplyr::arrange(gene)
+  driver_mutations <- iatlas.data::get_tcga_driver_mutation_genes()
   cat(crayon::blue("Imported driver mutation feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing immunomodulators feather files for genes"), fill = TRUE)
-  immunomodulator_expr <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/immunomodulator_expr.feather") %>%
-    dplyr::distinct(gene) %>%
-    dplyr::arrange(gene)
-
-  immunomodulators <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/immunomodulators.feather") %>%
-    dplyr::filter(!is.na(gene)) %>%
-    dplyr::rename(friendly_name = display2) %>%
-    dplyr::mutate(references = iatlas.data::build_references(reference)) %>%
-    dplyr::select(-c("display", "entrez", "reference")) %>%
-    dplyr::arrange(gene)
+  immunomodulator_expr <- iatlas.data::get_tcga_immunomodulator_expr_genes()
+  immunomodulators <- iatlas.data::get_tcga_immunodulator_genes()
   cat(crayon::blue("Imported immunomodulators feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing io_target feather files for genes"), fill = TRUE)
-  io_target_expr <- dplyr::bind_rows(
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr1.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr2.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr3.feather"),
-    iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_target_expr4.feather")
-  ) %>%
-    dplyr::distinct(gene) %>%
-    dplyr::arrange(gene)
-
-  io_targets <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/io_targets.feather") %>%
-    dplyr::filter(!is.na(gene)) %>%
-    dplyr::distinct(gene, .keep_all = TRUE) %>%
-    dplyr::select(-c("entrez")) %>%
-    dplyr::rename(io_landscape_name = display2) %>%
-    dplyr::mutate(references = iatlas.data::link_to_references(link)) %>%
-    dplyr::select(-c("display", "link")) %>%
-    dplyr::left_join(immunomodulators, by = "gene", suffix = c("",".y"))  %>%
-    dplyr::select(-dplyr::ends_with(".y")) %>%
-    dplyr::arrange(gene)
+  io_target_expr <- iatlas.data::get_tcga_io_target_expr_genes()
+  io_targets <- iatlas.data::get_tcga_io_target_genes()
   cat(crayon::blue("Imported io_target feather files for genes"), fill = TRUE)
 
   cat(crayon::magenta("Importing extra cellular network (ecn) feather files for genes"), fill = TRUE)
   ecns <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "ecn_genes.feather") %>%
-    dplyr::rename(gene = hgnc) %>%
     dplyr::select(-c("entrez")) %>%
-    dplyr::arrange(gene)
+    dplyr::arrange(hgnc)
   cat(crayon::blue("Imported extra cellular network (ecn) feather files for genes."), fill = TRUE)
 
   cat(crayon::magenta("Building mutation_codes data."), fill = TRUE)
   mutation_codes <- driver_mutations %>%
-    dplyr::distinct(gene) %>%
-    dplyr::mutate(code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA)) %>%
+    dplyr::distinct(hgnc) %>%
+    dplyr::mutate(code = ifelse(!is.na(hgnc), iatlas.data::old_get_mutation_code(hgnc), NA)) %>%
     dplyr::filter(!is.na(code)) %>%
     dplyr::add_row(code = default_mutation_code) %>%
     dplyr::distinct(code) %>%
@@ -80,25 +46,24 @@ old_build_genes_tables <- function() {
   cat(crayon::magenta("Binding gene expr data."), fill = TRUE)
   all_genes_expr <- driver_mutations %>%
     dplyr::bind_rows(immunomodulator_expr, io_target_expr) %>%
-    dplyr::mutate(gene = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)) %>%
-    dplyr::distinct(gene) %>%
-    dplyr::arrange(gene)
+    dplyr::mutate(hgnc = ifelse(!is.na(hgnc), iatlas.data::trim_hgnc(hgnc), NA)) %>%
+    dplyr::distinct(hgnc) %>%
+    dplyr::arrange(hgnc)
   cat(crayon::blue("Bound gene expr data."), fill = TRUE)
 
   cat(crayon::magenta("Binding ecn, immunomodulators, and io_targets."), fill = TRUE)
-  immunomodulators <- immunomodulators %>% dplyr::anti_join(io_targets, by = "gene")
+  immunomodulators <- immunomodulators %>% dplyr::anti_join(io_targets, by = "hgnc")
   all_genes <- dplyr::bind_rows(immunomodulators, io_targets)
   all_genes <- ecns %>%
     dplyr::select(-c("type")) %>%
-    dplyr::full_join(all_genes, by = "gene", suffix = c("",".y")) %>%
+    dplyr::full_join(all_genes, by = "hgnc", suffix = c("",".y")) %>%
     dplyr::select(-dplyr::ends_with(".y")) %>%
-    dplyr::distinct(gene, .keep_all = TRUE)
+    dplyr::distinct(hgnc, .keep_all = TRUE)
   cat(crayon::blue("Bound ecn, immunomodulators, and io_targets."), fill = TRUE)
 
   cat(crayon::magenta("Building all gene data.\n\t(Please be patient, this may take a little while.)"), fill = TRUE)
   all_genes <- all_genes_expr %>%
-    dplyr::full_join(all_genes, by = "gene") %>%
-    dplyr::rename(hgnc = gene) %>%
+    dplyr::full_join(all_genes, by = "hgnc") %>%
     dplyr::arrange(hgnc)
   all_genes <- all_genes %>% dplyr::left_join(
     iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
@@ -236,14 +201,14 @@ old_build_genes_tables <- function() {
   io_target_id <- gene_types %>% dplyr::filter(name == "io_target") %>% .[["id"]]
   ecn_id <- gene_types %>% dplyr::filter(name == "extra_cellular_network") %>% .[["id"]]
 
-  ecns <- ecns %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = ecn_id %>% as.integer)
+  ecns <- ecns %>% dplyr::distinct(hgnc) %>% tibble::add_column(type_id = ecn_id %>% as.integer)
   immunomodulator_expr <- immunomodulator_expr %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
-  immunomodulators <- immunomodulators %>% dplyr::distinct(gene) %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
+  immunomodulators <- immunomodulators %>% dplyr::distinct(hgnc) %>% tibble::add_column(type_id = immunomodulator_id %>% as.integer)
   io_target_expr <- io_target_expr %>% tibble::add_column(type_id = io_target_id %>% as.integer)
 
   genes_to_types <- ecns %>%
     dplyr::bind_rows(immunomodulators, immunomodulator_expr, io_target_expr) %>%
-    dplyr::mutate(hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)) %>%
+    dplyr::mutate(hgnc = ifelse(!is.na(hgnc), iatlas.data::trim_hgnc(hgnc), NA)) %>%
     dplyr::left_join(old_read_genes(), by = "hgnc") %>%
     dplyr::distinct(gene_id, type_id) %>%
     dplyr::arrange(gene_id, type_id)
