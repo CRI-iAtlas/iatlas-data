@@ -27,7 +27,7 @@ build_genes_tables <- function() {
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
-    dplyr::order_by(entrez, hgnc) %>%
+    dplyr::arrange(entrez, hgnc) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
     dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
     dplyr::arrange(entrez)
