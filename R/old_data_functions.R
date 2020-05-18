@@ -53,7 +53,7 @@ flatten_tags <- function (record_ids_to_tags, tags_to_tags, record_id_field = "i
   records %>% dplyr::rename(!!record_id_field := record_id)
 }
 
-get_mutation_code <- function(value) {
+old_get_mutation_code <- function(value) {
   code <- value %>% stringi::stri_extract_first(regex = "(?=\\s) (.*)") %>% trimws()
   return(ifelse(length(code) > 0 & !identical(code, "NA") & !is.na(code), code, NA))
 }

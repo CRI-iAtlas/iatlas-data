@@ -37,23 +37,23 @@
     expect_that(filter_na(NA), is_identical_to(NA %>% as.character))
   })
 
-  # get_mutation_code ---------------------------------------------------
-  test_that("get_mutation_code returns NA when no value present.", {
-    expect_that(get_mutation_code(NA), is_identical_to(NA))
+  # old_get_mutation_code ---------------------------------------------------
+  test_that("old_get_mutation_code returns NA when no value present.", {
+    expect_that(old_get_mutation_code(NA), is_identical_to(NA))
   })
-  test_that("get_mutation_code returns all text after the first space.", {
+  test_that("old_get_mutation_code returns all text after the first space.", {
     hgnc <- "plokij uhygtf knowledge"
     expected <- "uhygtf knowledge"
-    expect_that(get_mutation_code(hgnc), is_identical_to(expected))
+    expect_that(old_get_mutation_code(hgnc), is_identical_to(expected))
   })
-  test_that("get_mutation_code returns NA as there are no spaces.", {
+  test_that("old_get_mutation_code returns NA as there are no spaces.", {
     hgnc <- "plokij"
-    expect_that(get_mutation_code(hgnc), is_identical_to(NA))
+    expect_that(old_get_mutation_code(hgnc), is_identical_to(NA))
   })
-  test_that("get_mutation_code returns a list of strings.", {
+  test_that("old_get_mutation_code returns a list of strings.", {
     hgncs <- c("plokijuh", "uhygtf plokij knowledge", "knowledge")
     expected <- c(NA, "plokij knowledge", NA)
-    expect_that(get_mutation_code(hgncs), is_identical_to(expected))
+    expect_that(old_get_mutation_code(hgncs), is_identical_to(expected))
   })
 
   # link_to_references ---------------------------------------------------

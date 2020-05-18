@@ -22,7 +22,7 @@ old_build_genes_to_samples_table <- function() {
   cat_genes_to_samples_status("Separating the mutation code from the HUGO id.")
   genes_to_samples <- genes_to_samples %>%
     dplyr::mutate(
-      code = ifelse(!is.na(gene), iatlas.data::get_mutation_code(gene), NA),
+      code = ifelse(!is.na(gene), iatlas.data::old_get_mutation_code(gene), NA),
       hgnc = ifelse(!is.na(gene), iatlas.data::trim_hgnc(gene), NA)
     )
 
