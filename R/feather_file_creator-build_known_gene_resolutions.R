@@ -7,6 +7,7 @@ build_known_gene_resolutions <- function() {
 
   known_gene_resolutions <- dplyr::tibble(entrez = 16, official = "AARS1", alias = "AARS") %>%
     dplyr::add_row(entrez = 55, official = "ACP3", alias = "ACPP") %>%
+    dplyr::add_row(entrez = 156, official = "GRK2", alias = "ADRBK1") %>%
     dplyr::add_row(entrez = 166, official = "TLE5", alias = "AES") %>%
     dplyr::add_row(entrez = 251, official = "ALPG", alias = "ALPPL2") %>%
     dplyr::add_row(entrez = 498, official = "ATP5F1A", alias = "ATP5A1") %>%
