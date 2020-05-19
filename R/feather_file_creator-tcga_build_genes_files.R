@@ -8,6 +8,9 @@ tcga_build_genes_files <- function() {
   get_genes <- function(gene_type) {
     cat(crayon::magenta(paste0("Get tcga genes.")), fill = TRUE)
 
+    cat_genes_status("Import gene_ids.")
+    gene_ids <- iatlas.data::get_gene_ids() %>% dplyr::filter(!is.na(hgnc))
+
     cat_genes_status("Import driver mutation feather files for genes.")
     driver_mutations <- iatlas.data::get_tcga_driver_mutation_genes()
 
@@ -43,20 +46,10 @@ tcga_build_genes_files <- function() {
       dplyr::distinct(entrez)
 
     cat_genes_status("Add hgnc to copynumber results genes.")
-    copy_number_results_genes <- iatlas.data::timed(
-      before_message = crayon::magenta("Importing HUGE RNA Seq Expr file.\n(This is VERY large and may take some time to open. Please be patient.)\n"),
-      after_message = crayon::blue("Imported HUGE RNA Seq Expr file."),
-      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather") %>%
-        dplyr::as_tibble() %>%
-        tidyr::separate(gene_id, c("hgnc", "entrez"), sep = "[|]") %>%
-        dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
-        dplyr::select(entrez, hgnc) %>%
-        dplyr::filter(hgnc != "?") %>%
+    copy_number_results_genes <- gene_ids %>%
         dplyr::filter(entrez %in% copy_number_results_genes[["entrez"]]) %>%
-        iatlas.data::resolve_hgnc_conflicts() %>%
-        dplyr::distinct(hgnc) %>%
+        dplyr::distinct(entrez, hgnc) %>%
         dplyr::arrange(hgnc)
-    )
 
     cat_genes_status("Merge the copynumber results genes with the rest.")
     genes <- genes %>% dplyr::full_join(copy_number_results_genes, by = "hgnc") %>%
@@ -67,29 +60,52 @@ tcga_build_genes_files <- function() {
     genes <- all_genes_expr %>%
       dplyr::full_join(genes, by = "hgnc") %>%
       dplyr::arrange(hgnc)
+
+    cat_genes_status("Add genes that were missing.")
     genes <- genes %>% dplyr::left_join(
-      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "gene_ids.feather"),
-      by = "hgnc"
-    )
-    genes <- genes %>% dplyr::left_join(
-      iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "SQLite_data/missing_genes.feather"),
+      missing_genes <- iatlas.data::read_iatlas_data_file(
+        iatlas.data::get_feather_file_folder(),
+        "SQLite_data/missing_genes.feather"
+      ) %>%
+        dplyr::select(hgnc, missing_entrez = entrez, missing_desc = description),
       by = "hgnc"
     ) %>%
       dplyr::mutate(
-        description = ifelse(is.na(description.x), description.y, description.x),
-        entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x)
+        description = ifelse(is.na(description), missing_desc, description),
+        entrez = ifelse(is.na(entrez), missing_entrez, entrez)
       ) %>%
-      dplyr::select(-c("description.x", "description.y", "entrez.y", "entrez.x"))
+      dplyr::select(-c("missing_entrez", "missing_desc"))
 
     cat_genes_status("Add the entrez to the genes.")
-    genes <- genes %>%
-      dplyr::left_join(iatlas.data::get_gene_ids(), by = "hgnc") %>%
-      tibble::add_column(entrez = NA %>% as.numeric, .before = "hgnc") %>%
-      dplyr::mutate(entrez = ifelse(is.na(entrez.x), entrez.y, entrez.x) %>% as.numeric) %>%
-      dplyr::select(-c(entrez.x, entrez.y))
+    genes <- genes %>% dplyr::left_join(gene_ids %>% dplyr::rename(real_entrez = entrez), by = "hgnc") %>%
+      dplyr::mutate(entrez = ifelse(is.na(entrez), real_entrez, entrez)) %>%
+      dplyr::select(-real_entrez)
 
-    cat_genes_status("Replace any alias hgncs, with official hgncs.")
-    genes <- iatlas.data::resolve_hgnc_conflicts(genes)
+    cat_genes_status("Ensure the correct hgnc.")
+    genes <- genes %>% dplyr::left_join(gene_ids %>% dplyr::rename(official = hgnc), by = "entrez") %>%
+      dplyr::mutate(hgnc = ifelse(!is.na(official), official, hgnc)) %>%
+      dplyr::select(-official)
+
+    cat_genes_status("Remove / fix.")
+    genes <- genes %>%
+      # dplyr::rowwise() %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "ACKR2"), 1238, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "CXCR7"), 57007, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "ACKR4"), 51554, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "C1QTNF5"), 114902, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "C4B"), 721, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "C5AR2"), 27202, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "DEFB4B"), 100289462, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "IFNL1"), 282618, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "IFNL2"), 282616, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "IFNL3"), 282617, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "IFNLR1"), 163702, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "IGFLR1"), 79713, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "NPY4R"), 5540, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "PLGRKT"), 55848, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "PTGDR2"), 11251, entrez)) %>%
+      # dplyr::mutate(entrez = ifelse(is.na(entrez) && identical(hgnc, "UTS2B"), 257313, entrez)) %>%
+      dplyr::filter(!is.na(entrez))
 
     return(genes)
   }
