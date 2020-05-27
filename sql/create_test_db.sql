@@ -10,4 +10,4 @@ CREATE DATABASE iatlas_test;
 \connect iatlas_test
 
 -- Include the common table building SQL.
-\i create_enums.sql
+\ir create_enums.sql

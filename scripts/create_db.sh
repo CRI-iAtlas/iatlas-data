@@ -52,40 +52,40 @@ db_user="postgres"
 db_pw="docker"
 
 # If $db_data_dir doesn't exist create it.
-if [ ! -d "$db_data_dir" ]; then
-    >&2 echo -e "${GREEN}Creating '$db_data_dir' for data.${NC}"
-    mkdir -p $db_data_dir
-fi
-
-# Ensure the docker image has been downloaded.
-docker pull postgres:11.5
+# if [ ! -d "$db_data_dir" ]; then
+#     >&2 echo -e "${GREEN}Creating '$db_data_dir' for data.${NC}"
+#     mkdir -p $db_data_dir
+# fi
 
 # Ensure the docker container isn't already in the docker processes.
-if [ ! "$(docker ps -q -f name=$docker_image)" ]; then
-    if [ "$(docker ps -aq -f status=exited -f name=$docker_image)" ]; then
-        # Cleanup
-        docker rm $docker_image
-    fi
-    # Run the container
-    docker run --rm --name $docker_image -e POSTGRES_PASSWORD=$db_pw -d -p $db_port:$db_port -v /$db_data_dir:/var/lib/postgresql/data postgres:11.5
-fi
+# if [ ! "$(docker ps -q -f name=$docker_image)" ]; then
+#     if [ "$(docker ps -aq -f status=exited -f name=$docker_image)" ]; then
+#         # Cleanup
+#         docker rm $docker_image
+#     fi
+#     # Ensure the docker image has been downloaded.
+#     docker pull postgres:11.5
+#     # Run the container
+#     docker run --rm --name $docker_image -e POSTGRES_PASSWORD=$db_pw -d -p $db_port:$db_port -v /$db_data_dir:/var/lib/postgresql/data postgres:11.5
+# fi
 
->&2 echo -e "${YELLOW}Postgres: starting - please be patient${NC}"
-until docker exec $docker_image psql -q -U $db_user  2> /dev/null; do
-    sleep 1
-done
+# >&2 echo -e "${YELLOW}Postgres: starting - please be patient${NC}"
+# until docker exec $docker_image psql -q -U $db_user  2> /dev/null; do
+#     sleep 1
+# done
 
 if [ $reset == true ]; then
     >&2 echo -e "${GREEN}Postgres: up - building database and tables${NC}"
 
     # Copy the database SQL file into the docker container.
-    docker cp $DIR/sql/$create_db_sql $docker_image:/$create_db_sql
+    # docker cp $DIR/sql/$create_db_sql $docker_image:/$create_db_sql
     # Copy the create enums SQL file into the docker container.
-    docker cp $DIR/sql/create_enums.sql $docker_image:/create_enums.sql
+    # docker cp $DIR/sql/create_enums.sql $docker_image:/create_enums.sql
 
     >&2 echo -e "${YELLOW}Postgres: creating tables and indexes...${NC}"
     # Run the database SQL script within the docker container using the docker container's psql.
-    docker exec -u $db_user $docker_image psql -q -f //$create_db_sql
+    # docker exec -u $db_user $docker_image psql -q -f //$create_db_sql
+    PGPASSWORD=${db_pw} psql -h postgres -U ${db_user} -p ${db_port} -q -f /home/rstudio/sql/$create_db_sql
 
     >&2 echo -e "${GREEN}Postgres: created tables and indexes${NC}"
 fi

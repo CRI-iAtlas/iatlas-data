@@ -12,6 +12,8 @@ services:
       - 8787:8787
     volumes:
       - .:/home/rstudio
+    networks:
+      - postgres
 networks:
   default:
     external:

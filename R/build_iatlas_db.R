@@ -13,12 +13,13 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
 
   load_config(env)
 
-  # .GlobalEnv$create_db_en_env <- function() {iatlas.data::create_db(env, reset, script_path = script_path)}
+  .GlobalEnv$create_db_en_env <- function() {iatlas.data::create_db(env, reset, script_path = script_path)}
 
   iatlas.data::set_feather_file_folder(feather_file_folder)
 
   iatlas.data::build_pipeline(
     c(
+      "create_db_en_env",
       "build_features_tables",
       "build_tags_tables",
       "build_genes_tables",
