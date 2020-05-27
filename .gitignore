@@ -50,3 +50,6 @@ tsv_files/
 feather_files/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather
 feather_files/human_gene_ids.feather
 control_data*/
+
+.local
+.rstudio

@@ -1,0 +1,11 @@
+ARG rstudioPort
+ARG rVersion
+
+FROM rocker/rstudio:${rVersion}
+
+ENV DISABLE_AUTH=true
+
+RUN apt-get -y update && apt-get -y install libpq-dev postgresql-client-11 libcurl4-openssl-dev libssl-dev libxml2-dev wget
+RUN apt-get install libcairo2-dev -y
+
+WORKDIR /home/rstudio

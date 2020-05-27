@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  rstudio:
+    build:
+      context: ./
+      dockerfile: Dockerfile-dev
+      args:
+        rstudioPort: 8787
+        rVersion: 3.6.2
+    container_name: iatlas-rstudio
+    ports:
+      - 8787:8787
+    volumes:
+      - .:/home/rstudio
+networks:
+  default:
+    external:
+      name: postgres

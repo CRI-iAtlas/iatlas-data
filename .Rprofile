@@ -1,3 +1,8 @@
+setHook("rstudio.sessionInit", function(newSession) {
+  if (newSession && is.null(rstudioapi::getActiveProject()))
+    rstudioapi::openProject("./iatlas-data.Rproj")
+}, action = "append")
+
 if (file.exists("renv/activate.R")) {
   source("renv/activate.R")
 
@@ -18,6 +23,7 @@ if (file.exists("renv/activate.R")) {
     # auto-run since it should be quick, but makes sure any new requirements are installed.
     source('./install.R')
   }
+
+  rm(IS_CI) 
 }
 
-rm(IS_CI)

@@ -7,7 +7,7 @@ COPY renv.lock .
 COPY renv/activate.R renv/activate.R
 
 # Install supporting packages
-RUN apt-get -y update && apt-get -y install libpq-dev postgresql-client-11 libcurl4-openssl-dev libssl-dev libxml2-dev wget
+RUN apt-get -y update && apt-get -y install libpq-dev postgresql-client-12 libcurl4-openssl-dev libssl-dev libxml2-dev wget
 
 # Resolve dependencies
 ENV DOCKERBUILD 1
