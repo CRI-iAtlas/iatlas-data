@@ -51,29 +51,6 @@ db_port=5432
 db_user="postgres"
 db_pw="docker"
 
-# If $db_data_dir doesn't exist create it.
-# if [ ! -d "$db_data_dir" ]; then
-#     >&2 echo -e "${GREEN}Creating '$db_data_dir' for data.${NC}"
-#     mkdir -p $db_data_dir
-# fi
-
-# Ensure the docker container isn't already in the docker processes.
-# if [ ! "$(docker ps -q -f name=$docker_image)" ]; then
-#     if [ "$(docker ps -aq -f status=exited -f name=$docker_image)" ]; then
-#         # Cleanup
-#         docker rm $docker_image
-#     fi
-#     # Ensure the docker image has been downloaded.
-#     docker pull postgres:11.5
-#     # Run the container
-#     docker run --rm --name $docker_image -e POSTGRES_PASSWORD=$db_pw -d -p $db_port:$db_port -v /$db_data_dir:/var/lib/postgresql/data postgres:11.5
-# fi
-
-# >&2 echo -e "${YELLOW}Postgres: starting - please be patient${NC}"
-# until docker exec $docker_image psql -q -U $db_user  2> /dev/null; do
-#     sleep 1
-# done
-
 if [ $reset == true ]; then
     >&2 echo -e "${GREEN}Postgres: up - building database and tables${NC}"
 

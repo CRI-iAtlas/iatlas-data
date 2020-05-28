@@ -27,10 +27,6 @@ Follow the instructions below to create and populate your local database. Then, 
 
   - For installation on the various platforms, please see this [git-lfs wiki](https://github.com/git-lfs/git-lfs/wiki/Installation)
 
-- R: [https://www.r-project.org/](https://www.r-project.org/) - v3.6.2
-
-- RStudio: [https://rstudio.com/products/rstudio/download](https://rstudio.com/products/rstudio/download)
-
 - Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
 
   Ensure that the location of the repository is shared via docker:
@@ -39,19 +35,7 @@ Follow the instructions below to create and populate your local database. Then, 
 
   - Windows: [https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes)
 
-- libpq (postgres): [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
-
-- lib cairo: [https://www.cairographics.org/](https://www.cairographics.org/) (only required for iAtlas client)
-
-- gfortran (libgfortran): usually installed with gcc
-
-- Download the (very large) RNA Seq Expression file.
-
-  - Download [EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather](https://www.dropbox.com/s/a3ok4o63glq4p3j/EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.feather?dl=0) and put it in the `/feather_files` folder
-  - TODO: Move this file into Synapse. This file currently lives in Shane Brinkman-Davis's Dropbox (shane@genui.com).\
-    The original tsv is found at: [https://gdc.cancer.gov/node/905/](https://gdc.cancer.gov/node/905/)
-
-- STOP your local postgres server, if you have one running. The scripts in this repository will spin up a postgres server in a docker container. Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
+- STOP your local postgres server, if you have one running. Instead, fuse the following repository and follow the instructions: [Genui postgres docker](https://github.com/generalui/postgres_docker).x Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
 
 #### Requirements: MacOS Install instructions
 
@@ -59,21 +43,15 @@ Install package manager: [HomeBrew](https://brew.sh/) (or [MacPorts](https://www
 
 Then run these in your shell:
 
-- xcode-select --install
-- brew install R
-- brew install cairo
 - brew install git-lfs
-- brew install postgres
-- download and install RStudio: [https://rstudio.com/products/rstudio/download](https://rstudio.com/products/rstudio/download)
 - download and install Docker: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+- genui postgres docker: [https://github.com/generalui/postgres_docker](https://github.com/generalui/postgres_docker)
 
 ### Initialize R Packages and builds the Database
 
 To build the database locally:
 
-1. Open `iatlas-data.Rproj` in Rstudio.
-
-1. Follow the instructions.
+1. Follow the instructions.displayed in rstudio
 
 When built, the database will be available on `localhost:5432`. The database is called `iatlas_dev`.
 
