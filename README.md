@@ -35,7 +35,7 @@ Follow the instructions below to create and populate your local database. Then, 
 
   - Windows: [https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/configuring-docker-for-windows-volumes)
 
-- STOP your local postgres server, if you have one running. Instead, fuse the following repository and follow the instructions: [Genui postgres docker](https://github.com/generalui/postgres_docker).x Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
+- STOP your local postgres server, if you have one running. Instead, use the following repository and follow the instructions: [Genui postgres docker](https://github.com/generalui/postgres_docker). Your local postgres server will shadow it, and the app will consequently connect to the wrong server.
 
 #### Requirements: MacOS Install instructions
 
