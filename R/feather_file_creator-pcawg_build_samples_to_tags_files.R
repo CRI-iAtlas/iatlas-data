@@ -29,9 +29,11 @@ pcawg_build_samples_to_tags_files <- function() {
     return(samples_to_tags)
   }
 
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$pcawg_samples_to_tags <- get_samples_to_tags() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/samples_to_tags/pcawg_samples_to_tags.feather"))
+  .GlobalEnv$pcawg_samples_to_tags <- iatlas.data::synapse_store_feather_file(
+    get_samples_to_tags(),
+    "pcawg_samples_to_tags.feather",
+    "syn22125729"
+  )
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()

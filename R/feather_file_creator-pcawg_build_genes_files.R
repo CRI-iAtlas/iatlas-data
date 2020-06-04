@@ -31,8 +31,13 @@ pcawg_build_genes_files <- function() {
   }
 
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$pcawg_genes <- get_genes() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/genes/pcawg_genes.feather"))
+  .GlobalEnv$pcawg_genes <- feather::write_feather(
+    get_genes(),
+    "pcawg_genes.feather"
+  )
+
+  iatlas.data::synapse_store_file("pcawg_genes.feather", "syn22125640")
+  file.remove("pcawg_genes.feather")
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()

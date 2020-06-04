@@ -18,9 +18,13 @@ tcag_build_copy_number_results_files <- function() {
     return(copy_number_results)
   }
 
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_copy_number_results <- get_results() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/copy_number_results/tcga_copy_number_results.feather"))
+  .GlobalEnv$pcawg_samples_to_tags <- iatlas.data::synapse_store_feather_file(
+    get_results(),
+    "tcga_copy_number_results.feather",
+    "syn22125983"
+  )
+
+
 
   ### Clean up ###
   # Data

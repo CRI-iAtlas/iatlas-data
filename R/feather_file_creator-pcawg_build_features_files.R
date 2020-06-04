@@ -31,7 +31,10 @@ pcawg_build_features_files <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$pcawg_features <- get_features() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/features/pcawg_features.feather"))
+    feather::write_feather(., "pcawg_features.feather")
+
+  iatlas.data::synapse_store_file("pcawg_features.feather", "syn22125617")
+  file.remove("pcawg_features.feather")
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()

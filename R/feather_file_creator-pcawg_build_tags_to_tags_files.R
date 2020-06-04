@@ -21,9 +21,11 @@ pcawg_build_tags_to_tags_files <- function() {
     return(tags_to_tags)
   }
 
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$pcawg_tags_to_tags <- get_tags_to_tags() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/tags_to_tags/pcawg_tags_to_tags.feather"))
+  .GlobalEnv$pcawg_samples_to_tags <- iatlas.data::synapse_store_feather_file(
+    get_tags_to_tags(),
+    "pcawg_tags_to_tags.feather",
+    "syn22125980"
+  )
 
   ### Clean up ###
   # Data

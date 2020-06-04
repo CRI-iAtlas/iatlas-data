@@ -53,8 +53,13 @@ build_known_gene_resolutions <- function() {
     dplyr::add_row(entrez = 257313, official = "UTS2B", alias = "UTS2D")
 
   # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$known_gene_resolutions <- known_gene_resolutions %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/known_gene_resolutions.feather"))
+  .GlobalEnv$known_gene_resolutions <- feather::write_feather(
+    known_gene_resolutions,
+    "known_gene_resolutions.feather"
+  )
+
+  iatlas.data::synapse_store_file("known_gene_resolutions.feather", "syn22123343")
+  file.remove("known_gene_resolutions.feather")
 
   ### Clean up ###
   # Data

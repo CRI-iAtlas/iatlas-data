@@ -24,7 +24,10 @@ pcawg_build_features_to_samples_files <- function() {
 
   # Setting these to the GlobalEnv just for development purposes.
   .GlobalEnv$pcawg_features_to_samples <- get_features_to_samples() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/relationships/features_to_samples/pcawg_features_to_samples.feather"))
+    feather::write_feather(., "pcawg_features_to_samples.feather")
+
+  iatlas.data::synapse_store_file("pcawg_features_to_samples.feather", "syn22125635")
+  file.remove("pcawg_features_to_samples.feather")
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()

@@ -9,15 +9,17 @@ pcawg_build_patients_files <- function() {
     cat(crayon::magenta(paste0("Get PCAWG patients.")), fill = TRUE)
 
     cat_patients_status("Get the initial values from Synapse.")
-    patients <- iatlas.data::get_pcawg_samples_synapse_cached() %>%
-      dplyr::select(barcode = icgc_donor_id)
+    patients <- iatlas.data::get_pcawg_samples_cached() %>%
+      dplyr::select(barcode = sample)
 
     return(patients)
   }
 
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$pcawg_patients <- get_patients() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/patients/pcawg_patients.feather"))
+  .GlobalEnv$pcawg_patients <- iatlas.data::synapse_store_feather_file(
+    get_patients(),
+    "pcawg_patients.feather",
+    "syn22125717"
+  )
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()
