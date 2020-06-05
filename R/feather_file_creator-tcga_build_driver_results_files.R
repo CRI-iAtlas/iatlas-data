@@ -1,83 +1,77 @@
 tcag_build_driver_results_files <- function() {
-  # Create a global variable to hold the pool DB connection.
-  .GlobalEnv$pool <- iatlas.data::connect_to_db()
-  cat(crayon::green("Created DB connection."), fill = TRUE)
 
   cat_results_status <- function(message) {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
   get_results <- function() {
-    current_pool <- pool::poolCheckout(.GlobalEnv$pool)
+    create_global_synapse_connection()
 
-    cat(crayon::magenta(paste0("Get driver results")), fill = TRUE)
+    tcga_genes <- "syn22125607" %>%
+      .GlobalEnv$synapse$get() %>%
+      purrr::pluck("path") %>%
+      feather::read_feather(.) %>%
+      dplyr::filter(!is.na(hgnc))
 
-    cat_results_status("Get the initial values from the driver_results table.")
-    driver_results <- current_pool %>% dplyr::tbl("driver_results")
+    new_genes <- "syn21788372" %>%
+      .GlobalEnv$synapse$get() %>%
+      purrr::pluck("path") %>%
+      readr::read_tsv(.) %>%
+      dplyr::filter(!is.na(hgnc)) %>%
+      dplyr::select("entrez", "hgnc")
 
-    cat_results_status("Get features related to the driver results.")
-    driver_results <- driver_results %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("features") %>%
-        dplyr::select(feature_id = id, feature = name),
-      by = "feature_id"
-    )
+    genes <-
+      dplyr::bind_rows(
+        tcga_genes,
+        dplyr::filter(new_genes, !hgnc %in% tcga_genes$hgnc)
+      )
 
-    cat_results_status("Get genes related to the driver results.")
-    driver_results <- driver_results %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("genes") %>%
-        dplyr::select(gene_id = id, entrez),
-      by = "gene_id"
-    )
-
-    cat_results_status("Get mutation codes related to the driver results.")
-    driver_results <- driver_results %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("mutation_codes") %>%
-        dplyr::select(mutation_code_id = id, mutation_code = code),
-      by = "mutation_code_id"
-    )
-
-    cat_results_status("Get tags related to the driver results.")
-    driver_results <- driver_results %>% dplyr::left_join(
-      current_pool %>% dplyr::tbl("tags") %>%
-        dplyr::select(tag_id = id, tag = name),
-      by = "tag_id"
-    )
-
-    cat_results_status("Clean up the data set.")
-    driver_results <- driver_results %>% dplyr::distinct(entrez, feature, mutation_code, tag, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
-
-    cat_results_status("Execute the query and return a tibble.")
-    driver_results <- driver_results %>% dplyr::as_tibble()
-
-    pool::poolReturn(current_pool)
+    driver_results <- "syn22126068" %>%
+      .GlobalEnv$synapse$get() %>%
+      purrr::pluck("path") %>%
+      readRDS()  %>%
+      dplyr::select(
+        "label",
+        "feature" = "metric",
+        "tag" = "group2",
+        "fold_change",
+        "log10_pvalue",
+        "log10_fold_change",
+        "pvalue",
+        "n_wt",
+        "n_mut"
+      ) %>%
+      dplyr::mutate(
+        gene_mutation = iatlas.data::driver_results_label_to_hgnc(label)
+      ) %>%
+      tidyr::separate(
+        gene_mutation,
+        into = c("hgnc", "mutation_code"),
+        sep = "\\s",
+        remove = TRUE
+      ) %>%
+      dplyr::mutate(code = ifelse(
+        is.na(mutation_code),
+        "(NS)",
+        mutation_code
+      )) %>%
+      dplyr::left_join(genes, by = "hgnc") %>%
+      dplyr::select(-c("hgnc", "label")) %>%
+      dplyr::select("entrez", "feature", "mutation_code", "tag", dplyr::everything()) %>%
+      dplyr::distinct()
 
     return(driver_results)
   }
 
-  all_driver_results <- get_results()
-  all_driver_results <- all_driver_results %>%
-    split(rep(1:3, each = ceiling(length(all_driver_results)/2.5)))
-
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$driver_results_01 <- all_driver_results %>% .[[1]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_01.feather"))
-
-  .GlobalEnv$driver_results_02 <- all_driver_results %>% .[[2]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_02.feather"))
-
-  .GlobalEnv$driver_results_03 <- all_driver_results %>% .[[3]] %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/driver_results/driver_results_03.feather"))
-
-  # Close the database connection.
-  pool::poolClose(.GlobalEnv$pool)
-  cat(crayon::green("Closed DB connection."), fill = TRUE)
+  .GlobalEnv$driver_results <- iatlas.data::synapse_store_feather_file(
+    get_results(),
+    "driver_results.feather",
+    "syn22126168"
+  )
 
   ### Clean up ###
   # Data
-  rm(pool, pos = ".GlobalEnv")
-  rm(driver_results_01, pos = ".GlobalEnv")
-  rm(driver_results_02, pos = ".GlobalEnv")
-  rm(driver_results_03, pos = ".GlobalEnv")
+  rm(driver_results, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }

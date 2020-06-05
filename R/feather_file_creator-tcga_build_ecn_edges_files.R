@@ -4,35 +4,37 @@ tcga_build_ecn_edges_files <- function() {
     cat(crayon::cyan(paste0(" - ", message)), fill = TRUE)
   }
 
-  get_edges <- function(dataset) {
+  get_edges <- function() {
 
-    cat(crayon::magenta(paste0("Get TCGA ", dataset," edges.")), fill = TRUE)
-    edges <- dplyr::tibble()
+    cat(crayon::magenta(paste0("Get TCGA edges.")), fill = TRUE)
 
-    cat_ecn_edges_status("Get the initial values from Synapse.")
-    if (dataset == "cytokine") {
-      edges <- iatlas.data::get_tcga_cytokine_edges_cached()
-    } else if (dataset == "cellimage") {
-      edges <- iatlas.data::get_cellimage_edges_cached()
-    }
+    cytokine_edges <-
+      iatlas.data::get_tcga_cytokine_edges_cached() %>%
+      dplyr::mutate("network" = "cytokine")
 
-    return(edges)
+    cellimage_edges <-
+      iatlas.data::get_tcga_cellimage_edges_cached() %>%
+      dplyr::mutate("network" = "cellimage")
+
+    nodes <-
+      dplyr::bind_rows(cytokine_edges, cellimage_edges) %>%
+      dplyr::mutate("dataset" = "TCGA")
+
+    return(nodes)
   }
 
-  # Setting these to the GlobalEnv just for development purposes.
-  .GlobalEnv$tcga_cytokine_edges <- "cytokine" %>% get_edges() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/edges/tcga_cytokine_edges.feather"))
-
-  .GlobalEnv$cellimage_edges <- "cellimage" %>% get_edges() %>%
-    feather::write_feather(paste0(getwd(), "/feather_files/edges/cellimage_edges.feather"))
+  .GlobalEnv$tcga_edges <- iatlas.data::synapse_store_feather_file(
+    get_edges(),
+    "tcga_edges.feather",
+    "syn22126181"
+  )
 
   # Log out of Synapse.
   iatlas.data::synapse_logout()
 
   ### Clean up ###
   # Data
-  rm(tcga_cytokine_edges, pos = ".GlobalEnv")
-  rm(cellimage_edges, pos = ".GlobalEnv")
+  rm(tcga_edges, pos = ".GlobalEnv")
   cat("Cleaned up.", fill = TRUE)
   gc()
 }
