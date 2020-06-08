@@ -2,10 +2,7 @@ build_features_to_samples_table <- function() {
 
   # features_to_samples import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for features_to_samples."), fill = TRUE)
-  features_to_samples <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "relationships/features_to_samples"
-  )
+  features_to_samples <- synapse_read_all_feather_files("syn22125635")
   cat(crayon::blue("Imported feather files for features_to_samples."), fill = TRUE)
 
   # features_to_samples column fix ---------------------------------------------------

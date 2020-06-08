@@ -2,10 +2,7 @@ build_samples_to_tags_table <- function() {
 
   # samples_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_tags."), fill = TRUE)
-  samples_to_tags <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "relationships/samples_to_tags"
-  ) %>%
+  samples_to_tags <- synapse_read_all_feather_files("syn22125729") %>%
     dplyr::filter(!is.na(sample) & !is.na(tag)) %>%
     dplyr::distinct(sample, tag) %>%
     dplyr::arrange(sample, tag)

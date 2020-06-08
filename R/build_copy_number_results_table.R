@@ -2,7 +2,7 @@ build_copy_number_results_table <- function() {
 
   # copy_number_results import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for copy_number_results."), fill = TRUE)
-  copy_number_results <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "copy_number_results")
+  copy_number_results <- synapse_read_all_feather_files("syn22125983")
   cat(crayon::blue("Imported feather files for copy_number_results."), fill = TRUE)
 
   # copy_number_results column fix ---------------------------------------------------

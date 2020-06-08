@@ -2,7 +2,7 @@ build_samples_table <- function() {
 
   # samples import ---------------------------------------------------
   cat(crayon::magenta("Importing sample files for samples"), fill = TRUE)
-  samples <- iatlas.data::get_all_samples()
+  samples <- synapse_read_all_feather_files("syn22125724")
   cat(crayon::blue("Imported sample files for samples"), fill = TRUE)
 
   # samples column fix ---------------------------------------------------

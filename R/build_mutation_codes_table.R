@@ -2,10 +2,7 @@ build_mutation_codes_table <- function() {
 
   # mutation_codes data ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutation_codes."), fill = TRUE)
-  mutation_codes <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "mutation_codes"
-  ) %>%
+  mutation_codes <- synapse_read_all_feather_files("syn22131021") %>%
     dplyr::filter(!is.na(code)) %>%
     dplyr::distinct(code) %>%
     dplyr::arrange(code)

@@ -2,10 +2,7 @@ build_mutations_table <- function() {
 
   # mutations import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutations."), fill = TRUE)
-  mutations <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "mutations"
-  )
+  mutations <- synapse_read_all_feather_files("syn22139702")
   cat(crayon::blue("Imported feather files for mutations."), fill = TRUE)
 
   # mutations column fix ---------------------------------------------------
