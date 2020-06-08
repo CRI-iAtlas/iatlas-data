@@ -2,7 +2,7 @@ build_nodes_tables <- function() {
 
   # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)
-  nodes <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "nodes")
+  nodes <- synapse_read_all_feather_files("syn22126180")
   cat(crayon::blue("Imported feather files for nodes."), fill = TRUE)
 
   # nodes column fix ---------------------------------------------------
@@ -29,7 +29,7 @@ build_nodes_tables <- function() {
     node_tag_column_names <- iatlas.data::get_tag_column_names(nodes)
 
     nodes <- nodes %>%
-      iatlas.data::resolve_df_dupes(keys = c("entrez", "feature", node_tag_column_names)) %>%
+      iatlas.data::resolve_df_dupes(keys = c("entrez", "feature", "dataset", "network", node_tag_column_names)) %>%
       replace(. == "NA", NA) %>%
       dplyr::mutate_at(dplyr::vars(entrez, score, x, y), as.numeric)
   cat(crayon::blue("Ensured nodes have all the correct columns and no dupes."), fill = TRUE)
@@ -74,7 +74,7 @@ build_nodes_tables <- function() {
 
   # edges import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for edges."), fill = TRUE)
-  edges <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "edges")
+  edges <- synapse_read_all_feather_files("syn22126181")
   cat(crayon::blue("Imported feather files for edges."), fill = TRUE)
 
   # edges column fix ---------------------------------------------------
@@ -91,7 +91,10 @@ build_nodes_tables <- function() {
     replace(is.na(.), "NA") %>%
     dplyr::mutate(label = ifelse(label == "NA", NA, label)) %>%
     dplyr::distinct() %>%
-    iatlas.data::resolve_df_dupes(keys = c("from", "to", node_tag_column_names)) %>%
+    iatlas.data::resolve_df_dupes(
+      .,
+      keys = c("from", "to", "network", "dataset", node_tag_column_names)
+    ) %>%
     replace(. == "NA", NA) %>%
     dplyr::mutate(label = ifelse(label == "NA", NA, label)) %>%
     dplyr::mutate_at(dplyr::vars(score), as.numeric) %>%
