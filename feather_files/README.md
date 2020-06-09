@@ -14,32 +14,31 @@ Information on the data model can be found in the `data_model` folder which cont
 
 ## Data Locations
 
-All data (feather files) should be located in the `feather_file` folder.
+All data (feather files) should be located in the [`iAtlas Synapse directory`](https://www.synapse.org/#!Synapse:syn22123343)
 
-Within the `feather_file` folder, data files should be segregated into folders as follows:
+Within the `feather_file` directory, data files should be segregated into folders as follows:
 
-- [`copy_number_results`](#copy_number_results)
-- [`driver_results`](#driver_results)
-- [`edges`](#edges)
-- [`features`](#features)
-- [`gene_types`](#gene_types)
-- [`genes`](#genes)
-- [`mutation_codes`](#mutation_codes)
-- [`mutation_types`](#mutation_types)
-- [`mutations`](#mutations)
-- [`nodes`](#nodes)
-- [`patients`](#patients)
-- [`relationships`](#relationships)
-  - [`edges_to_tags`](#edges_to_tags) <- in development
-  - [`features_to_samples`](#features_to_samples)
-  - [`genes_to_samples`](#genes_to_samples)
-  - [`genes_to_types`](#genes_to_types)
-  - [`samples_to_mutations`](#samples_to_mutations)
-  - [`samples_to_tags`](#samples_to_tags)
-  - [`tags_to_tags`](#tags_to_tags)
-- [`samples`](#samples)
-- [`slides`](#slides)
-- [`tags`](#tags)
+- copy_number_results
+- driver_results
+- edges
+- features
+- gene_types
+- genes
+- mutation_codes
+- mutation_types
+- mutations
+- nodes
+- patients
+- relationships
+  - features_to_samples
+  - genes_to_samples
+  - genes_to_types
+  - samples_to_mutations
+  - samples_to_tags
+  - tags_to_tags
+- samples
+- slides
+- tags
 
 ## Feather File Structure
 
