@@ -67,7 +67,7 @@ if [ ! "$(docker ps -q -f name=$docker_image)" ]; then
         docker rm $docker_image
     fi
     # Run the container
-    docker run --rm --name $docker_image -e POSTGRES_PASSWORD=$db_pw -d -p $db_port:$db_port -v /$db_data_dir:/var/lib/postgresql/data postgres:11.5
+    docker run --rm --name $docker_image -e POSTGRES_PASSWORD=$db_pw -d -p $db_port:$db_port -v /$db_data_dir:/var/lib/postgresql/data postgres:12.2
 fi
 
 >&2 echo -e "${YELLOW}Postgres: starting - please be patient${NC}"
