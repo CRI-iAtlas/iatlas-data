@@ -58,7 +58,7 @@ if [ ! -d "$db_data_dir" ]; then
 fi
 
 # Ensure the docker image has been downloaded.
-docker pull postgres:11.5
+docker pull postgres:12.2
 
 # Ensure the docker container isn't already in the docker processes.
 if [ ! "$(docker ps -q -f name=$docker_image)" ]; then
