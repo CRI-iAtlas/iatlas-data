@@ -44,6 +44,10 @@ vignettes/*.pdf
 # Generated files
 .DS_Store
 
+# Visual Studio Code
+.vscode
+*.code-workspace
+
 csv_files/
 docker/
 tsv_files/
