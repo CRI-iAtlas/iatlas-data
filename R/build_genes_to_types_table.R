@@ -1,10 +1,7 @@
 build_genes_to_types_table <- function() {
 
   cat(crayon::magenta("Importing feather files for genes_to_types."), fill = TRUE)
-  genes_to_types <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "relationships/genes_to_types"
-  )
+  genes_to_types <- synapse_read_all_feather_files("syn22130912")
   cat(crayon::blue("Imported feather files for genes_to_types."), fill = TRUE)
 
   # genes_to_types column fix ---------------------------------------------------

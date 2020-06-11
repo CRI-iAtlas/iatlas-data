@@ -2,10 +2,7 @@ build_samples_to_mutations_table <- function() {
 
   # samples_to_mutations import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_mutations."), fill = TRUE)
-  samples_to_mutations <- iatlas.data::read_iatlas_data_file(
-    iatlas.data::get_feather_file_folder(),
-    "relationships/samples_to_mutations"
-  )
+  samples_to_mutations <- synapse_read_all_feather_files("syn22140071")
   cat(crayon::blue("Imported feather files for samples_to_mutations."), fill = TRUE)
 
   # samples_to_mutations column fix ---------------------------------------------------

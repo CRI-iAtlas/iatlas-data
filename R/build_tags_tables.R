@@ -2,7 +2,7 @@ build_tags_tables <- function() {
 
   # tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags."), fill = TRUE)
-  tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "tags")
+  tags <- synapse_read_all_feather_files("syn22125978")
   cat(crayon::blue("Imported feather files for tags."), fill = TRUE)
 
   # tags column fix ---------------------------------------------------
@@ -27,7 +27,7 @@ build_tags_tables <- function() {
 
   # tags_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags_to_tags."), fill = TRUE)
-  tags_to_tags <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "relationships/tags_to_tags") %>%
+  tags_to_tags <- synapse_read_all_feather_files("syn22125980") %>%
     dplyr::filter(!is.na(tag) & !is.na(related_tag)) %>%
     dplyr::distinct(tag, related_tag) %>%
     dplyr::arrange(tag)

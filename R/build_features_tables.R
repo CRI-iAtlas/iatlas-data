@@ -2,7 +2,7 @@ build_features_tables <- function() {
 
   # features import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for features."), fill = TRUE)
-  features <- iatlas.data::read_iatlas_data_file(iatlas.data::get_feather_file_folder(), "features")
+  features <- synapse_read_all_feather_files("syn22125617")
   cat(crayon::blue("Imported feather files for features."), fill = TRUE)
 
   # features column fix ---------------------------------------------------

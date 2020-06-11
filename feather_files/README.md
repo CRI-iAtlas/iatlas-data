@@ -14,9 +14,9 @@ Information on the data model can be found in the `data_model` folder which cont
 
 ## Data Locations
 
-All data (feather files) should be located in the `feather_file` folder.
+All data (feather files) should be located in the [`iAtlas Synapse directory`](https://www.synapse.org/#!Synapse:syn22123343)
 
-Within the `feather_file` folder, data files should be segregated into folders as follows:
+Within the `feather_file` directory, data files should be segregated into folders as follows:
 
 - [`copy_number_results`](#copy_number_results)
 - [`driver_results`](#driver_results)
@@ -30,7 +30,6 @@ Within the `feather_file` folder, data files should be segregated into folders a
 - [`nodes`](#nodes)
 - [`patients`](#patients)
 - [`relationships`](#relationships)
-  - [`edges_to_tags`](#edges_to_tags) <- in development
   - [`features_to_samples`](#features_to_samples)
   - [`genes_to_samples`](#genes_to_samples)
   - [`genes_to_types`](#genes_to_types)
