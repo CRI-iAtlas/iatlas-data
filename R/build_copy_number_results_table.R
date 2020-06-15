@@ -26,11 +26,11 @@ build_copy_number_results_table <- function() {
 
   # copy_number_results data ---------------------------------------------------
   cat(crayon::magenta("Building copy_number_results data."), fill = TRUE)
-  copy_number_results <- copy_number_results %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
+  copy_number_results <- copy_number_results %>% dplyr::inner_join(iatlas.data::get_features(), by = "feature")
 
-  copy_number_results <- copy_number_results %>% dplyr::left_join(iatlas.data::get_tags(), by = "tag")
+  copy_number_results <- copy_number_results %>% dplyr::inner_join(iatlas.data::get_tags(), by = "tag")
 
-  copy_number_results <- copy_number_results %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
+  copy_number_results <- copy_number_results %>% dplyr::inner_join(iatlas.data::get_genes(), by = "entrez")
 
   copy_number_results <- copy_number_results %>% dplyr::distinct(gene_id, tag_id, feature_id, direction, mean_normal, mean_cnv, p_value, log10_p_value, t_stat)
   cat(crayon::blue("Built copy_number_results data."), fill = TRUE)
