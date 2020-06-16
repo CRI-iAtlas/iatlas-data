@@ -90,7 +90,7 @@ sql_schema <- list(
       "ALTER TABLE edges_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
     )
   ),
-  edges = list (
+  edges = list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
@@ -290,7 +290,7 @@ sql_schema <- list(
         PRIMARY KEY (id)
       );"
   ),
-  mutation_types = list (
+  mutation_types = list(
     create = "
       CREATE TABLE mutation_types (
         id SERIAL,
@@ -310,11 +310,12 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX node_type_name_index ON node_types (\"name\");"
     )
   ),
-  nodes = list (
+  nodes = list(
     create = "
       CREATE TABLE nodes (
         id SERIAL,
         feature_id INTEGER,
+        dataset_id INTEGER NOT NULL,
         gene_id INTEGER,
         label VARCHAR,
         score NUMERIC,
@@ -326,6 +327,7 @@ sql_schema <- list(
       "CREATE INDEX node_feature_id_index ON nodes (feature_id);",
       "CREATE INDEX node_gene_id_index ON nodes (gene_id);",
       "ALTER TABLE nodes ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE nodes ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
       "ALTER TABLE nodes ADD FOREIGN KEY (gene_id) REFERENCES genes;"
     )
   ),

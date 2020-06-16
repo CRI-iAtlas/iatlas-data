@@ -12,11 +12,17 @@ build_nodes_tables <- function() {
       entrez = numeric(),
       feature = character(),
       tag = character(),
+      dataset = character(),
+      network = character(),
       score = numeric(),
       x = numeric(),
       y = numeric()
     )) %>%
-    dplyr::filter(!is.na(entrez) | !is.na(feature)) %>%
+    dplyr::filter(
+      !is.na(entrez),
+      !is.na(network),
+      !is.na(dataset)
+    ) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.character()) %>%
     replace(is.na(.), "NA") %>%
     dplyr::mutate(
@@ -24,9 +30,13 @@ build_nodes_tables <- function() {
       y = ifelse(y == "NA", NA, y)
     ) %>%
     dplyr::distinct() %>%
-    dplyr::arrange(entrez, feature)
+    dplyr::arrange(dataset, network, entrez, feature)
 
-    node_tag_column_names <- iatlas.data::get_tag_column_names(nodes)
+    node_tag_column_names <- c(
+      iatlas.data::get_tag_column_names(nodes),
+      "network"
+    )
+
 
     nodes <- nodes %>%
       iatlas.data::resolve_df_dupes(keys = c("entrez", "feature", "dataset", "network", node_tag_column_names)) %>%
@@ -44,13 +54,18 @@ build_nodes_tables <- function() {
 
   nodes <- nodes %>% dplyr::left_join(iatlas.data::get_features(), by = "feature")
 
+  nodes <- nodes %>% dplyr::inner_join(iatlas.data::get_datasets(), by = "dataset")
+
   nodes <- nodes %>% tibble::add_column(node_id = 1:nrow(nodes), .before = "entrez")
+
+
+
   cat(crayon::blue("Built the nodes data."), fill = TRUE)
 
   # nodes table ---------------------------------------------------
   cat(crayon::magenta("Building the nodes table."), fill = TRUE)
   table_written <- nodes %>%
-    dplyr::select(id = node_id, feature_id, gene_id, score, x, y) %>%
+    dplyr::select(id = node_id, dataset_id, feature_id, gene_id, score, x, y) %>%
     iatlas.data::replace_table("nodes")
   cat(crayon::blue("Built the nodes table. (", nrow(nodes), "rows )"), fill = TRUE, sep = " ")
 
