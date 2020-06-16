@@ -23,7 +23,7 @@ sql_schema <- list(
         feature_id INTEGER NOT NULL,
         gene_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
-        dataset_id NOT NULL,
+        dataset_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -62,6 +62,7 @@ sql_schema <- list(
         gene_id INTEGER,
         mutation_code_id INTEGER,
         tag_id INTEGER,
+        dataset_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -72,7 +73,8 @@ sql_schema <- list(
       "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
-      "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
+      "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (dataset_id) REFERENCES datasets;"
     )
   ),
   edges_to_tags = list(

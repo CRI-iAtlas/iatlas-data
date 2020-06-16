@@ -11,6 +11,7 @@ build_driver_results_table <- function() {
     dplyr::bind_rows(dplyr::tibble(
       entrez = numeric(),
       tag = character(),
+      dataset = character(),
       feature = character(),
       mutation_code = character(),
       p_value = numeric(),
@@ -20,10 +21,10 @@ build_driver_results_table <- function() {
       n_wt = integer(),
       n_mut = integer()
     )) %>%
-    dplyr::distinct(entrez, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
-    iatlas.data::resolve_df_dupes(keys = c("entrez", "tag", "feature", "mutation_code")) %>%
-    dplyr::select(entrez, tag, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
-    dplyr::arrange(entrez, tag, feature, mutation_code)
+    dplyr::distinct() %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez", "tag", "feature", "mutation_code", "dataset")) %>%
+    dplyr::select(entrez, tag, dataset, feature, mutation_code, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut) %>%
+    dplyr::arrange(entrez, tag, feature, mutation_code, dataset)
   cat(crayon::blue("Ensured driver results have all the correct columns and no dupes."), fill = TRUE)
 
   # driver_results data ---------------------------------------------------
@@ -36,7 +37,9 @@ build_driver_results_table <- function() {
 
   driver_results <- driver_results %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
 
-  driver_results <- driver_results %>% dplyr::select(gene_id, tag_id, feature_id, mutation_code_id, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
+  driver_results <- driver_results %>% dplyr::inner_join(iatlas.data::get_datasets(), by = "dataset")
+
+  driver_results <- driver_results %>% dplyr::select(gene_id, tag_id, feature_id, mutation_code_id, dataset_id, p_value, fold_change, log10_p_value, log10_fold_change, n_wt, n_mut)
   cat(crayon::blue("Built driver_results data."), fill = TRUE)
 
   # driver_results table ---------------------------------------------------
