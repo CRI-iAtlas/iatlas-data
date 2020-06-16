@@ -19,6 +19,7 @@ All data (feather files) should be located in the [`iAtlas Synapse directory`](h
 Within the `feather_file` directory, data files should be segregated into folders as follows:
 
 - [`copy_number_results`](#copy_number_results)
+- [`datasets`](#datasets)
 - [`driver_results`](#driver_results)
 - [`edges`](#edges)
 - [`features`](#features)
@@ -63,6 +64,12 @@ The conventions for the feather files in each folder are as follows:
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
     type - _(numeric)_
+  
+  - _dataset_
+
+    The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
+    
+    type - _(character)_
 
   - _tag_
 
@@ -105,6 +112,22 @@ The conventions for the feather files in each folder are as follows:
     The t stat value of this copy number result.
 
     type - _(numeric)_
+    
+  ### `datasets`
+
+  #### Datasets Column Names
+
+  - _name_
+
+    The name of a the dataset. Must be unique, must not use any charcaters besides letters, number and underscores.
+    
+    type - _(character)_
+  
+  - _display_
+
+    A display name for the dataset.
+    
+    type - _(character)_
 
   ### `driver_results`
 
@@ -113,6 +136,12 @@ The conventions for the feather files in each folder are as follows:
   - _feature_
 
     The name of a feature. These unique names MUST exist in data in the `features` folder.
+    
+    type - _(character)_
+    
+  - _dataset_
+
+    The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
 
     type - _(character)_
 
@@ -412,6 +441,12 @@ The conventions for the feather files in each folder are as follows:
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
     type - _(numeric)_
+    
+  - _dataset_
+
+    The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
+    
+    type - _(character)_
 
   - _feature_
 
@@ -430,6 +465,12 @@ The conventions for the feather files in each folder are as follows:
     The numeric value of the node.
 
     type - _(numeric)_
+  
+  - _network_ 
+
+    The network tag related to the node. These tags MUST exist in data in the `tags` folder.\
+    
+    type - _(character)_
 
   - _tag_ (optional)
 
