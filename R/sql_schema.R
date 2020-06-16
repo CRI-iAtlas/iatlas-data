@@ -23,6 +23,7 @@ sql_schema <- list(
         feature_id INTEGER NOT NULL,
         gene_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
+        dataset_id NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -31,7 +32,8 @@ sql_schema <- list(
       "CREATE INDEX copy_number_result_tag_id_index ON copy_number_results (tag_id);",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
-      "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (dataset_id) REFERENCES datasets;"
     )
   ),
   datasets = list(
