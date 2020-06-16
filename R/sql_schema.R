@@ -61,6 +61,19 @@ sql_schema <- list(
       "ALTER TABLE datasets_to_samples ADD FOREIGN KEY (sample_id) REFERENCES samples;"
     )
   ),
+  datasets_to_tags = list(
+    create = "
+      CREATE TABLE datasets_to_tags (
+        dataset_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (dataset_id, tag_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX dataset_to_tag_dataset_id_index ON datasets_to_tags (dataset_id);",
+      "ALTER TABLE datasets_to_tags ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
+      "ALTER TABLE datasets_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+    )
+  ),
   driver_results = list(
     create = "
       CREATE TABLE driver_results (
