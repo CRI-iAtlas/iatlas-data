@@ -34,6 +34,18 @@ sql_schema <- list(
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
     )
   ),
+  datasets = list(
+    create = "
+      CREATE TABLE datasets (
+        id SERIAL,
+        \"name\" VARCHAR NOT NULL,
+        display VARCHAR NOT NULL,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE UNIQUE INDEX dataset_name_index ON datasets (\"name\");"
+    )
+  ),
   driver_results = list(
     create = "
       CREATE TABLE driver_results (
