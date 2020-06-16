@@ -48,6 +48,19 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX dataset_name_index ON datasets (\"name\");"
     )
   ),
+  datasets_to_samples = list(
+    create = "
+      CREATE TABLE datasets_to_samples (
+        dataset_id INTEGER,
+        sample_id INTEGER,
+        PRIMARY KEY (dataset_id, sample_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX dataset_to_sample_dataset_id_index ON datasets_to_samples (dataset_id);",
+      "ALTER TABLE datasets_to_samples ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
+      "ALTER TABLE datasets_to_samples ADD FOREIGN KEY (sample_id) REFERENCES samples;"
+    )
+  ),
   driver_results = list(
     create = "
       CREATE TABLE driver_results (
