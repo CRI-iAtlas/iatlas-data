@@ -31,6 +31,7 @@ Within the `feather_file` directory, data files should be segregated into folder
 - [`nodes`](#nodes)
 - [`patients`](#patients)
 - [`relationships`](#relationships)
+  - [`datasets_to_tags`](#datasets_to_tags)
   - [`features_to_samples`](#features_to_samples)
   - [`genes_to_samples`](#genes_to_samples)
   - [`genes_to_types`](#genes_to_types)
@@ -128,6 +129,8 @@ The conventions for the feather files in each folder are as follows:
     A display name for the dataset.
     
     type - _(character)_
+    
+
 
   ### `driver_results`
 
@@ -549,6 +552,13 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
+  - _dataset_
+
+    The name of a the dataset. These unique names MUST exist in data in the `datasets` folder.
+    
+    type - _(character)_
+  
+
 * ### `slides`
 
   #### Slide Column Names
@@ -598,6 +608,21 @@ The conventions for the feather files in each folder are as follows:
 * ### `relationships`
 
   Often data is about relationships. The following folders are for data relationships. Each relationship depends on the original dat pieces being represented in their respective folders.
+  - ### `datasets_to_tags`
+
+    #### Datasets To Tags Column Names
+
+    - _dataset_
+
+      The name of a the dataset. These unique names MUST exist in data in the `datasets` folder.
+    
+      type - _(character)_
+  
+    - _tag_
+
+      The name of the tag. These unique names MUST exist in data in the `tags` folder.
+    
+      type - _(character)_
 
   - #### `features_to_samples`
 
@@ -607,13 +632,13 @@ The conventions for the feather files in each folder are as follows:
 
       The name of the feature. These features MUST exist in data in the `features` folder.
 
-    type - _(character)_
+      type - _(character)_
 
     - _sample_
 
       The name of the sample. These samples MUST exist in data in the `samples` folder.
 
-    type - _(character)_
+      type - _(character)_
 
     - _value_
 
