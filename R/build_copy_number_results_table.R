@@ -41,7 +41,7 @@ build_copy_number_results_table <- function() {
 
   copy_number_results <- copy_number_results %>% dplyr::inner_join(iatlas.data::get_datasets(), by = "dataset")
 
-  copy_number_results <- copy_number_results %>% dplyr::distinct()
+  copy_number_results <- copy_number_results %>% dplyr::distinct(gene_id, tag_id, feature_id, dataset_id, direction, mean_normal, mean_cnv, p_value, log10_p_value, t_stat)
   cat(crayon::blue("Built copy_number_results data."), fill = TRUE)
 
   # copy_number_results table ---------------------------------------------------
