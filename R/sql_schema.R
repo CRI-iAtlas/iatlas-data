@@ -404,6 +404,33 @@ sql_schema <- list(
       "CREATE INDEX patient_weight_index ON patients (\"weight\");"
     )
   ),
+  publications = list(
+    create = "
+      CREATE TABLE publications (
+        id SERIAL,
+        pubmed_id INTEGER NOT NULL,
+        journal VARCHAR,
+        first_author_last_name VARCHAR,
+        year INTEGER,
+        title VARCHAR,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+    )
+  ),
+  publications_to_genes = list(
+    create = "
+      CREATE TABLE publications_to_genes (
+        publication_id INTEGER NOT NULL,
+        gene_id INTEGER NOT NULL,
+        PRIMARY KEY (publication_id, gene_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX publications_to_genes_publication_id_index ON publications_to_genes (publication_id);",
+      "ALTER TABLE publications_to_genes ADD FOREIGN KEY (publication_id) REFERENCES publications;",
+      "ALTER TABLE publications_to_genes ADD FOREIGN KEY (gene_id) REFERENCES genes;"
+    )
+  ),
   samples = list(
     create = "
       CREATE TABLE samples (

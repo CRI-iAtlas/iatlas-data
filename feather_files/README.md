@@ -30,6 +30,7 @@ Within the `feather_file` directory, data files should be segregated into folder
 - [`mutations`](#mutations)
 - [`nodes`](#nodes)
 - [`patients`](#patients)
+- [`publications`](#publications)
 - [`relationships`](#relationships)
   - [`datasets_to_tags`](#datasets_to_tags)
   - [`features_to_samples`](#features_to_samples)
@@ -377,14 +378,6 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
-  - _references_ (optional)
-
-    URL references for the gene. This MUST be formatted as comma separated URLs inside curly braces -ie:\
-    multiple references -> `{http://some-reference-url,https://another-reference-url}`\
-    single reference -> `{http://some-reference-url}`
-
-    type - _(character)_
-
 * ### `mutation_codes`
 
   #### Mutation Code Column Names
@@ -605,9 +598,60 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
+* ### `publications`
+
+  #### Publications Column Names
+
+  - _pubmed_id_
+
+    The unique id at "https://pubmed.ncbi.nlm.nih.gov/{id}"
+
+    type - _(integer)_
+  
+  - _journal_
+
+    The journal published in
+
+    type - _(character)_
+    
+  - _first_author_last_name_
+
+    The last name of the first author
+
+    type - _(character)_
+  
+  - _year_
+
+    The year published
+
+    type - _(integer)_
+    
+  - _title_
+
+    The name of the publication
+
+    type - _(character)_
+
 * ### `relationships`
 
   Often data is about relationships. The following folders are for data relationships. Each relationship depends on the original dat pieces being represented in their respective folders.
+
+  - ### `publications_to_genes`
+
+    #### Publications To Genes Column Names  
+    
+    - _pubmed_id_
+
+      The pubmed id of the publication. These unique ids MUST exist in data in the `publications` folder.
+    
+      type - _(integer)_
+  
+    - _entrez_
+
+      The entrez id of the gene. These unique ids MUST exist in data in the `genes` folder.
+    
+      type - _(integer)_
+  
   - ### `datasets_to_tags`
 
     #### Datasets To Tags Column Names

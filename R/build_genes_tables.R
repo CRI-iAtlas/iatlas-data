@@ -19,17 +19,16 @@ build_genes_tables <- function() {
       immune_checkpoint = character(),
       node_type = character(),
       pathway = character(),
-      references = character(),
       super_category = character(),
       therapy_type = character()
     )) %>%
     dplyr::filter(!is.na(entrez)) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
     dplyr::arrange(entrez, hgnc) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, references, super_category, therapy_type) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type) %>%
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
@@ -133,7 +132,7 @@ build_genes_tables <- function() {
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename(therapy_type_id = id) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, node_type_id, io_landscape_name, pathway_id, references, super_cat_id, therapy_type_id)
+    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, node_type_id, io_landscape_name, pathway_id, super_cat_id, therapy_type_id)
   cat(crayon::blue("Built genes data."), fill = TRUE)
 
   # genes table ---------------------------------------------------
