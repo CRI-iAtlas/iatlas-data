@@ -1,4 +1,5 @@
 get_all_samples <- function() result_cached("all_samples", iatlas.data::load_all_samples())
+get_datasets <- function() result_cached("datasets", iatlas.data::read_table("datasets") %>% dplyr::as_tibble() %>% dplyr::select(dataset_id = id, dataset = name))
 get_features <- function() result_cached("features", iatlas.data::read_table("features") %>% dplyr::as_tibble() %>% dplyr::select(feature_id = id, feature = name))
 get_genes <- function() result_cached("genes", iatlas.data::read_table("genes") %>% dplyr::as_tibble() %>% dplyr::select(gene_id = id, entrez))
 get_mutation_codes <- function() result_cached("mutation_codes", iatlas.data::read_table("mutation_codes") %>% dplyr::rename(mutation_code_id = id))

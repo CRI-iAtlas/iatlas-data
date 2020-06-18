@@ -23,6 +23,7 @@ sql_schema <- list(
         feature_id INTEGER NOT NULL,
         gene_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
+        dataset_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -31,7 +32,46 @@ sql_schema <- list(
       "CREATE INDEX copy_number_result_tag_id_index ON copy_number_results (tag_id);",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE copy_number_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
-      "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;"
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
+      "ALTER TABLE copy_number_results ADD FOREIGN KEY (dataset_id) REFERENCES datasets;"
+    )
+  ),
+  datasets = list(
+    create = "
+      CREATE TABLE datasets (
+        id SERIAL,
+        \"name\" VARCHAR NOT NULL,
+        display VARCHAR NOT NULL,
+        PRIMARY KEY (id)
+      );",
+    addSchema = c(
+      "CREATE UNIQUE INDEX dataset_name_index ON datasets (\"name\");"
+    )
+  ),
+  datasets_to_samples = list(
+    create = "
+      CREATE TABLE datasets_to_samples (
+        dataset_id INTEGER,
+        sample_id INTEGER,
+        PRIMARY KEY (dataset_id, sample_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX dataset_to_sample_dataset_id_index ON datasets_to_samples (dataset_id);",
+      "ALTER TABLE datasets_to_samples ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
+      "ALTER TABLE datasets_to_samples ADD FOREIGN KEY (sample_id) REFERENCES samples;"
+    )
+  ),
+  datasets_to_tags = list(
+    create = "
+      CREATE TABLE datasets_to_tags (
+        dataset_id INTEGER,
+        tag_id INTEGER,
+        PRIMARY KEY (dataset_id, tag_id)
+      );",
+    addSchema = c(
+      "CREATE INDEX dataset_to_tag_dataset_id_index ON datasets_to_tags (dataset_id);",
+      "ALTER TABLE datasets_to_tags ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
+      "ALTER TABLE datasets_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
     )
   ),
   driver_results = list(
@@ -48,6 +88,7 @@ sql_schema <- list(
         gene_id INTEGER,
         mutation_code_id INTEGER,
         tag_id INTEGER,
+        dataset_id INTEGER NOT NULL,
         PRIMARY KEY (id)
       );",
     addSchema = c(
@@ -58,7 +99,8 @@ sql_schema <- list(
       "ALTER TABLE driver_results ADD FOREIGN KEY (feature_id) REFERENCES features;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (gene_id) REFERENCES genes;",
       "ALTER TABLE driver_results ADD FOREIGN KEY (tag_id) REFERENCES tags;",
-      "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;"
+      "ALTER TABLE driver_results ADD FOREIGN KEY (mutation_code_id) REFERENCES mutation_codes;",
+      "ALTER TABLE driver_results ADD FOREIGN KEY (dataset_id) REFERENCES datasets;"
     )
   ),
   edges_to_tags = list(
@@ -74,7 +116,7 @@ sql_schema <- list(
       "ALTER TABLE edges_to_tags ADD FOREIGN KEY (tag_id) REFERENCES tags;"
     )
   ),
-  edges = list (
+  edges = list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
@@ -274,7 +316,7 @@ sql_schema <- list(
         PRIMARY KEY (id)
       );"
   ),
-  mutation_types = list (
+  mutation_types = list(
     create = "
       CREATE TABLE mutation_types (
         id SERIAL,
@@ -294,11 +336,12 @@ sql_schema <- list(
       "CREATE UNIQUE INDEX node_type_name_index ON node_types (\"name\");"
     )
   ),
-  nodes = list (
+  nodes = list(
     create = "
       CREATE TABLE nodes (
         id SERIAL,
         feature_id INTEGER,
+        dataset_id INTEGER NOT NULL,
         gene_id INTEGER,
         label VARCHAR,
         score NUMERIC,
@@ -310,6 +353,7 @@ sql_schema <- list(
       "CREATE INDEX node_feature_id_index ON nodes (feature_id);",
       "CREATE INDEX node_gene_id_index ON nodes (gene_id);",
       "ALTER TABLE nodes ADD FOREIGN KEY (feature_id) REFERENCES features;",
+      "ALTER TABLE nodes ADD FOREIGN KEY (dataset_id) REFERENCES datasets;",
       "ALTER TABLE nodes ADD FOREIGN KEY (gene_id) REFERENCES genes;"
     )
   ),

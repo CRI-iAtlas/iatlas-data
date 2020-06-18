@@ -20,6 +20,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
   iatlas.data::build_pipeline(
     c(
       "create_db_en_env",
+      "build_datasets_tables",
       "build_features_tables",
       "build_tags_tables",
       "build_genes_tables",
