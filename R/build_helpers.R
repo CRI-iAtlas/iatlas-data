@@ -6,3 +6,4 @@ get_mutation_codes <- function() result_cached("mutation_codes", iatlas.data::re
 get_patients <- function() result_cached("patients", iatlas.data::read_table("patients") %>% dplyr::select(patient_id = id, barcode))
 get_samples <- function() result_cached("samples", iatlas.data::read_table("samples") %>% dplyr::as_tibble())
 get_tags <- function() result_cached("tags", iatlas.data::read_table("tags") %>% dplyr::as_tibble() %>% dplyr::select(tag_id = id, tag = name))
+get_publications <- function() result_cached("publications", iatlas.data::read_table("publications") %>% dplyr::as_tibble() %>% dplyr::select(publication_id = id, pubmed_id))
