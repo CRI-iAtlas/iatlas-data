@@ -13,19 +13,19 @@ build_genes_to_samples_table <- function() {
       sample = character(),
       rna_seq_expr = numeric()
     )) %>%
-    dplyr::distinct(entrez, sample, rna_seq_expr) %>%
-    dplyr::filter(!is.na(entrez) & !is.na(sample)) %>%
-    iatlas.data::resolve_df_dupes(keys = c("entrez", "sample")) %>%
     dplyr::select(entrez, sample, rna_seq_expr) %>%
+    dplyr::distinct() %>%
+    tidyr::drop_na() %>%
+    iatlas.data::resolve_df_dupes(keys = c("entrez", "sample")) %>%
     dplyr::arrange(entrez, sample)
   cat(crayon::blue("Ensured genes_to_samples have all the correct columns and no dupes."), fill = TRUE)
 
   # genes_to_samples data ---------------------------------------------------
   cat(crayon::magenta("Building genes_to_samples data.\n\t(These are some large datasets, please be patient as they are read and built.)"), fill = TRUE)
   # TODO: This should be joined by entrez.
-  genes_to_samples <- genes_to_samples %>% dplyr::left_join(iatlas.data::get_genes(), by = "entrez")
+  genes_to_samples <- genes_to_samples %>% dplyr::inner_join(iatlas.data::get_genes(), by = "entrez")
 
-  genes_to_samples <- genes_to_samples %>% dplyr::left_join(
+  genes_to_samples <- genes_to_samples %>% dplyr::inner_join(
     iatlas.data::get_samples() %>% dplyr::select(sample_id = id, sample = name),
     by = "sample"
   )
