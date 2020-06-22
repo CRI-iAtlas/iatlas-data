@@ -9,13 +9,18 @@
 #'
 #' @param stop_at = NULL or step-name-string - will stop executing AFTER executing the specified step. Will not execute any more steps.
 #' @return nothing
-build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop_at = NULL, feather_file_folder = "feather_files", script_path = "scripts") {
+build_iatlas_db <- function(
+  env = "dev",
+  reset = "reset",
+  resume_at = NULL,
+  stop_at = NULL,
+  script_path = "scripts",
+  max_rows = NULL
+) {
 
   load_config(env)
 
-  .GlobalEnv$create_db_en_env <- function() {iatlas.data::create_db(env, reset, script_path = script_path)}
-
-  iatlas.data::set_feather_file_folder(feather_file_folder)
+  .GlobalEnv$create_db_en_env <- function(...) {iatlas.data::create_db(env, reset, script_path = script_path)}
 
   iatlas.data::build_pipeline(
     c(
@@ -47,6 +52,7 @@ build_iatlas_db <- function(env = "dev", reset = "reset", resume_at = NULL, stop
     finally = {
       iatlas.data::reset_results_cache()
       iatlas.data::release_global_db_pool()
-    }
+    },
+    max_rows = max_rows
   )
 }

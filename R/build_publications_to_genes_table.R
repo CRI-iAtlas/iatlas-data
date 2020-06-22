@@ -1,4 +1,4 @@
-build_publications_to_genes_table <- function() {
+build_publications_to_genes_table <- function(...) {
 
   # publications_to_genes import ---------------------------------------------------
   cat(crayon::magenta("Importing files for publications_to_genes"), fill = TRUE)

@@ -1,4 +1,4 @@
-build_datasets_to_tags_table <- function() {
+build_datasets_to_tags_table <- function(max_rows = NULL) {
 
   # datasets_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for datasets_to_tags."), fill = TRUE)
@@ -27,7 +27,7 @@ build_datasets_to_tags_table <- function() {
 
   # datasets_to_tags table ---------------------------------------------------
   cat(crayon::magenta("Building datasets_to_tags table."), fill = TRUE)
-  table_written <- datasets_to_tags %>% iatlas.data::replace_table("datasets_to_tags")
+  table_written <- datasets_to_tags %>% iatlas.data::replace_table("datasets_to_tags", max_rows = max_rows)
   cat(crayon::blue("Built datasets_to_tags table. (", nrow(datasets_to_tags), "rows )"), fill = TRUE, sep = " ")
 
 }

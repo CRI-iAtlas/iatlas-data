@@ -1,4 +1,4 @@
-build_copy_number_results_table <- function() {
+build_copy_number_results_table <- function(max_rows = NULL) {
 
   # copy_number_results import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for copy_number_results."), fill = TRUE)
@@ -46,7 +46,7 @@ build_copy_number_results_table <- function() {
 
   # copy_number_results table ---------------------------------------------------
   cat(crayon::magenta("Building copy_number_results table.\n\t(Please be patient, this may take a little while as there are", nrow(copy_number_results), "rows to write.)"), fill = TRUE, spe = " ")
-  table_written <- copy_number_results %>% iatlas.data::replace_table("copy_number_results")
+  table_written <- copy_number_results %>% iatlas.data::replace_table("copy_number_results", max_rows = max_rows)
   cat(crayon::blue("Built copy_number_results table. (", nrow(copy_number_results), "rows )"), fill = TRUE, sep = " ")
 
 }

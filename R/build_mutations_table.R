@@ -1,4 +1,4 @@
-build_mutations_table <- function() {
+build_mutations_table <- function(...) {
 
   # mutations import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutations."), fill = TRUE)

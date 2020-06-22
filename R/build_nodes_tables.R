@@ -1,4 +1,4 @@
-build_nodes_tables <- function() {
+build_nodes_tables <- function(...) {
 
   # nodes import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for nodes."), fill = TRUE)

@@ -1,4 +1,4 @@
-build_gene_types_table <- function() {
+build_gene_types_table <- function(...) {
 
   # gene_types import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for gene_types."), fill = TRUE)

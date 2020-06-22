@@ -1,4 +1,4 @@
-build_mutation_codes_table <- function() {
+build_mutation_codes_table <- function(...) {
 
   # mutation_codes data ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for mutation_codes."), fill = TRUE)

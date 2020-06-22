@@ -1,4 +1,4 @@
-build_samples_table <- function() {
+build_samples_table <- function(...) {
 
   # samples import ---------------------------------------------------
   cat(crayon::magenta("Importing sample files for samples"), fill = TRUE)

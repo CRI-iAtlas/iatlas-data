@@ -1,4 +1,4 @@
-build_slides_table <- function() {
+build_slides_table <- function(...) {
 
   # slides import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for slides."), fill = TRUE)

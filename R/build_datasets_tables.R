@@ -1,4 +1,4 @@
-build_datasets_tables <- function() {
+build_datasets_tables <- function(...) {
 
   # datasets import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for datasets."), fill = TRUE)

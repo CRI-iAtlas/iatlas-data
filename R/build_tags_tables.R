@@ -1,4 +1,4 @@
-build_tags_tables <- function() {
+build_tags_tables <- function(...) {
 
   # tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for tags."), fill = TRUE)
