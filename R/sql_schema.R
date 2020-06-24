@@ -120,6 +120,7 @@ sql_schema <- list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
+        name VARCHAR NOT NULL,
         label VARCHAR,
         node_1_id INTEGER NOT NULL,
         node_2_id INTEGER NOT NULL,
@@ -340,8 +341,9 @@ sql_schema <- list(
     create = "
       CREATE TABLE nodes (
         id SERIAL,
-        feature_id INTEGER,
+        name VARCHAR NOT NULL,
         dataset_id INTEGER NOT NULL,
+        feature_id INTEGER,
         gene_id INTEGER,
         label VARCHAR,
         score NUMERIC,
