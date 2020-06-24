@@ -7,3 +7,4 @@ get_patients <- function() result_cached("patients", iatlas.data::read_table("pa
 get_samples <- function() result_cached("samples", iatlas.data::read_table("samples") %>% dplyr::as_tibble())
 get_tags <- function() result_cached("tags", iatlas.data::read_table("tags") %>% dplyr::as_tibble() %>% dplyr::select(tag_id = id, tag = name))
 get_publications <- function() result_cached("publications", iatlas.data::read_table("publications") %>% dplyr::as_tibble() %>% dplyr::select(publication_id = id, pubmed_id))
+get_nodes <- function() result_cached("punodes", iatlas.data::read_table("nodes") %>% dplyr::as_tibble() %>% dplyr::select(node_id = id, name))

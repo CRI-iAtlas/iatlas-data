@@ -120,6 +120,7 @@ sql_schema <- list(
     create = "
       CREATE TABLE edges (
         id SERIAL,
+        name VARCHAR NOT NULL,
         label VARCHAR,
         node_1_id INTEGER NOT NULL,
         node_2_id INTEGER NOT NULL,
@@ -181,7 +182,6 @@ sql_schema <- list(
         gene_family_id        INTEGER REFERENCES gene_families,
         gene_function_id      INTEGER REFERENCES gene_functions,
         immune_checkpoint_id  INTEGER REFERENCES immune_checkpoints,
-        node_type_id          INTEGER REFERENCES node_types,
         pathway_id            INTEGER REFERENCES pathways,
         super_cat_id          INTEGER REFERENCES super_categories,
         therapy_type_id       INTEGER REFERENCES therapy_types,
@@ -193,7 +193,6 @@ sql_schema <- list(
       "CREATE INDEX gene_gene_family_id_index ON genes (gene_family_id);",
       "CREATE INDEX gene_gene_function_id_index ON genes (gene_function_id);",
       "CREATE INDEX gene_immune_checkpoint_id_index ON genes (immune_checkpoint_id);",
-      "CREATE INDEX gene_node_type_id_index ON genes (node_type_id);",
       "CREATE INDEX gene_pathway_id_index ON genes (pathway_id);",
       "CREATE INDEX gene_super_cat_id_index ON genes (super_cat_id);",
       "CREATE INDEX gene_therapy_type_id_index ON genes (therapy_type_id);",
@@ -201,7 +200,6 @@ sql_schema <- list(
       "ALTER TABLE genes ADD FOREIGN KEY (gene_family_id       ) REFERENCES gene_families;",
       "ALTER TABLE genes ADD FOREIGN KEY (gene_function_id     ) REFERENCES gene_functions;",
       "ALTER TABLE genes ADD FOREIGN KEY (immune_checkpoint_id ) REFERENCES immune_checkpoints;",
-      "ALTER TABLE genes ADD FOREIGN KEY (node_type_id         ) REFERENCES node_types;",
       "ALTER TABLE genes ADD FOREIGN KEY (pathway_id           ) REFERENCES pathways;",
       "ALTER TABLE genes ADD FOREIGN KEY (super_cat_id         ) REFERENCES super_categories;",
       "ALTER TABLE genes ADD FOREIGN KEY (therapy_type_id      ) REFERENCES therapy_types;"
@@ -325,23 +323,13 @@ sql_schema <- list(
         PRIMARY KEY (id)
       );"
   ),
-  node_types = list(
-    create = "
-      CREATE TABLE node_types (
-        id SERIAL,
-        \"name\" VARCHAR NOT NULL,
-        PRIMARY KEY (id)
-      );",
-    addSchema = c(
-      "CREATE UNIQUE INDEX node_type_name_index ON node_types (\"name\");"
-    )
-  ),
   nodes = list(
     create = "
       CREATE TABLE nodes (
         id SERIAL,
-        feature_id INTEGER,
+        name VARCHAR NOT NULL,
         dataset_id INTEGER NOT NULL,
+        feature_id INTEGER,
         gene_id INTEGER,
         label VARCHAR,
         score NUMERIC,
