@@ -63,7 +63,7 @@ db_execute <- function(query, ...)
     ...
   )
 
-validate_control_data <- function (data, table_name) {
+validate_control_data <- function(data, table_name) {
   control_folder <- "./control_data/"
   control_file <- paste0(control_folder, table_name, ".feather")
   if (iatlas.data::present(.GlobalEnv$snapshot_control_data))
@@ -98,11 +98,17 @@ validate_control_data <- function (data, table_name) {
   }
 }
 
-drop_dependent_tables <- function (table_name)
+drop_dependent_tables <- function(table_name)
   purrr::map(get_dependent_tables(table_name), ~ drop_table(.))
 
 # NOTE: table_name must be in the sql_schema.R data structure
-replace_table <- function (data, table_name) {
+replace_table <- function(data, table_name, max_rows = NULL, seed = 1){
+  if (!is.null(max_rows) && nrow(data) > max_rows) {
+    if (!is.null(seed)) {
+      set.seed(seed)
+    }
+    data <- dplyr::sample_n(data, max_rows)
+  }
   validate_control_data(data, table_name)
   slow <- nrow(data) > 50000
   drop_dependent_tables(table_name)
@@ -110,7 +116,7 @@ replace_table <- function (data, table_name) {
   db_execute(sql_schema[[table_name]]$create)
   timed_with_db_pool(
     paste0("dbWriteTable: ", table_name, " (", nrow(data), " rows)"),
-    function (connection) RPostgres::dbWriteTable(connection, table_name, data, append = TRUE),
+    function(connection) RPostgres::dbWriteTable(connection, table_name, data, append = TRUE),
     slow = slow
   )
   for (sql in sql_schema[[table_name]]$addSchema) {

@@ -1,4 +1,4 @@
-build_genes_to_types_table <- function() {
+build_genes_to_types_table <- function(max_rows = NULL) {
 
   cat(crayon::magenta("Importing feather files for genes_to_types."), fill = TRUE)
   genes_to_types <- synapse_read_all_feather_files("syn22130912")
@@ -35,7 +35,7 @@ build_genes_to_types_table <- function() {
   cat(crayon::blue("Build genes_to_types data."), fill = TRUE)
 
   cat(crayon::magenta("Building genes_to_types table."), fill = TRUE)
-  table_written <- genes_to_types %>% iatlas.data::replace_table("genes_to_types")
+  table_written <- genes_to_types %>% iatlas.data::replace_table("genes_to_types", max_rows = max_rows)
   cat(crayon::blue("Built genes_to_types table. (", nrow(genes_to_types), "rows )"), fill = TRUE, sep = " ")
 
 }

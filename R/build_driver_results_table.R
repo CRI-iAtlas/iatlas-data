@@ -1,4 +1,4 @@
-build_driver_results_table <- function() {
+build_driver_results_table <- function(max_rows = NULL) {
 
   # driver_results import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for driver_results."), fill = TRUE)
@@ -44,7 +44,7 @@ build_driver_results_table <- function() {
 
   # driver_results table ---------------------------------------------------
   cat(crayon::magenta("Building driver_results table.\n\t(Please be patient, this may take a little while as there are", nrow(driver_results), "rows to write.)"), fill = TRUE, spe = " ")
-  table_written <- driver_results %>% iatlas.data::replace_table("driver_results")
+  table_written <- driver_results %>% iatlas.data::replace_table("driver_results", max_rows = max_rows)
   cat(crayon::blue("Built driver_results table. (", nrow(driver_results), "rows )"), fill = TRUE, sep = " ")
 
 }

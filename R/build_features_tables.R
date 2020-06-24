@@ -1,4 +1,4 @@
-build_features_tables <- function() {
+build_features_tables <- function(...) {
 
   # features import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for features."), fill = TRUE)

@@ -1,4 +1,4 @@
-build_samples_to_mutations_table <- function() {
+build_samples_to_mutations_table <- function(max_rows = NULL) {
 
   # samples_to_mutations import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_mutations."), fill = TRUE)
@@ -60,7 +60,7 @@ build_samples_to_mutations_table <- function() {
 
   # samples_to_mutations table ---------------------------------------------------
   cat(crayon::magenta("Building samples_to_mutations table."), fill = TRUE)
-  table_written <- samples_to_mutations %>% iatlas.data::replace_table("samples_to_mutations")
+  table_written <- samples_to_mutations %>% iatlas.data::replace_table("samples_to_mutations", max_rows = max_rows)
   cat(crayon::blue("Built samples_to_mutations table. (", nrow(samples_to_mutations), "rows )"), fill = TRUE)
 
 }

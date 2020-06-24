@@ -40,7 +40,7 @@ get_tag_column_names <- function(df) {
     column_names <- df %>% names()
     tag_column_names <- column_names %>%
       stringi::stri_extract_first(regex = "^tag(_[\\w]{1,})?") %>%
-      na.omit()
+      purrr::discard(., is.na(.))
     return(tag_column_names)
   }
   return(NA)

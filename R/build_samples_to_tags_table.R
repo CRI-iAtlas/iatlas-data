@@ -1,4 +1,4 @@
-build_samples_to_tags_table <- function() {
+build_samples_to_tags_table <- function(max_rows = NULL) {
 
   # samples_to_tags import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for samples_to_tags."), fill = TRUE)
@@ -27,7 +27,7 @@ build_samples_to_tags_table <- function() {
 
   # samples_to_tags table ---------------------------------------------------
   cat(crayon::magenta("Building samples_to_tags table."), fill = TRUE)
-  table_written <- samples_to_tags %>% iatlas.data::replace_table("samples_to_tags")
+  table_written <- samples_to_tags %>% iatlas.data::replace_table("samples_to_tags", max_rows = max_rows)
   cat(crayon::blue("Built samples_to_tags table. (", nrow(samples_to_tags), "rows )"), fill = TRUE, sep = " ")
 
 }

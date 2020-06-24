@@ -1,4 +1,4 @@
-build_publications_table <- function() {
+build_publications_table <- function(...) {
 
   # publications import ---------------------------------------------------
   cat(crayon::magenta("Importing files for publications"), fill = TRUE)

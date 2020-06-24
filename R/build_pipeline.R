@@ -1,8 +1,15 @@
-build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL, finally = NULL, build_only = NULL) {
+build_pipeline <- function(
+  step_function_names,
+  resume_at = NULL,
+  stop_at = NULL,
+  finally = NULL,
+  build_only = NULL,
+  max_rows = NULL
+) {
 
   on.exit(finally)
 
-  option_equal <- function (a, b) {iatlas.data::present(a) && iatlas.data::present(b) && a == b}
+  option_equal <- function(a, b) {iatlas.data::present(a) && iatlas.data::present(b) && a == b}
 
   clear_globals <- function() {
     if (iatlas.data::present(.GlobalEnv$pipeline_stack_trace)) {rm(pipeline_stack_trace, pos = ".GlobalEnv")}
@@ -35,7 +42,7 @@ build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL
         gc()
       }, error = function(e) {
         .GlobalEnv$pipeline_stack_trace <- sys.calls()
-        .GlobalEnv$resume <- function (resume_at = function_name) {
+        .GlobalEnv$resume <- function(resume_at = function_name) {
           build_pipeline(step_function_names, resume_at = resume_at, stop_at = stop_at)
         }
         cat(crayon::red(crayon::bold(paste0(function_name, " failed, but don't fret, you can resume from here:"))), fill = TRUE)
@@ -59,7 +66,7 @@ build_pipeline <- function(step_function_names, resume_at = NULL, stop_at = NULL
   }
 
   for (stop_function_name in step_function_names) {
-    run_skippable_function(stop_function_name)
+    run_skippable_function(stop_function_name, max_rows = max_rows)
   }
 
   clear_globals()

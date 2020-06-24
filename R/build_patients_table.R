@@ -1,4 +1,4 @@
-build_patients_table <- function() {
+build_patients_table <- function(...) {
 
   # patients import ---------------------------------------------------
   cat(crayon::magenta("Importing feather files for patients."), fill = TRUE)
