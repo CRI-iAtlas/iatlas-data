@@ -105,10 +105,6 @@ build_genes_tables <- function() {
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("immune_checkpoints"), by = c("immune_checkpoint" = "name")) %>%
     dplyr::rename(immune_checkpoint_id = id)
-  cat(crayon::cyan(" - Adding node_type ids."), fill = TRUE)
-  genes <- genes %>%
-    dplyr::left_join(iatlas.data::read_table("node_types"), by = c("node_type" = "name")) %>%
-    dplyr::rename(node_type_id = id)
   cat(crayon::cyan(" - Adding pathway ids."), fill = TRUE)
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("pathways"), by = c("pathway" = "name")) %>%
@@ -121,7 +117,7 @@ build_genes_tables <- function() {
   genes <- genes %>%
     dplyr::left_join(iatlas.data::read_table("therapy_types"), by = c("therapy_type" = "name")) %>%
     dplyr::rename(therapy_type_id = id) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, node_type_id, io_landscape_name, pathway_id, super_cat_id, therapy_type_id)
+    dplyr::distinct(entrez, hgnc, description, friendly_name, gene_family_id, gene_function_id, immune_checkpoint_id, io_landscape_name, pathway_id, super_cat_id, therapy_type_id)
   cat(crayon::blue("Built genes data."), fill = TRUE)
 
   # genes table ---------------------------------------------------
