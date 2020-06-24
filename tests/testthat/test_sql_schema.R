@@ -1,6 +1,4 @@
 (function() {
-  library("testthat")
-  library('feather')
 
   test_that("get_dependent_tables when none", {
     result <- get_dependent_tables("features_to_samples")

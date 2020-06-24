@@ -59,3 +59,11 @@ synapse_read_all_feather_files <- function(parent_id) {
     purrr::map(feather::read_feather) %>%
     dplyr::bind_rows()
 }
+
+synapse_read_feather_file <- function(id) {
+  create_global_synapse_connection()
+  id %>%
+    .GlobalEnv$synapse$get() %>%
+    purrr::pluck("path") %>%
+    feather::read_feather(.)
+}
