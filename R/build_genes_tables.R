@@ -17,18 +17,17 @@ build_genes_tables <- function() {
       gene_family = character(),
       gene_function = character(),
       immune_checkpoint = character(),
-      node_type = character(),
       pathway = character(),
       super_category = character(),
       therapy_type = character()
     )) %>%
     dplyr::filter(!is.na(entrez)) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type) %>%
     dplyr::mutate_at(dplyr::vars(entrez), as.numeric) %>%
     dplyr::mutate_at(dplyr::vars(friendly_name), as.character) %>%
     dplyr::arrange(entrez, hgnc) %>%
     iatlas.data::resolve_df_dupes(keys = c("entrez")) %>%
-    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, node_type, pathway, super_category, therapy_type) %>%
+    dplyr::distinct(entrez, hgnc, description, friendly_name, io_landscape_name, gene_family, gene_function, immune_checkpoint, pathway, super_category, therapy_type) %>%
     dplyr::arrange(entrez)
   cat(crayon::blue("Ensured genes have all the correct columns and no dupes."), fill = TRUE)
 
@@ -61,16 +60,6 @@ build_genes_tables <- function() {
   cat(crayon::magenta("Building immune_checkpoints table."), fill = TRUE)
   table_written <- immune_checkpoints %>% iatlas.data::replace_table("immune_checkpoints")
   cat(crayon::blue("Built immune_checkpoints table. (", nrow(immune_checkpoints), "rows )"), fill = TRUE, sep = " ")
-
-  # node_types data ---------------------------------------------------
-  cat(crayon::magenta("Building node_types data."), fill = TRUE)
-  node_types <- genes %>% iatlas.data::rebuild_gene_relational_data("node_type")
-  cat(crayon::blue("Built node_types data."), fill = TRUE)
-
-  # node_types table ---------------------------------------------------
-  cat(crayon::magenta("Building node_types table."), fill = TRUE)
-  table_written <- node_types %>% iatlas.data::replace_table("node_types")
-  cat(crayon::blue("Built node_types table. (", nrow(node_types), "rows )"), fill = TRUE, sep = " ")
 
   # pathways data ---------------------------------------------------
   cat(crayon::magenta("Built pathways data."), fill = TRUE)
