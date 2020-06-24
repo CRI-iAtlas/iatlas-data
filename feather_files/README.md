@@ -1,6 +1,6 @@
 # iAtlas Data Structures
 
-When importing data into iAtlas, it is very imprtant that the following conventions are followed. Doing so will get the new data into the iAtlas database and make it available for the app.
+When importing data into iAtlas, it is very important that the following conventions are followed. Doing so will get the new data into the iAtlas database and make it available for the app.
 
 ## Data Model
 
@@ -66,11 +66,11 @@ The conventions for the feather files in each folder are as follows:
     The entrez id of a gene. These genes MUST exist in data in the `genes` folder.
 
     type - _(numeric)_
-  
+
   - _dataset_
 
     The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
-    
+
     type - _(character)_
 
   - _tag_
@@ -114,7 +114,7 @@ The conventions for the feather files in each folder are as follows:
     The t stat value of this copy number result.
 
     type - _(numeric)_
-    
+
   ### `datasets`
 
   #### Datasets Column Names
@@ -122,16 +122,14 @@ The conventions for the feather files in each folder are as follows:
   - _name_
 
     The name of a the dataset. Must be unique, must not use any charcaters besides letters, number and underscores.
-    
+
     type - _(character)_
-  
+
   - _display_
 
     A display name for the dataset.
-    
-    type - _(character)_
-    
 
+    type - _(character)_
 
   ### `driver_results`
 
@@ -140,9 +138,9 @@ The conventions for the feather files in each folder are as follows:
   - _feature_
 
     The name of a feature. These unique names MUST exist in data in the `features` folder.
-    
+
     type - _(character)_
-    
+
   - _dataset_
 
     The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
@@ -206,11 +204,10 @@ The conventions for the feather files in each folder are as follows:
 * ### `edges`
 
   #### Edges Column Names
-  
+
   - _name_
 
-    The name of the edge. Each edge must have a unique name, we suggest 
-    "<dataset_name>_<network_name>_<row_number>""
+    The name of the edge. Each edge must have a unique name, we suggest `<dataset_name>_<network_name>_<row_number>`
 
     type - _(character)_
 
@@ -219,7 +216,7 @@ The conventions for the feather files in each folder are as follows:
     The node the edge is starting from. This must be in the name column of the corresponding `nodes` file.
 
     type - _(integer)_
-  
+
   - _node2_
 
     The node the edge is ending at. This must be in the name column of the corresponding `nodes` file.
@@ -237,8 +234,6 @@ The conventions for the feather files in each folder are as follows:
     The numeric value of the edge.
 
     type - _(numeric)_
-
-
 
 * ### `features`
 
@@ -419,11 +414,10 @@ The conventions for the feather files in each folder are as follows:
   #### Node Column Names
 
   A node may use a gene OR a feature. One of these is REQUIRED.
-  
+
   - _name_
 
-    The name of the nodes. Each node must have a unique name, we suggest 
-    "<dataset_name>_<network_name>_<row_number>""
+    The name of the nodes. Each node must have a unique name, we suggest  `<dataset_name>_<network_name>_<row_number>`
 
     type - _(character)_
 
@@ -439,33 +433,33 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
-  - _network_ 
+  - _network_
 
     The network tag related to the node. These tags MUST exist in data in the `tags` folder.\
-    
+
     type - _(character)_
-    
+
   - _dataset_
 
     The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
-    
+
     type - _(character)_
 
-  - _tag_ 
+  - _tag_
 
     The a tag related to the node. These tags MUST exist in data in the `tags` folder.\
     For a node to be used in edges, this column name MUST also exist in the _edges_ data.
 
     type - _(character)_
 
-  - _tag_<x> (optional)
+  - _tag\_\<x>_ (optional)
 
     Additional tags related to the node. These tags MUST exist in data in the `tags` folder.\
     The column name MUST start with `tag` but may be followed by a dot (`_`) and some additional descriptive text. ie `tag_second` or `tag_01`. There may be as many tag columns as needed.\
     This column name MUST also exist in the _nodes_ data.
 
     type - _(character)_
-    
+
   - _label_ (optional)
 
     The label of the edge.
@@ -543,9 +537,8 @@ The conventions for the feather files in each folder are as follows:
   - _dataset_
 
     The name of a the dataset. These unique names MUST exist in data in the `datasets` folder.
-    
+
     type - _(character)_
-  
 
 * ### `slides`
 
@@ -602,25 +595,25 @@ The conventions for the feather files in each folder are as follows:
     The unique id at "https://pubmed.ncbi.nlm.nih.gov/{id}"
 
     type - _(integer)_
-  
+
   - _journal_
 
     The journal published in
 
     type - _(character)_
-    
+
   - _first_author_last_name_
 
     The last name of the first author
 
     type - _(character)_
-  
+
   - _year_
 
     The year published
 
     type - _(integer)_
-    
+
   - _title_
 
     The name of the publication
@@ -633,20 +626,20 @@ The conventions for the feather files in each folder are as follows:
 
   - ### `publications_to_genes`
 
-    #### Publications To Genes Column Names  
-    
+    #### Publications To Genes Column Names
+
     - _pubmed_id_
 
       The pubmed id of the publication. These unique ids MUST exist in data in the `publications` folder.
-    
+
       type - _(integer)_
-  
+
     - _entrez_
 
       The entrez id of the gene. These unique ids MUST exist in data in the `genes` folder.
-    
+
       type - _(integer)_
-  
+
   - ### `datasets_to_tags`
 
     #### Datasets To Tags Column Names
@@ -654,13 +647,13 @@ The conventions for the feather files in each folder are as follows:
     - _dataset_
 
       The name of a the dataset. These unique names MUST exist in data in the `datasets` folder.
-    
+
       type - _(character)_
-  
+
     - _tag_
 
       The name of the tag. These unique names MUST exist in data in the `tags` folder.
-    
+
       type - _(character)_
 
   - #### `features_to_samples`
