@@ -1,5 +1,8 @@
+# git
 # used by git-log to rewrite usernames
 .mailmap
+git-genui.config.json
+
 
 # History files
 .Rhistory
