@@ -206,30 +206,25 @@ The conventions for the feather files in each folder are as follows:
 * ### `edges`
 
   #### Edges Column Names
+  
+  - _name_
+
+    The name of the edge. Each edge must have a unique name, we suggest 
+    "<dataset_name>_<network_name>_<row_number>""
+
+    type - _(character)_
 
   - _node1_
 
-    The node the edge is starting from. This must be in the id column of the corresponding `nodes` file.
+    The node the edge is starting from. This must be in the name column of the corresponding `nodes` file.
 
     type - _(integer)_
   
   - _node2_
 
-    The node the edge is ending at. This must be in the id column of the corresponding `nodes` file.
+    The node the edge is ending at. This must be in the name column of the corresponding `nodes` file.
 
     type - _(integer)_
-    
-  - _network_ 
-
-    The network tag related to the node. These tags MUST exist in data in the `tags` folder.\
-    
-    type - _(character)_
-    
-  - _dataset_
-
-    The name of a dataset. These unique names MUST exist in data in the `datasets` folder.
-    
-    type - _(character)_
 
   - _label_ (optional)
 
@@ -353,12 +348,6 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
-  - _node_type_ (optional)
-
-    The node type of the gene.
-
-    type - _(character)_
-
   - _pathway_ (optional)
 
     The pathway of the gene.
@@ -430,6 +419,13 @@ The conventions for the feather files in each folder are as follows:
   #### Node Column Names
 
   A node may use a gene OR a feature. One of these is REQUIRED.
+  
+  - _name_
+
+    The name of the nodes. Each node must have a unique name, we suggest 
+    "<dataset_name>_<network_name>_<row_number>""
+
+    type - _(character)_
 
   - _entrez_
 
@@ -462,10 +458,10 @@ The conventions for the feather files in each folder are as follows:
 
     type - _(character)_
 
-  - _tag2_ (optional)
+  - _tag_<x> (optional)
 
     Additional tags related to the node. These tags MUST exist in data in the `tags` folder.\
-    The column name MUST start with `tag` but may be followed by a dot (`.`) and some additional descriptive text. ie `tag.second` or `tag.01`. There may be as many tag columns as needed.\
+    The column name MUST start with `tag` but may be followed by a dot (`_`) and some additional descriptive text. ie `tag_second` or `tag_01`. There may be as many tag columns as needed.\
     This column name MUST also exist in the _nodes_ data.
 
     type - _(character)_
