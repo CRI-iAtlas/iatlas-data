@@ -1,5 +1,9 @@
 # iAtlas-Data
 
+THIS REPO HAS BEEN MOVED TO GITLAB [https://gitlab.com/cri-iatlas/iatlas-data.git](https://gitlab.com/cri-iatlas/iatlas-data.git).
+
+GitLab has removed the ability to pull from external (Github) repos for deployment. This repo has been moved to GitLab to mitigate this issue.
+
 The iAtlas app is an interactive web portal that provides multiple analysis modules to visualize and explore immune response characterizations across cancer types. The app is hosted on shinyapps.io at [https://isb-cgc.shinyapps.io/shiny-iatlas/](https://isb-cgc.shinyapps.io/shiny-iatlas/) and can also be accessed via the main CRI iAtlas page at [http://www.cri-iatlas.org/](http://www.cri-iatlas.org/).
 
 This repository contains the source data for building the database iAtlas uses. The code in this repository consumes the source data, partially-verifies it and builds the database.
